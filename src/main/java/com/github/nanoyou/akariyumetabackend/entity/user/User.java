@@ -1,7 +1,8 @@
 package com.github.nanoyou.akariyumetabackend.entity.user;
 
-import com.github.nanoyou.akariyumetabackend.enumeration.UserGender;
-import com.github.nanoyou.akariyumetabackend.enumeration.UserRole;
+import com.github.nanoyou.akariyumetabackend.enumeration.Gender;
+import com.github.nanoyou.akariyumetabackend.enumeration.Role;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
@@ -11,6 +12,7 @@ import java.util.UUID;
  * 属于: 用户
  */
 @Data
+@Builder
 public class User {
     /**
      * 用户ID
@@ -27,7 +29,7 @@ public class User {
     /**
      * 角色
      */
-    private UserRole role;
+    private Role role;
     /**
      * 密码
      */
@@ -35,7 +37,7 @@ public class User {
     /**
      * 性别
      */
-    private UserGender gender;
+    private Gender gender;
     /**
      * 个人介绍
      */
