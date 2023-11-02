@@ -14,16 +14,16 @@ public interface UserDao extends JpaRepository<User, UUID> {
 //
 //    int addUser(@Nonnull User user);
 //
-//    User login(@Nonnull String username, @Nonnull String password);
+    User login(@Nonnull String username, @Nonnull String password);
 
     User queryUser(@Nonnull String username, @Nonnull String password);
 
-    User admin(@Nonnull User user);
+    int admin(@Nonnull User user);
 
-    User volunteer(@Nonnull User user);
+    int volunteer(@Nonnull User user);
 
-    User sponsor(@Nonnull User user);
+    int sponsor(@Nonnull User user);
 
-    User child(@Nonnull User user);
+    int child(@Nonnull User user);
 
 }

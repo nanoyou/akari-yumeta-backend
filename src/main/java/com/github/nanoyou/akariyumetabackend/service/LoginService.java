@@ -15,55 +15,32 @@ public class LoginService {
     private UserDao userDao;
 
     public Result login(@NotNull User loginUser) {
-        assert loginUser.getRole() != null;
 
-        User user = null;
+        var user = userDao.login(loginUser.getUsername(), loginUser.getPassword());
 
-        switch (loginUser.getRole()){
+        assert user.getRole() != null;
+
+        switch (user.getRole()){
             case ADMIN:
-                user = userDao.admin(loginUser);
+                userDao.admin(user);
                 break;
             case VOLUNTEER:
-                user = userDao.volunteer(loginUser);
+                userDao.volunteer(user);
                 break;
             case SPONSOR:
-                user = userDao.sponsor(loginUser);
+                userDao.sponsor(user);
                 break;
             case CHILD:
-                user = userDao.child(loginUser);
+                userDao.child(user);
                 break;
         }
-
-        // 登录成功data
-        var u = RegisterService._User.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .nickname(user.getNickname())
-                .role(user.getRole().value)
-                .gender(user.getGender().value)
-                .introduction(user.getIntroduction())
-                .avatarURL(user.getAvatarURL())
-                .usageDuration(user.getUsageDuration())
-                .build();
 
         return Result.builder()
                 .ok(true)
                 .code(ResponseCode.SUCCESS.value)
-                .data(u)
+                .data(user)
                 .message("登录成功")
                 .build();
     }
 
-    @Builder
-    @Data
-    static class _User {
-        String id;
-        String username;
-        String nickname;
-        String role;
-        String gender;
-        String introduction;
-        String avatarURL;
-        Integer usageDuration;
-    }
 }
