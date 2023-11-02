@@ -1,11 +1,15 @@
-package com.github.nanoyou.akariyumetabackend.entity;
+package com.github.nanoyou.akariyumetabackend.entity.chat;
 
-import com.github.nanoyou.akariyumetabackend.entity.enumeration.MessageType;
+import com.github.nanoyou.akariyumetabackend.enumeration.MessageType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * 消息 Message
+ * 所属: 聊天
+ */
 @Data
 public class Message {
     /**
@@ -13,11 +17,11 @@ public class Message {
      */
     private UUID id;
     /**
-     * 发送者ID
+     * 发送者 ID
      */
     private UUID senderID;
     /**
-     * 接收者ID
+     * 接收者 ID
      */
     private UUID receiverID;
     /**

@@ -1,6 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.entity.task;
 
-import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
+import com.github.nanoyou.akariyumetabackend.enumeration.TaskRecordStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;

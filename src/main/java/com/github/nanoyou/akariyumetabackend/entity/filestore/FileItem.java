@@ -1,9 +1,14 @@
-package com.github.nanoyou.akariyumetabackend.entity;
+package com.github.nanoyou.akariyumetabackend.entity.filestore;
 
 import lombok.Data;
 
 import java.lang.reflect.Array;
+import java.util.List;
 
+/**
+ * 文件项 FileItem
+ * 属于: 文件存储
+ */
 @Data
 public class FileItem {
     /**
@@ -17,5 +22,5 @@ public class FileItem {
     /**
      * 文件数据(二进制格式)
      */
-    private Array data;
+    private byte[] data;
 }
