@@ -1,11 +1,15 @@
-package com.github.nanoyou.akariyumetabackend.entity;
+package com.github.nanoyou.akariyumetabackend.entity.user;
 
-import com.github.nanoyou.akariyumetabackend.entity.enumeration.UserGender;
-import com.github.nanoyou.akariyumetabackend.entity.enumeration.UserRole;
+import com.github.nanoyou.akariyumetabackend.enumeration.UserGender;
+import com.github.nanoyou.akariyumetabackend.enumeration.UserRole;
 import lombok.Data;
 
 import java.util.UUID;
 
+/**
+ * 用户 User
+ * 属于: 用户
+ */
 @Data
 public class User {
     /**
