@@ -23,7 +23,13 @@ public enum ResponseCode {
      * 无权限访问(角色错误)
      */
     UNAUTHORIZED(3),
+    /**
+     * 不能注册管理员
+     */
     ADMIN_REGISTER_REFUSED(100),
+    /**
+     * 登录失败
+     */
     LOGIN_FAIL(101);
 
     public final int value;
