@@ -1,8 +1,10 @@
 package com.github.nanoyou.akariyumetabackend.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class Result {
     /**
      * 是否成功
