@@ -3,7 +3,7 @@ package com.github.nanoyou.akariyumetabackend.controller;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.param.RegisterParam;
+import com.github.nanoyou.akariyumetabackend.dto.RegisterDTO;
 import com.github.nanoyou.akariyumetabackend.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,17 +22,17 @@ public class RegisterController {
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result register(@RequestBody RegisterParam registerParam) {
+    public Result register(@RequestBody RegisterDTO registerDTO) {
         try {
             var registerUser = User.builder()
-                    .username(registerParam.getUsername())
-                    .nickname(registerParam.getNickname())
-                    .role(registerParam.getRole())
-                    .password(registerParam.getPassword())
-                    .gender(registerParam.getGender())
-                    .introduction(registerParam.getIntroduction())
-                    .avatarURL(registerParam.getAvatarURL())
-                    .usageDuration(registerParam.getUsageDuration())
+                    .username(registerDTO.getUsername())
+                    .nickname(registerDTO.getNickname())
+                    .role(registerDTO.getRole())
+                    .password(registerDTO.getPassword())
+                    .gender(registerDTO.getGender())
+                    .introduction(registerDTO.getIntroduction())
+                    .avatarURL(registerDTO.getAvatarURL())
+                    .usageDuration(registerDTO.getUsageDuration())
                     .build();
             return registerService.register(registerUser);
         } catch (Exception e) {

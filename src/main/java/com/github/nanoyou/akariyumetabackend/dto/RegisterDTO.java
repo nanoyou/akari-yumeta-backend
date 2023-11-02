@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.param;
+package com.github.nanoyou.akariyumetabackend.dto;
 
 import com.github.nanoyou.akariyumetabackend.enumeration.Gender;
 import com.github.nanoyou.akariyumetabackend.enumeration.Role;
@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class RegisterParam {
+public class RegisterDTO {
     /**
      * 头像链接
      */
