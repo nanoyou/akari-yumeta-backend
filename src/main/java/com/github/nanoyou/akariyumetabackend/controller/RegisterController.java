@@ -1,9 +1,11 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
+import com.github.nanoyou.akariyumetabackend.dto.UserDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.RegisterDTO;
+import com.github.nanoyou.akariyumetabackend.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
@@ -29,7 +31,6 @@ public class RegisterController {
     public Result register(@RequestBody RegisterDTO registerDTO) {
         try {
             var registerUser = User.builder()
-//                    .id(UUID.randomUUID())
                     .username(registerDTO.getUsername())
                     .nickname(registerDTO.getNickname())
                     .role(registerDTO.getRole())
@@ -39,8 +40,23 @@ public class RegisterController {
                     .avatarURL(registerDTO.getAvatarURL())
                     .usageDuration(registerDTO.getUsageDuration())
                     .build();
-            System.out.println(registerUser.toString());
-            return registerService.register(registerUser);
+
+            // 管理员不可以被注册
+            if (Role.ADMIN.equals(registerUser.getRole())) {
+                return Result.builder().
+                        ok(true).
+                        code(ResponseCode.ADMIN_REGISTER_REFUSED.value).
+                        message("不能注册管理员账户").
+                        build();
+            }
+            var registerUserDTO = registerService.register(registerUser);
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .message("注册成功")
+                    .data(registerUserDTO)
+                    .build();
+
         } catch (Exception e) {
             return Result.builder().
                     ok(false).

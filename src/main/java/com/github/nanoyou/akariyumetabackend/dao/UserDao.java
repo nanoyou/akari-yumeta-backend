@@ -4,11 +4,14 @@ package com.github.nanoyou.akariyumetabackend.dao;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 public interface UserDao extends JpaRepository<User, UUID> {
 //
@@ -18,12 +21,6 @@ public interface UserDao extends JpaRepository<User, UUID> {
 
     User queryUser(@Nonnull String username, @Nonnull String password);
 
-    User admin(@Nonnull User user);
-
-    User volunteer(@Nonnull User user);
-
-    User sponsor(@Nonnull User user);
-
-    User child(@Nonnull User user);
+    Optional<User> findByUsernameAndPassword(@Nonnull String username, @Nonnull String password);
 
 }

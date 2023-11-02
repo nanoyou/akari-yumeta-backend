@@ -30,7 +30,11 @@ public enum ResponseCode {
     /**
      * 登录失败
      */
-    LOGIN_FAIL(101);
+    LOGIN_FAIL(101),
+    /**
+     * 登录成功
+     */
+    LOGIN_SUCCESS(102);
 
     public final int value;
 
