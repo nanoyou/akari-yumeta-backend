@@ -2,8 +2,12 @@ package com.github.nanoyou.akariyumetabackend.entity.user;
 
 import com.github.nanoyou.akariyumetabackend.enumeration.Gender;
 import com.github.nanoyou.akariyumetabackend.enumeration.Role;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -13,10 +17,14 @@ import java.util.UUID;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@Entity
+@NoArgsConstructor
 public class User {
     /**
      * 用户ID
      */
+    @Id
     private UUID id;
     /**
      * 用户名

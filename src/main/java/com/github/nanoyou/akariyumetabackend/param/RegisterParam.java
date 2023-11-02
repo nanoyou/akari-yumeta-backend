@@ -5,6 +5,8 @@ import com.github.nanoyou.akariyumetabackend.enumeration.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class RegisterParam {
     /**
@@ -45,4 +47,6 @@ public class RegisterParam {
      */
     @NotNull(message = "用户名不能为空")
     private String username;
+
+    private List<String> tags;
 }

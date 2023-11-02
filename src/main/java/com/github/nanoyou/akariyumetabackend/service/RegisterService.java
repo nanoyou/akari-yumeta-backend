@@ -8,12 +8,18 @@ import com.github.nanoyou.akariyumetabackend.enumeration.Role;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RegisterService {
 
-    private UserDao userDao;
+    private final UserDao userDao;
+
+    @Autowired
+    private RegisterService(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public Result register(@NonNull User registerUser) {
         assert registerUser.getRole() != null;
@@ -28,7 +34,7 @@ public class RegisterService {
         }
 
         // 注册的用户被添加进数据库
-        userDao.addUser(registerUser);
+        userDao.save(registerUser);
 
         var retUser = _User.builder()
                 .id(registerUser.getId().toString())
