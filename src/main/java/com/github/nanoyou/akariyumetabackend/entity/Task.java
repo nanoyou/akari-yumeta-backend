@@ -2,10 +2,17 @@ package com.github.nanoyou.akariyumetabackend.entity;
 
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskCategory;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Task 任务
+ * 属于：学习任务
+ * 受困儿童需要完成的任务。
+ */
+@Data
 public class Task {
     /**
      * Task ID
