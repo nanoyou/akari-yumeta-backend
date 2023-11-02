@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.entity;
+package com.github.nanoyou.akariyumetabackend.entity.task;
 
 import lombok.Data;
 
