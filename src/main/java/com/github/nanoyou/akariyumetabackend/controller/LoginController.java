@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LoginController {
-    private LoginService loginService;
+    private final LoginService loginService;
 
     @Autowired
     public LoginController(LoginService loginService) {
@@ -23,16 +23,28 @@ public class LoginController {
     @RequestMapping(path = "/login", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result login(@RequestBody LoginDTO loginParam) {
         try {
-            var loginUser = User.builder()
-                    .username(loginParam.getUsername())
-                    .password(loginParam.getPassword())
-                    .build();
-            return loginService.login(loginUser);
+            var loginUser = loginService.login(loginParam);
+            return loginUser.map(
+                    userDTO -> Result.builder()
+                            .ok(true)
+                            .code(ResponseCode.LOGIN_SUCCESS.value)
+                            .message("登录成功")
+                            .data(userDTO)
+                            .build()
+            ).orElse(
+                    Result.builder()
+                            .ok(false)
+                            .code(ResponseCode.LOGIN_FAIL.value)
+                            .message("账户不存在或密码错误")
+                            .data(null)
+                            .build()
+            );
+
         } catch (Exception e) {
             return Result.builder()
                     .ok(false)
                     .code(ResponseCode.LOGIN_FAIL.value)
-                    .message("账户不存在或密码错误")
+                    .message("内部服务器错误")
                     .build();
         }
 
