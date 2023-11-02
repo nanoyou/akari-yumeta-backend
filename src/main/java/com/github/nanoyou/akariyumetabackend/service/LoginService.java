@@ -22,12 +22,16 @@ public class LoginService {
         switch (loginUser.getRole()){
             case ADMIN:
                 user = userDao.admin(loginUser);
+                break;
             case VOLUNTEER:
                 user = userDao.volunteer(loginUser);
+                break;
             case SPONSOR:
                 user = userDao.sponsor(loginUser);
+                break;
             case CHILD:
                 user = userDao.child(loginUser);
+                break;
         }
 
         // 登录成功data
