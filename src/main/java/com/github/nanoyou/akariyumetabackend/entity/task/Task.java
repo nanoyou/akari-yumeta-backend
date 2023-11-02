@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.entity;
+package com.github.nanoyou.akariyumetabackend.entity.task;
 
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskCategory;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
