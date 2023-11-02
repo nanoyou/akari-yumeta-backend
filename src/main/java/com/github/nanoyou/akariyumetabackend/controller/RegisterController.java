@@ -6,15 +6,19 @@ import com.github.nanoyou.akariyumetabackend.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.RegisterDTO;
 import com.github.nanoyou.akariyumetabackend.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.UUID;
+
+@RestController
 public class RegisterController {
 
-    private RegisterService registerService;
+    private final RegisterService registerService;
 
     @Autowired
     private RegisterController(RegisterService registerService) {
@@ -25,6 +29,7 @@ public class RegisterController {
     public Result register(@RequestBody RegisterDTO registerDTO) {
         try {
             var registerUser = User.builder()
+//                    .id(UUID.randomUUID())
                     .username(registerDTO.getUsername())
                     .nickname(registerDTO.getNickname())
                     .role(registerDTO.getRole())
@@ -34,6 +39,7 @@ public class RegisterController {
                     .avatarURL(registerDTO.getAvatarURL())
                     .usageDuration(registerDTO.getUsageDuration())
                     .build();
+            System.out.println(registerUser.toString());
             return registerService.register(registerUser);
         } catch (Exception e) {
             return Result.builder().

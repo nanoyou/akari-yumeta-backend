@@ -3,6 +3,8 @@ package com.github.nanoyou.akariyumetabackend.entity.user;
 import com.github.nanoyou.akariyumetabackend.enumeration.Gender;
 import com.github.nanoyou.akariyumetabackend.enumeration.Role;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +27,8 @@ public class User {
      * 用户ID
      */
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     /**
      * 用户名
      */
