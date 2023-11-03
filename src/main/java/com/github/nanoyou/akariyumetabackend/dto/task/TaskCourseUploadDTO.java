@@ -1,8 +1,11 @@
 package com.github.nanoyou.akariyumetabackend.dto.task;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskCategory;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +14,8 @@ import java.time.LocalDateTime;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaskCourseUploadDTO {
     /**
      * 奖励积分，任务完成给予的积分数
@@ -27,10 +32,13 @@ public class TaskCourseUploadDTO {
     /**
      * 任务结束时间
      */
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
     /**
      * 任务开始时间
      */
+//    @Value()
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
     /**
      * 任务名称
