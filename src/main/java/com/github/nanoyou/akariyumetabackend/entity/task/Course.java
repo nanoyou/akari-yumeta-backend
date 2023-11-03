@@ -1,12 +1,13 @@
 package com.github.nanoyou.akariyumetabackend.entity.task;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.UUID;
+import lombok.NoArgsConstructor;
 
 /**
  * Course 课程
@@ -15,10 +16,14 @@ import java.util.UUID;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class Course {
     /**
      * 关联的Task的ID
      */
+    @Id
     private String taskID;
     /**
      * 被观看的次数

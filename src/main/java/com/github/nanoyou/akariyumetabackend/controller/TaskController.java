@@ -1,5 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
+import com.github.nanoyou.akariyumetabackend.common.NotImplementedException;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseSearchDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
