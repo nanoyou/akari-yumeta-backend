@@ -20,8 +20,14 @@ public class CourseService {
     }
 
     public Optional<Course> addCourse(@Nonnull Course course) {
-        // TODO: 请 flozxwer 完成这里
-        throw new NotImplementedException("flozxwer");
+        courseDao.saveAndFlush(course);
+
+        return Optional.of(Course.builder()
+                        .taskID(course.getTaskID())
+                        .watchedCount(course.getWatchedCount())
+                        .videoURL(course.getVideoURL())
+                        .videoDuration(course.getVideoDuration())
+                .build());
     }
 
     /**

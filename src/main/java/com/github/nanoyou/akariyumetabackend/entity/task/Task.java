@@ -2,6 +2,9 @@ package com.github.nanoyou.akariyumetabackend.entity.task;
 
 import com.github.nanoyou.akariyumetabackend.enumeration.TaskCategory;
 import com.github.nanoyou.akariyumetabackend.enumeration.TaskStatus;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,6 +22,8 @@ public class Task {
     /**
      * Task ID
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     /**
      * 任务名称

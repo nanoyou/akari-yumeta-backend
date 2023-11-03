@@ -3,6 +3,7 @@ package com.github.nanoyou.akariyumetabackend.entity.task;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
@@ -13,12 +14,11 @@ import java.util.UUID;
  * Course是特殊的Task，本系统只有Course作为Task的子类。
  */
 @Data
+@Builder
 public class Course {
     /**
      * 关联的Task的ID
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String taskID;
     /**
      * 被观看的次数
