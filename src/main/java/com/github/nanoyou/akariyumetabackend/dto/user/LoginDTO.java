@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.dto;
+package com.github.nanoyou.akariyumetabackend.dto.user;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

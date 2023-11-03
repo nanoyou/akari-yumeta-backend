@@ -1,15 +1,9 @@
 package com.github.nanoyou.akariyumetabackend.service;
 
 import com.github.nanoyou.akariyumetabackend.dao.UserDao;
-import com.github.nanoyou.akariyumetabackend.dto.LoginDTO;
-import com.github.nanoyou.akariyumetabackend.dto.UserDTO;
-import com.github.nanoyou.akariyumetabackend.entity.Result;
-import com.github.nanoyou.akariyumetabackend.entity.user.User;
-import com.github.nanoyou.akariyumetabackend.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.enumeration.Role;
+import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
+import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -42,16 +36,4 @@ public class LoginService {
 
     }
 
-//    @Builder
-//    @Data
-//    static class _User {
-//        String id;
-//        String username;
-//        String nickname;
-//        String role;
-//        String gender;
-//        String introduction;
-//        String avatarURL;
-//        Integer usageDuration;
-//    }
 }

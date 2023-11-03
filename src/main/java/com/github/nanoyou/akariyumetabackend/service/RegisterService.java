@@ -1,7 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.service;
 
 import com.github.nanoyou.akariyumetabackend.dao.UserDao;
-import com.github.nanoyou.akariyumetabackend.dto.UserDTO;
+import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;

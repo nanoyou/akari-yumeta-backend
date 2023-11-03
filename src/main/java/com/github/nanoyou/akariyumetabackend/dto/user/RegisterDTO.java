@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.dto;
+package com.github.nanoyou.akariyumetabackend.dto.user;
 
 import com.github.nanoyou.akariyumetabackend.enumeration.Gender;
 import com.github.nanoyou.akariyumetabackend.enumeration.Role;
