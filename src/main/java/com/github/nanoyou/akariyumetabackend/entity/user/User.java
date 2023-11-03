@@ -1,7 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.entity.user;
 
-import com.github.nanoyou.akariyumetabackend.enumeration.Gender;
-import com.github.nanoyou.akariyumetabackend.enumeration.Role;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.Gender;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,8 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 /**
  * 用户 User

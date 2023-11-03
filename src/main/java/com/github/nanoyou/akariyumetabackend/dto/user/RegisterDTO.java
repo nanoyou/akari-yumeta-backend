@@ -1,7 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.dto.user;
 
-import com.github.nanoyou.akariyumetabackend.enumeration.Gender;
-import com.github.nanoyou.akariyumetabackend.enumeration.Role;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.Gender;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

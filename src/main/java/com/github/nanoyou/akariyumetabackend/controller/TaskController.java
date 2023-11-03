@@ -1,6 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
-import com.github.nanoyou.akariyumetabackend.common.NotImplementedException;
+import com.github.nanoyou.akariyumetabackend.common.exception.NotImplementedException;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseSearchDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
@@ -8,8 +8,8 @@ import com.github.nanoyou.akariyumetabackend.dto.task.TaskDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
 import com.github.nanoyou.akariyumetabackend.entity.task.Course;
-import com.github.nanoyou.akariyumetabackend.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.enumeration.TaskStatus;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
 import com.github.nanoyou.akariyumetabackend.service.CourseService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
 import lombok.val;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-import static com.github.nanoyou.akariyumetabackend.enumeration.TaskStatus.*;
+import static com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus.*;
 
 @RestController
 public class TaskController {

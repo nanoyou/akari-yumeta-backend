@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.enumeration;
+package com.github.nanoyou.akariyumetabackend.common.enumeration;
 
 import lombok.AllArgsConstructor;
 

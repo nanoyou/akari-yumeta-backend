@@ -1,6 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.entity.task;
 
-import com.github.nanoyou.akariyumetabackend.enumeration.TaskRecordStatus;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -1,6 +1,5 @@
 package com.github.nanoyou.akariyumetabackend.service;
 
-import com.github.nanoyou.akariyumetabackend.common.NotImplementedException;
 import com.github.nanoyou.akariyumetabackend.dao.CourseDao;
 import com.github.nanoyou.akariyumetabackend.entity.task.Course;
 import jakarta.annotation.Nonnull;

@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.common;
+package com.github.nanoyou.akariyumetabackend.common.exception;
 
 import jakarta.annotation.Nonnull;
 
