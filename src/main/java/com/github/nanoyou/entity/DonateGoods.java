@@ -1,4 +1,4 @@
-package com.github.nanoyou.Entity;
+package com.github.nanoyou.entity;
 
 import lombok.Builder;
 import lombok.Data;
