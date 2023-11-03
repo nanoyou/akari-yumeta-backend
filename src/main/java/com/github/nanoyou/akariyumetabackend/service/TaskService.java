@@ -51,7 +51,7 @@ public class TaskService {
 
     public List<Task> getMyTask(@Nonnull String childID) {
         // 根据 childID 获取任务-儿童关系对
-        val taskRecords = taskRecordDao.findByTaskRecordChildID(childID);
+        val taskRecords = taskRecordDao.findByTaskRecordCombinedPrimaryKeyChildID(childID);
         // 遍历关系对, 映射为任务列表
         return taskRecords.stream().map(
                 taskRecord -> taskDao.findById(taskRecord.getTaskRecordCombinedPrimaryKey().getTaskID()).orElseThrow(NullPointerException::new)
