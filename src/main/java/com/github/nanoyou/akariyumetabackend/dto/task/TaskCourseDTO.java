@@ -24,7 +24,7 @@ public class TaskCourseDTO {
     /**
      * 任务类别
      */
-    private TaskCategory category;
+    private String category;
     /**
      * 任务创建时间，课程任务一旦被确认上传的时间
      */
@@ -45,7 +45,7 @@ public class TaskCourseDTO {
     /**
      * 任务状态，详见枚举
      */
-    private TaskStatus status;
+    private String status;
     /**
      * 任务名称
      */

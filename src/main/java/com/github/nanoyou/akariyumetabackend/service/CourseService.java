@@ -23,4 +23,17 @@ public class CourseService {
         // TODO: 请 flozxwer 完成这里
         throw new NotImplementedException("flozxwer");
     }
+
+    /**
+     *
+     * @apiNote Task和Course是一一对应的, 具有相同的ID
+     * @param courseID
+     * @return
+     */
+    public Optional<Course> getCourse(@Nonnull String courseID) {
+        return courseDao.findById(courseID);
+    }
+
+
+
 }
