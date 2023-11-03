@@ -2,6 +2,7 @@ package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.NotImplementedException;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
+import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseSearchDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.enumeration.ResponseCode;
@@ -65,6 +66,13 @@ public class TaskController {
                     .data(null)
                     .build();
         }
+    }
+
+
+    @RequestMapping(path = "/my/task", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result search(@RequestBody TaskCourseSearchDTO taskCourseSearchDTO) {
+        // TODO: use session
+        throw new NotImplementedException("akagawa");
     }
 
 }
