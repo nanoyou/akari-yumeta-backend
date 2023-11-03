@@ -34,7 +34,11 @@ public enum ResponseCode {
     /**
      * 登录成功
      */
-    LOGIN_SUCCESS(102);
+    LOGIN_SUCCESS(102),
+    /**
+     * 课程不存在
+     */
+    NO_SUCH_TASK_COURSE(103);
 
     public final int value;
 

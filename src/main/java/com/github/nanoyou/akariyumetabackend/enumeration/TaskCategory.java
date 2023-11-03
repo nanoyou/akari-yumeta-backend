@@ -1,36 +1,41 @@
 package com.github.nanoyou.akariyumetabackend.enumeration;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum TaskCategory {
     /**
      * 农业
      */
-    AGRICULTURE,
+    AGRICULTURE("农业"),
     /**
      * 牧业
      */
-    ANIMAL_HUSBANDRY,
+    ANIMAL_HUSBANDRY("牧业"),
     /**
      * 语言
      */
-    LANGUAGE,
+    LANGUAGE("语言"),
     /**
      * 科学
      */
-    SCIENCE,
+    SCIENCE("科学"),
     /**
      * 卫生
      */
-    HYGIENE,
+    HYGIENE("卫生"),
     /**
      * 社会
      */
-    SOCIETY,
+    SOCIETY("社会"),
     /**
      * 历史
      */
-    HISTORY,
+    HISTORY("历史"),
     /**
      * 政治
      */
-    POLITICS
+    POLITICS("政治");
+
+    public final String value;
 }
