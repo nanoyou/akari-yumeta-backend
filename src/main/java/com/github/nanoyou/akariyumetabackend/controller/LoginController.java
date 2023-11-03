@@ -1,9 +1,11 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
+import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.service.LoginService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,16 +22,19 @@ public class LoginController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result login(@RequestBody LoginDTO loginParam) {
+    public Result login(@RequestBody LoginDTO loginParam, HttpSession httpSession) {
         try {
-            var loginUser = loginService.login(loginParam);
-            return loginUser.map(
-                    userDTO -> Result.builder()
-                            .ok(true)
-                            .code(ResponseCode.LOGIN_SUCCESS.value)
-                            .message("登录成功")
-                            .data(userDTO)
-                            .build()
+            return loginService.login(loginParam).map(
+                    userDTO -> {
+                        // 保存 Session
+                        httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
+                        return Result.builder()
+                                .ok(true)
+                                .code(ResponseCode.LOGIN_SUCCESS.value)
+                                .message("登录成功")
+                                .data(userDTO)
+                                .build();
+                    }
             ).orElse(
                     Result.builder()
                             .ok(false)
@@ -38,7 +43,6 @@ public class LoginController {
                             .data(null)
                             .build()
             );
-
         } catch (Exception e) {
             return Result.builder()
                     .ok(false)

@@ -46,7 +46,11 @@ public enum ResponseCode {
     /**
      * 学习任务创建失败
      */
-    TASK_UPLOAD_FAIL(105);
+    TASK_UPLOAD_FAIL(105),
+    /**
+     * 查询我的任务失败
+     */
+    MY_TASK_FAILED(106);
 
     public final int value;
 
