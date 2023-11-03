@@ -1,10 +1,8 @@
 package com.github.nanoyou.akariyumetabackend.service;
 
-import com.github.nanoyou.akariyumetabackend.common.NotImplementedException;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDao;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
 import jakarta.annotation.Nonnull;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +18,20 @@ public class TaskService {
     }
 
     public Optional<Task> addTask(@Nonnull Task task) {
-        // TODO: 这里调用Dao
-        throw new NotImplementedException("flozxwer");
+        taskDao.save(task);
+
+        return Optional.of(Task.builder()
+                        .id(task.getId())
+                        .taskName(task.getTaskName())
+                        .taskUploaderID(task.getTaskUploaderID())
+                        .createdTime(task.getCreatedTime())
+                        .startTime(task.getStartTime())
+                        .endTime(task.getEndTime())
+                        .status(task.getStatus())
+                        .description(task.getDescription())
+                        .category(task.getCategory())
+                        .bonus(task.getBonus())
+                .build());
     }
 
     public Optional<Task> getTask(@Nonnull String taskID) {

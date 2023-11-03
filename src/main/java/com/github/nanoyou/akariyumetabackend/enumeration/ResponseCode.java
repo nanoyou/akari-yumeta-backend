@@ -38,7 +38,15 @@ public enum ResponseCode {
     /**
      * 课程不存在
      */
-    NO_SUCH_TASK_COURSE(103);
+    NO_SUCH_TASK_COURSE(103),
+    /**
+     * 学习任务创建成功
+     */
+    TASK_UPLOAD_SUCCESS(104),
+    /**
+     * 学习任务创建失败
+     */
+    TASK_UPLOAD_FAIL(105);
 
     public final int value;
 

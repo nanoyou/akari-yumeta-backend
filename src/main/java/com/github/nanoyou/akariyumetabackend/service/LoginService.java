@@ -4,6 +4,7 @@ import com.github.nanoyou.akariyumetabackend.dao.UserDao;
 import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.Optional;
 public class LoginService {
     private final UserDao userDao;
 
+    @Autowired
     private LoginService(UserDao userDao) {
         this.userDao = userDao;
     }
