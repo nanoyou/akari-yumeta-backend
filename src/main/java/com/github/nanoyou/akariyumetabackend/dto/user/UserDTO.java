@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.dto;
+package com.github.nanoyou.akariyumetabackend.dto.user;
 
 import lombok.Builder;
 import lombok.Data;

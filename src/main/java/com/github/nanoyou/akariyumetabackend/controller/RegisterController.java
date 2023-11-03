@@ -1,21 +1,16 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
-import com.github.nanoyou.akariyumetabackend.dto.UserDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.dto.RegisterDTO;
+import com.github.nanoyou.akariyumetabackend.dto.user.RegisterDTO;
 import com.github.nanoyou.akariyumetabackend.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
 
 @RestController
 public class RegisterController {

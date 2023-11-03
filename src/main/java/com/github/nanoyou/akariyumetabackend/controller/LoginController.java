@@ -1,8 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
-import com.github.nanoyou.akariyumetabackend.dto.LoginDTO;
+import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
-import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
