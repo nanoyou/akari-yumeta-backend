@@ -3,10 +3,7 @@ package com.github.nanoyou.akariyumetabackend.service;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDynamicDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskRecordDao;
-import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
-import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
-import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +46,11 @@ public class TaskService {
         return taskDao.findById(taskID);
     }
 
-    public List<Task> getMyTask(@Nonnull String childID) {
+    public List<Task> getAllTasks() {
+        return taskDao.findAll();
+    }
+
+    public List<Task> getMyTasks(@Nonnull String childID) {
         // 根据 childID 获取任务-儿童关系对
         val taskRecords = taskRecordDao.findByTaskRecordCombinedPrimaryKeyChildID(childID);
         // 遍历关系对, 映射为任务列表

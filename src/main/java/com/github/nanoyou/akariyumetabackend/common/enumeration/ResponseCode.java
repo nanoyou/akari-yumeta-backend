@@ -50,7 +50,9 @@ public enum ResponseCode {
     /**
      * 查询我的任务失败
      */
-    MY_TASK_FAILED(106);
+    MY_TASK_FAILED(106),
+    TIME_CONSTRAINT_ERR(107);
+
 
     public final int value;
 

@@ -11,12 +11,14 @@ import com.github.nanoyou.akariyumetabackend.entity.task.Course;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
 import com.github.nanoyou.akariyumetabackend.service.CourseService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpSession;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -33,11 +35,24 @@ public class TaskController {
         this.courseService = courseService;
     }
 
-    @RequestMapping(path = "/task", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(path = "/task/create", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result task(@RequestBody TaskCourseUploadDTO taskCourseUploadDTO) {
         try {
             // 验证时间,设置状态
             LocalDateTime time = LocalDateTime.now();
+
+            assert taskCourseUploadDTO.getStartTime() != null;
+            assert taskCourseUploadDTO.getEndTime() != null;
+
+            if (taskCourseUploadDTO.getStartTime().isAfter(taskCourseUploadDTO.getEndTime())) {
+                return Result.builder()
+                        .ok(false)
+                        .code(ResponseCode.TIME_CONSTRAINT_ERR.value)
+                        .message("课程的结束时间不能在开始时间之前")
+                        .data(null)
+                        .build();
+            }
+
             TaskStatus status = NOT_STARTED;
             if (time.isAfter(taskCourseUploadDTO.getStartTime()))
                 status = IN_PROGRESS;
@@ -158,32 +173,12 @@ public class TaskController {
         try {
             val loginUserID =
                     Optional.ofNullable((String) httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr)).orElseThrow(NullPointerException::new);
-            val tasks = taskService.getMyTask(loginUserID);
+            val tasks = taskService.getMyTasks(loginUserID);
             val courses = tasks.stream().map(
                     task -> courseService.getCourse(task.getId()).orElseThrow(NullPointerException::new)
             ).toList();
 
-            val taskCourseDTOs = IntStream.range(0, tasks.size())
-                    .mapToObj(i -> {
-                        val task = tasks.get(i);
-                        val course = courses.get(i);
-                        return TaskCourseDTO.builder()
-                                .id(task.getId())
-                                .taskName(task.getTaskName())
-                                .taskUploaderID(task.getTaskUploaderID())
-                                .createdTime(task.getCreatedTime())
-                                .startTime(task.getStartTime())
-                                .endTime(task.getEndTime())
-                                .status(task.getStatus().value)
-                                .description(task.getDescription())
-                                .category(task.getCategory().value)
-                                .bonus(task.getBonus())
-                                .watchedCount(course.getWatchedCount())
-                                .videoURL(course.getVideoURL())
-                                .videoDuration(course.getVideoDuration())
-                                .build();
-                    }).toList();
-
+            val taskCourseDTOs = this.concat(tasks, courses);
 
             return Result.builder()
                     .ok(true)
@@ -199,6 +194,44 @@ public class TaskController {
                     .data(null)
                     .build();
         }
+    }
+
+    @RequestMapping(path = "/task", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result task() {
+
+        val allTasks = taskService.getAllTasks();
+        val allCourses = courseService.getAllCourses();
+        val taskCourseDTOs = this.concat(allTasks, allCourses);
+
+        return Result.builder()
+                .ok(true)
+                .code(ResponseCode.SUCCESS.value)
+                .message("总共有 " + taskCourseDTOs.size() + " 个课程任务")
+                .data(taskCourseDTOs)
+                .build();
+    }
+
+    private List<TaskCourseDTO> concat(@Nonnull List<Task> tasks, @Nonnull List<Course> courses) {
+        return IntStream.range(0, tasks.size())
+                .mapToObj(i -> {
+                    val task = tasks.get(i);
+                    val course = courses.get(i);
+                    return TaskCourseDTO.builder()
+                            .id(task.getId())
+                            .taskName(task.getTaskName())
+                            .taskUploaderID(task.getTaskUploaderID())
+                            .createdTime(task.getCreatedTime())
+                            .startTime(task.getStartTime())
+                            .endTime(task.getEndTime())
+                            .status(task.getStatus().value)
+                            .description(task.getDescription())
+                            .category(task.getCategory().value)
+                            .bonus(task.getBonus())
+                            .watchedCount(course.getWatchedCount())
+                            .videoURL(course.getVideoURL())
+                            .videoDuration(course.getVideoDuration())
+                            .build();
+                }).toList();
     }
 
 }
