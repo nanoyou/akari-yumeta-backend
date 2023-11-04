@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -109,9 +108,8 @@ public class TaskController {
                     .videoURL(taskCourseUploadDTO.getVideoURL())
                     .videoDuration(videoDuration)
                     .build();
+            courseService.addCourse(uploadCourse);
 
-            // TODO: 怎么处理courseDTO？（返回响应里看起来不需要course的信息）
-            var courseDTO = courseService.addCourse(uploadCourse);
 
             return Result.builder()
                     .ok(true)
@@ -319,15 +317,15 @@ public class TaskController {
 
             // 判断是否完成
             LocalDateTime time = now();
-            long betweenMinutes =  ChronoUnit.MINUTES.between(record.getStartTime(), time);
-            if(betweenMinutes >= course.getVideoDuration()) {
+            long betweenSeconds = ChronoUnit.SECONDS.between(record.getStartTime(), time);
+            if(betweenSeconds >= course.getVideoDuration()) {
                 record.setEndTime(time);
                 record.setStatus(TaskRecordStatus.COMPLETED);
                 val taskRecordDTO = saveRecord(record);
 
                 // 视频观看次数加一
-                int account = course.getWatchedCount();
-                course.setWatchedCount(++account);
+                int count = course.getWatchedCount();
+                course.setWatchedCount(++count);
                 courseService.addCourse(course);
 
                 return Result.builder()
@@ -365,6 +363,11 @@ public class TaskController {
         ).orElseThrow(NullPointerException::new);
     }
 
+    /**
+     * 获取学习积分
+     * @param userID
+     * @return score
+     */
     @RequestMapping(path = "/user/{userID}/score", method = RequestMethod.GET, headers = "Accept=application/json")
     public Result score(@PathVariable String userID) {
         try {
