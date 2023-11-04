@@ -76,7 +76,18 @@ public enum ResponseCode {
     /**
      * 必须选择一名角色
      */
-    EMPTY_ROLE(110);
+    EMPTY_ROLE(110),
+
+
+    /**
+     * 视频观看完成
+     */
+    VIDEO_COMPLETED(112),
+    /**
+     * 视频观看未完成
+     */
+    VIDEO_UNCOMPLETED(113);
+
 
 
     public final int value;

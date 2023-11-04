@@ -4,6 +4,7 @@ import com.github.nanoyou.akariyumetabackend.dao.TaskDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDynamicDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskRecordDao;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
+import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,21 @@ public class TaskService {
         return taskRecords.stream().map(
                 taskRecord -> taskDao.findById(taskRecord.getTaskRecordCombinedPrimaryKey().getTaskID()).orElseThrow(NullPointerException::new)
         ).toList();
+    }
+
+    public Optional<TaskRecord> getRecord(@Nonnull TaskRecord._TaskRecordCombinedPrimaryKey taskRecordCombinedPrimaryKey) {
+        return taskRecordDao.findByTaskRecordCombinedPrimaryKey(taskRecordCombinedPrimaryKey);
+    }
+
+    public Optional<TaskRecord> updateRecord(@Nonnull TaskRecord taskRecord) {
+        taskRecordDao.save(taskRecord);
+
+        return Optional.of(TaskRecord.builder()
+                        .taskRecordCombinedPrimaryKey(taskRecord.getTaskRecordCombinedPrimaryKey())
+                        .endTime(taskRecord.getEndTime())
+                        .startTime(taskRecord.getStartTime())
+                        .status(taskRecord.getStatus())
+                .build());
     }
 
 }
