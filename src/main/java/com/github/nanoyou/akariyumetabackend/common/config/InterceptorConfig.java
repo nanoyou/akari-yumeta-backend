@@ -38,22 +38,26 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .addPathPatterns("/my/**");
 
         // 在下面添加需要 管理员 登录的路径，需要添加至上方 loginInterceptor 内
-        registry.addInterceptor(adminInterceptor);
+        registry.addInterceptor(adminInterceptor)
+                .addPathPatterns("/admin");
 //                添加示例
 //                .addPathPatterns("/admin/**");
 
         // 在下面添加需要 儿童 登录的路径，需要添加至上方 loginInterceptor 内
-        registry.addInterceptor(childInterceptor);
+        registry.addInterceptor(childInterceptor)
+                .addPathPatterns("/child");
 //                添加示例
 //                .addPathPatterns("/child/**")
 
         // 在下面添加需要 志愿者 登录的路径，需要添加至上方 loginInterceptor 内
-        registry.addInterceptor(volunteerInterceptor);
+        registry.addInterceptor(volunteerInterceptor)
+                .addPathPatterns("/volunteer");
 //                添加示例
 //                .addPathPatterns("/volunteer/**")
 
         // 在下面添加需要 捐助者 登录的路径，需要添加至上方 loginInterceptor 内
-        registry.addInterceptor(sponsorInterceptor);
+        registry.addInterceptor(sponsorInterceptor)
+                .addPathPatterns("/sponsor");
 //                添加示例
 //                .addPathPatterns("/sponsor/**")
 
