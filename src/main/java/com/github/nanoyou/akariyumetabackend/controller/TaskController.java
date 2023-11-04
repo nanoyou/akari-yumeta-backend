@@ -320,7 +320,7 @@ public class TaskController {
             // 判断是否完成
             LocalDateTime time = now();
             long betweenMinutes =  ChronoUnit.MINUTES.between(record.getStartTime(), time);
-            if(betweenMinutes > course.getVideoDuration()) {
+            if(betweenMinutes >= course.getVideoDuration()) {
                 record.setEndTime(time);
                 record.setStatus(TaskRecordStatus.COMPLETED);
                 val taskRecordDTO = saveRecord(record);
@@ -337,7 +337,7 @@ public class TaskController {
                         .data(taskRecordDTO)
                         .build();
             }
-            else{
+            else {
                 return Result.builder()
                         .ok(false)
                         .code(ResponseCode.VIDEO_UNCOMPLETED.value)
@@ -347,8 +347,8 @@ public class TaskController {
         } catch (NullPointerException e) {
             return Result.builder()
                     .ok(false)
-                    .code(ResponseCode.VIDEO_UNCOMPLETED.value)
-                    .message("内部服务器错误")
+                    .code(ResponseCode.VIDEO_DISAPPEARED.value)
+                    .message("视频不见喽~")
                     .build();
         }
     }

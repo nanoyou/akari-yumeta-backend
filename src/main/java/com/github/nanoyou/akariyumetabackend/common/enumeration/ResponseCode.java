@@ -100,7 +100,11 @@ public enum ResponseCode {
     /**
      * 学习积分获取失败
      */
-    SCORE_GET_FAIL(117);
+    SCORE_GET_FAIL(117),
+    /**
+     * 视频丢失
+     */
+    VIDEO_DISAPPEARED(118);
 
 
 
