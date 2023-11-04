@@ -1,5 +1,6 @@
-package com.github.nanoyou.common;
+package com.github.nanoyou.akariyumetabackend.common;
 
+import com.github.nanoyou.akariyumetabackend.enumeration.ResponseCode;
 import lombok.Builder;
 import lombok.Data;
 
