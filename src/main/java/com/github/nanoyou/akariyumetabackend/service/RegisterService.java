@@ -7,6 +7,8 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RegisterService {
 
@@ -20,6 +22,7 @@ public class RegisterService {
     public UserDTO register(@NonNull User registerUser) {
         // 注册的用户被添加进数据库
         userDao.save(registerUser);
+        // TODO: 存储tags
 
         return UserDTO.builder()
                 .id(registerUser.getId())
@@ -30,6 +33,7 @@ public class RegisterService {
                 .introduction(registerUser.getIntroduction())
                 .avatarURL(registerUser.getAvatarURL())
                 .usageDuration(registerUser.getUsageDuration())
+                .tags(List.of())
                 .build();
     }
 

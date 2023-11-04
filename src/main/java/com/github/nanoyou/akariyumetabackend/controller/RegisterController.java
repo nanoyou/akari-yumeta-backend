@@ -25,6 +25,63 @@ public class RegisterController {
     @RequestMapping(path = "/register", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result register(@RequestBody RegisterDTO registerDTO) {
         try {
+
+            if (registerDTO.getUsername() == null) {
+                return Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.EMPTY_USERNAME.value)
+                        .message("用户名不能为空")
+                        .data(null)
+                        .build();
+            }
+
+            if (registerDTO.getNickname() == null) {
+                return Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.EMPTY_NICKNAME.value)
+                        .message("昵称不能为空")
+                        .data(null)
+                        .build();
+            }
+
+            // 判断密码是否为空
+            if (registerDTO.getPassword() == null) {
+                return Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.EMPTY_PASSWORD.value)
+                        .message("密码不能为空")
+                        .data(null)
+                        .build();
+            }
+
+            // 判断是否选择了自己的性别
+            if (registerDTO.getGender() == null) {
+                return Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.EMPTY_GENDER.value)
+                        .message("必须选择性别")
+                        .data(null)
+                        .build();
+            }
+
+            // 判断是否选择了身份
+            if (registerDTO.getRole() == null) {
+                return Result.builder().
+                        ok(true).
+                        code(ResponseCode.EMPTY_ROLE.value).
+                        message("必须选择自己的身份").
+                        build();
+            }
+
+            // 管理员不可以被注册
+            if (Role.ADMIN.equals(registerDTO.getRole())) {
+                return Result.builder().
+                        ok(true).
+                        code(ResponseCode.ADMIN_REGISTER_REFUSED.value).
+                        message("不能注册管理员账户").
+                        build();
+            }
+
             var registerUser = User.builder()
                     .username(registerDTO.getUsername())
                     .nickname(registerDTO.getNickname())
@@ -33,17 +90,10 @@ public class RegisterController {
                     .gender(registerDTO.getGender())
                     .introduction(registerDTO.getIntroduction())
                     .avatarURL(registerDTO.getAvatarURL())
-                    .usageDuration(registerDTO.getUsageDuration())
+                    .usageDuration(0)
                     .build();
 
-            // 管理员不可以被注册
-            if (Role.ADMIN.equals(registerUser.getRole())) {
-                return Result.builder().
-                        ok(true).
-                        code(ResponseCode.ADMIN_REGISTER_REFUSED.value).
-                        message("不能注册管理员账户").
-                        build();
-            }
+
             var registerUserDTO = registerService.register(registerUser);
             return Result.builder()
                     .ok(true)
@@ -53,11 +103,12 @@ public class RegisterController {
                     .build();
 
         } catch (Exception e) {
-            return Result.builder().
-                    ok(false).
-                    code(ResponseCode.PARAM_ERR.value).
-                    data(null).
-                    build();
+            return Result.builder()
+                    .ok(false)
+                    .message("注册失败：内部服务器错误")
+                    .code(ResponseCode.PARAM_ERR.value)
+                    .data(null)
+                    .build();
         }
 
     }
