@@ -19,6 +19,6 @@ public class GoodsService {
     }
 
     public Optional<GoodsInfo[]> getGoodByDescription(String description) {
-        return goodsDao.findByDescriptionOrName(description,description);
+        return goodsDao.findAllByDescriptionLikeOrNameLike(description,description);
     }
 }

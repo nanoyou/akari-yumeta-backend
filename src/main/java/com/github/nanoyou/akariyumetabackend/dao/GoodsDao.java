@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public interface GoodsDao extends JpaRepository<GoodsInfo,String> {
 
-@Query("SELECT g FROM GoodsInfo g WHERE g.description LIKE CONCAT('%', :description, '%') OR g.name LIKE CONCAT('%', :name, '%')")
-public Optional<GoodsInfo[]> findByDescriptionOrName(String description, String name);
+public Optional<GoodsInfo[]> findAllByDescriptionLikeOrNameLike(String description, String name);
 
 
 }
