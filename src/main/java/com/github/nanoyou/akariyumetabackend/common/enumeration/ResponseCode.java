@@ -77,16 +77,22 @@ public enum ResponseCode {
      * 必须选择一名角色
      */
     EMPTY_ROLE(110),
-
-
+    /**
+     * 视频观看任务创建成功
+     */
+    TASK_RECORD_SUCCESS(112),
+    /**
+     * 视频观看任务创建失败
+     */
+    TASK_RECORD_FAIL(113),
     /**
      * 视频观看完成
      */
-    VIDEO_COMPLETED(112),
+    VIDEO_COMPLETED(114),
     /**
      * 视频观看未完成
      */
-    VIDEO_UNCOMPLETED(113);
+    VIDEO_UNCOMPLETED(115);
 
 
 

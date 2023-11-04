@@ -21,6 +21,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.plaf.PanelUI;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -251,7 +252,62 @@ public class TaskController {
     }
 
     /**
-     * 完成视频观看（视频修改状态）
+     * 开启学习任务
+     * @param taskID
+     * @param httpSession
+     * @return Result
+     */
+    @RequestMapping(path = "/task/{taskID}/open", method = RequestMethod.POST, headers = "Accept=application/json")
+    public Result record(@PathVariable String taskID, HttpSession httpSession) {
+        try {
+            val loginUserID =
+                    Optional.ofNullable((String) httpSession.getAttribute(LOGIN_USER_ID.attr)).orElseThrow(NullPointerException::new);
+
+            var comID = TaskRecord._TaskRecordCombinedPrimaryKey.builder()
+                    .taskID(taskID)
+                    .childID(loginUserID)
+                    .build();
+
+            var taskRecord = TaskRecord.builder()
+                    .taskRecordCombinedPrimaryKey(comID)
+                    .endTime(null)
+                    .startTime(now())
+                    .status(TaskRecordStatus.UNCOMPLETED)
+                    .build();
+
+            val taskRecordDTO =  saveRecord(taskRecord);
+
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.TASK_RECORD_SUCCESS.value)
+                    .message("视频观看任务创建成功")
+                    .data(taskRecordDTO)
+                    .build();
+
+        } catch (NullPointerException e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.TASK_RECORD_FAIL.value)
+                    .message("内部服务器错误")
+                    .build();
+        }
+    }
+
+    private TaskRecordDTO saveRecord(TaskRecord taskRecord) {
+        return taskService.saveRecord(taskRecord).map(
+                record -> TaskRecordDTO.builder()
+                        .taskID(record.getTaskRecordCombinedPrimaryKey().getTaskID())
+                        .childID(record.getTaskRecordCombinedPrimaryKey().getChildID())
+                        .endTime(record.getEndTime())
+                        .startTime(record.getStartTime())
+                        .status(record.getStatus())
+                        .build()
+        ).orElseThrow(NullPointerException::new);
+    }
+
+
+    /**
+     * 完成学习任务（视频观看修改状态）
      * @param taskID
      * @return
      */
@@ -281,16 +337,7 @@ public class TaskController {
             if(betweenMinutes > course.getVideoDuration()) {
                 record.setEndTime(time);
                 record.setStatus(TaskRecordStatus.COMPLETED);
-                val taskRecordDTO = taskService.updateRecord(record).map(
-                        taskRecord -> TaskRecordDTO.builder()
-                                .taskID(taskRecord.getTaskRecordCombinedPrimaryKey().getTaskID())
-                                .childID(taskRecord.getTaskRecordCombinedPrimaryKey().getChildID())
-                                .endTime(taskRecord.getEndTime())
-                                .startTime(taskRecord.getStartTime())
-                                .status(taskRecord.getStatus())
-                                .build()
-                ).orElseThrow(NullPointerException::new);
-
+                val taskRecordDTO = saveRecord(record);
                 return Result.builder()
                         .ok(true)
                         .code(ResponseCode.VIDEO_COMPLETED.value)
@@ -312,7 +359,5 @@ public class TaskController {
                     .message("内部服务器错误")
                     .build();
         }
-
     }
-
 }

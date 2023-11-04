@@ -64,14 +64,14 @@ public class TaskService {
         return taskRecordDao.findByTaskRecordCombinedPrimaryKey(taskRecordCombinedPrimaryKey);
     }
 
-    public Optional<TaskRecord> updateRecord(@Nonnull TaskRecord taskRecord) {
+    public Optional<TaskRecord> saveRecord(@Nonnull TaskRecord taskRecord) {
         taskRecordDao.save(taskRecord);
 
         return Optional.of(TaskRecord.builder()
-                        .taskRecordCombinedPrimaryKey(taskRecord.getTaskRecordCombinedPrimaryKey())
-                        .endTime(taskRecord.getEndTime())
-                        .startTime(taskRecord.getStartTime())
-                        .status(taskRecord.getStatus())
+                .taskRecordCombinedPrimaryKey(taskRecord.getTaskRecordCombinedPrimaryKey())
+                .endTime(taskRecord.getEndTime())
+                .startTime(taskRecord.getStartTime())
+                .status(taskRecord.getStatus())
                 .build());
     }
 
