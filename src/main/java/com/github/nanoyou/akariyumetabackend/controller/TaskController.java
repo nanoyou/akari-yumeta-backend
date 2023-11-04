@@ -35,7 +35,7 @@ public class TaskController {
         this.courseService = courseService;
     }
 
-    @RequestMapping(path = "/task/create", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(path = "/task", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result task(@RequestBody TaskCourseUploadDTO taskCourseUploadDTO) {
         try {
             // 验证时间,设置状态
@@ -196,6 +196,10 @@ public class TaskController {
         }
     }
 
+    /**
+     * 查询所有学习任务列表
+     * @return 包含所有课程学习任务的Result对象
+     */
     @RequestMapping(path = "/task", method = RequestMethod.GET, headers = "Accept=application/json")
     public Result task() {
 
