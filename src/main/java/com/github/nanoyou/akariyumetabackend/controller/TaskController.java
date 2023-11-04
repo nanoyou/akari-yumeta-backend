@@ -47,7 +47,7 @@ public class TaskController {
             if (taskCourseUploadDTO.getStartTime().isAfter(taskCourseUploadDTO.getEndTime())) {
                 return Result.builder()
                         .ok(false)
-                        .code(ResponseCode.TIME_CONSTRAINT_ERR.value)
+                        .code(ResponseCode.PARAM_ERR.value)
                         .message("课程的结束时间不能在开始时间之前")
                         .data(null)
                         .build();

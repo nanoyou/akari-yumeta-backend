@@ -4,10 +4,12 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.CommentDTO;
+import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
 import com.github.nanoyou.akariyumetabackend.service.DynamicService;
+import com.github.nanoyou.akariyumetabackend.service.LikeService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
 import jakarta.servlet.http.HttpSession;
 import lombok.val;
@@ -18,16 +20,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 @RestController
 public class DynamicController {
 
     private final DynamicService dynamicService;
     private final TaskService taskService;
+    private final LikeService likeService;
 
     @Autowired
-    private DynamicController(DynamicService dynamicService, TaskService taskService) {
+    private DynamicController(DynamicService dynamicService, TaskService taskService, LikeService likeService) {
         this.dynamicService = dynamicService;
         this.taskService = taskService;
+        this.likeService = likeService;
     }
 
     @RequestMapping(path = "/dynamic", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -110,13 +117,36 @@ public class DynamicController {
         // 将自己和他人的动态列表合并
         dynamics.addAll(myDynamics);
 
+        val likes = dynamics.stream().map(
+                dynamic -> likeService.getLikeCountByCommentID(dynamic.getCommenterID())
+        ).toList();
+
+        val dynamicDTOs = concat(dynamics, likes);
+
         return Result.builder()
                 .ok(true)
                 .message("查询到 " + dynamics.size() + " 条动态")
                 .code(ResponseCode.SUCCESS.value)
-                .data(dynamics)
+                .data(dynamicDTOs)
                 .build();
 
+    }
+
+    public List<DynamicDTO> concat(List<Comment> dynamics, List<Integer> likes) {
+        return IntStream.range(0, dynamics.size())
+                .mapToObj(i -> {
+                            val dynamic = dynamics.get(i);
+                            int like = likes.get(i);
+                            return DynamicDTO.builder()
+                                    .id(dynamic.getId())
+                                    .commenterID(dynamic.getCommenterID())
+                                    .content(dynamic.getContent())
+                                    .replyTo(dynamic.getReplyTo())
+                                    .createTime(dynamic.getCreateTime())
+                                    .likes(like)
+                                    .build();
+                        }
+                ).toList();
     }
 
 

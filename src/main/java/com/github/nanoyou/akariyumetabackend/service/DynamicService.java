@@ -15,11 +15,13 @@ public class DynamicService {
 
     private final CommentDao commentDao;
     private final SubscriptionService subscriptionService;
+    private final LikeService likeService;
 
     @Autowired
-    private DynamicService(CommentDao commentDao, SubscriptionService subscriptionService) {
+    private DynamicService(CommentDao commentDao, SubscriptionService subscriptionService, LikeService likeService) {
         this.commentDao = commentDao;
         this.subscriptionService = subscriptionService;
+        this.likeService = likeService;
     }
 
     public Optional<Comment> addComment(@Nonnull Comment comment) {
@@ -35,4 +37,5 @@ public class DynamicService {
                 .flatMap(followeeID -> commentDao.findByCommenterID(followeeID).stream())
                 .collect(Collectors.toList());
     }
+
 }
