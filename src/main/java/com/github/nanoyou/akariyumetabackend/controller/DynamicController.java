@@ -1,8 +1,8 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.CommentDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.ReplyDTO;
@@ -12,14 +12,12 @@ import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
 import com.github.nanoyou.akariyumetabackend.service.DynamicService;
 import com.github.nanoyou.akariyumetabackend.service.LikeService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
-import jakarta.servlet.http.HttpSession;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 @RestController
@@ -37,7 +35,8 @@ public class DynamicController {
     }
 
     @RequestMapping(path = "/dynamic", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result dynamic(@RequestBody CommentDTO commentDTO, HttpSession httpSession) {
+    public Result dynamic(@RequestBody CommentDTO commentDTO,
+                          @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
 
         // 动态内容是否为空
         if (!StringUtils.hasText(commentDTO.getContent())) {
@@ -56,16 +55,6 @@ public class DynamicController {
                     .code(ResponseCode.NO_SUCH_TASK_COURSE.value)
                     .build();
         }
-
-        // 获取用户信息
-        if (httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr) == null) {
-            return Result.builder()
-                    .ok(false)
-                    .message("评论需要用户登录")
-                    .code(ResponseCode.LOGIN_REQUIRE.value)
-                    .build();
-        }
-        val loginUserID = ((String) httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr));
 
         val postComment = Comment.builder()
                 .commenterID(loginUserID)
@@ -97,22 +86,12 @@ public class DynamicController {
     }
 
     @RequestMapping(path = "/my/dynamic", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Result myDynamic(HttpSession httpSession) {
-        // 获取用户信息
-        if (httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr) == null) {
-            return Result.builder()
-                    .ok(false)
-                    .message("您需要登录后才能查看我的动态")
-                    .code(ResponseCode.LOGIN_REQUIRE.value)
-                    .build();
-        }
-
-        val userID = ((String) httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr));
+    public Result myDynamic(@ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
 
         // 关注人的动态
-        val dynamics = dynamicService.getDynamicsByFollowerID(userID);
+        val dynamics = dynamicService.getDynamicsByFollowerID(loginUserID);
         // 我的动态
-        val myDynamics = dynamicService.getDynamicsByCommenterID(userID);
+        val myDynamics = dynamicService.getDynamicsByCommenterID(loginUserID);
         // 将自己和他人的动态列表合并
         dynamics.addAll(myDynamics);
 
@@ -153,16 +132,10 @@ public class DynamicController {
     }
 
     @RequestMapping(path = "/comment/{commentID}/reply", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result reply(@PathVariable String commentID, @RequestBody ReplyDTO replyDTO, HttpSession httpSession) {
-        if (httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr) == null) {
-            return Result.builder()
-                    .ok(false)
-                    .code(ResponseCode.LOGIN_REQUIRE.value)
-                    .message("登录后才能评论")
-                    .data(null)
-                    .build();
-        }
-        val loginUserID = ((String) httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr));
+    public Result reply(@PathVariable String commentID,
+                        @RequestBody ReplyDTO replyDTO,
+                        @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+
         val content = replyDTO.getContent();
         if (!StringUtils.hasText(content)) {
             return Result.builder()

@@ -1,12 +1,11 @@
 package com.github.nanoyou.akariyumetabackend.middleware;
 
-import com.github.nanoyou.akariyumetabackend.common.ResponseUtil;
+import com.github.nanoyou.akariyumetabackend.common.util.ResponseUtil;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.RequestAttr;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
-import com.github.nanoyou.akariyumetabackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public abstract class RoleInterceptor implements HandlerInterceptor {
     private final ResponseUtil responseUtil;
     @Autowired
-    public RoleInterceptor(ResponseUtil responseUtil, UserService userService) {
+    public RoleInterceptor(ResponseUtil responseUtil) {
         this.responseUtil = responseUtil;
     }
     @Override

@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.common;
+package com.github.nanoyou.akariyumetabackend.common.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;

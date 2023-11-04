@@ -1,7 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.middleware;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.nanoyou.akariyumetabackend.common.ResponseUtil;
+import com.github.nanoyou.akariyumetabackend.common.util.ResponseUtil;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.RequestAttr;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;

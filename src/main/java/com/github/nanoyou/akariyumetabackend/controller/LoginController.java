@@ -61,16 +61,17 @@ public class LoginController {
     }
 
     @RequestMapping(path = "/login/admin", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result adminLogin(@RequestBody LoginDTO loginDTO, HttpSession httpSession,
-                             HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public Result adminLogin(@RequestBody LoginDTO loginDTO,
+                             HttpSession httpSession) {
         val login = loginService.login(loginDTO);
-        val result = login.map(
+
+        return login.map(
                 userDTO -> {
                     if (!userDTO.getRole().equals(Role.ADMIN)) {
                         return Result.builder()
                                 .ok(false)
                                 .code(ResponseCode.LOGIN_FAIL.value)
-                                .message("不是管理员用户不能从此登录")
+                                .message("非管理员用户，无权访问")
                                 .data(null)
                                 .build();
                     }
@@ -88,22 +89,6 @@ public class LoginController {
                 .message("用户名或密码不正确")
                 .data(null)
                 .build());
-
-        if (result.getCode().equals(ResponseCode.LOGIN_FAIL.value)) {
-            val requestDispatcher = httpServletRequest.getRequestDispatcher("/forward?method=forward");
-            try {
-                requestDispatcher.forward(httpServletRequest, httpServletResponse);
-            } catch (ServletException | IOException e) {
-                return Result.builder()
-                        .ok(false)
-                        .code(ResponseCode.LOGIN_FAIL.value)
-                        .message("登录失败：请求转发失败")
-                        .data(null)
-                        .build();
-            }
-        }
-
-        return result;
     }
 
 }

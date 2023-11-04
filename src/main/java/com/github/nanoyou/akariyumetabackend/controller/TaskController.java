@@ -1,5 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
+import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchCourseException;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
@@ -15,7 +16,6 @@ import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import com.github.nanoyou.akariyumetabackend.service.CourseService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
 import jakarta.annotation.Nonnull;
-import jakarta.servlet.http.HttpSession;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +23,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr.LOGIN_USER_ID;
 import static com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus.*;
 import static java.time.LocalDateTime.now;
 
@@ -177,21 +175,13 @@ public class TaskController {
     /**
      * 获取当前用户的课程任务列表
      *
-     * @param httpSession HTTP会话对象，用于获取登录用户信息
+     * @param loginUserID HTTP会话对象，用于获取登录用户信息
      * @return 返回Result对象，包含查询结果信息
      */
     @RequestMapping(path = "/my/task", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Result myTask(HttpSession httpSession) {
+    public Result myTask(@ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
         try {
-            if (httpSession.getAttribute(LOGIN_USER_ID.attr) == null) {
-                Result.builder()
-                        .ok(true)
-                        .code(ResponseCode.LOGIN_REQUIRE.value)
-                        .message("您需要先登录")
-                        .data(null)
-                        .build();
-            }
-            val loginUserID = ((String) httpSession.getAttribute(LOGIN_USER_ID.attr));
+
             val tasks = taskService.getMyTasks(loginUserID);
 
             val courses = tasks.stream().map(
@@ -269,15 +259,13 @@ public class TaskController {
     /**
      * 开启学习任务
      *
-     * @param taskID
-     * @param httpSession
+     * @param taskID      任务 ID
+     * @param loginUserID 自动注入的登录用户 ID
      * @return Result
      */
     @RequestMapping(path = "/task/{taskID}/open", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result record(@PathVariable String taskID, HttpSession httpSession) {
+    public Result record(@PathVariable String taskID, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
         try {
-            val loginUserID =
-                    Optional.ofNullable((String) httpSession.getAttribute(LOGIN_USER_ID.attr)).orElseThrow(NullPointerException::new);
 
             var comID = TaskRecord._TaskRecordCombinedPrimaryKey.builder()
                     .taskID(taskID)
@@ -325,14 +313,13 @@ public class TaskController {
     /**
      * 完成学习任务（视频观看修改状态）
      *
-     * @param taskID
-     * @return
+     * @param taskID      任务 ID
+     * @param loginUserID 自动注入的登录用户 ID
+     * @return Result
      */
     @RequestMapping(path = "/task/{taskID}/finish", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result finish(@PathVariable String taskID, HttpSession httpSession) {
+    public Result finish(@PathVariable String taskID, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
         try {
-            val loginUserID =
-                    Optional.ofNullable((String) httpSession.getAttribute(LOGIN_USER_ID.attr)).orElseThrow(NullPointerException::new);
             val course = courseService.getCourse(taskID).orElseThrow(NullPointerException::new);
 
             var comID = TaskRecord._TaskRecordCombinedPrimaryKey.builder()
