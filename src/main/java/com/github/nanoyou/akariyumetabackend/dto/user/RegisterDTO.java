@@ -38,11 +38,6 @@ public class RegisterDTO {
     @NotNull(message = "用户角色不能为空")
     private Role role;
     /**
-     * 使用时长，APP使用时长统计，单位为秒
-     */
-    @NotNull(message = "注册时长不能为空，如果第一次注册，应为0")
-    private Integer usageDuration;
-    /**
      * 用户名
      */
     @NotNull(message = "用户名不能为空")
