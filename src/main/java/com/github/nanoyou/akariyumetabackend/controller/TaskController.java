@@ -1,7 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
@@ -15,17 +14,17 @@ import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import com.github.nanoyou.akariyumetabackend.service.CourseService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
 import jakarta.annotation.Nonnull;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.plaf.PanelUI;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr.LOGIN_USER_ID;
@@ -293,19 +292,6 @@ public class TaskController {
         }
     }
 
-    private TaskRecordDTO saveRecord(TaskRecord taskRecord) {
-        return taskService.saveRecord(taskRecord).map(
-                record -> TaskRecordDTO.builder()
-                        .taskID(record.getTaskRecordCombinedPrimaryKey().getTaskID())
-                        .childID(record.getTaskRecordCombinedPrimaryKey().getChildID())
-                        .endTime(record.getEndTime())
-                        .startTime(record.getStartTime())
-                        .status(record.getStatus())
-                        .build()
-        ).orElseThrow(NullPointerException::new);
-    }
-
-
     /**
      * 完成学习任务（视频观看修改状态）
      * @param taskID
@@ -338,6 +324,12 @@ public class TaskController {
                 record.setEndTime(time);
                 record.setStatus(TaskRecordStatus.COMPLETED);
                 val taskRecordDTO = saveRecord(record);
+
+                // 视频观看次数加一
+                int account = course.getWatchedCount();
+                course.setWatchedCount(++account);
+                courseService.addCourse(course);
+
                 return Result.builder()
                         .ok(true)
                         .code(ResponseCode.VIDEO_COMPLETED.value)
@@ -360,4 +352,43 @@ public class TaskController {
                     .build();
         }
     }
+
+    private TaskRecordDTO saveRecord(TaskRecord taskRecord) {
+        return taskService.saveRecord(taskRecord).map(
+                record -> TaskRecordDTO.builder()
+                        .taskID(record.getTaskRecordCombinedPrimaryKey().getTaskID())
+                        .childID(record.getTaskRecordCombinedPrimaryKey().getChildID())
+                        .endTime(record.getEndTime())
+                        .startTime(record.getStartTime())
+                        .status(record.getStatus())
+                        .build()
+        ).orElseThrow(NullPointerException::new);
+    }
+
+    @RequestMapping(path = "/user/{userID}/score", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result score(@PathVariable String userID) {
+        try {
+            val records = taskService.getRecords(userID, TaskRecordStatus.COMPLETED);
+            val taskIDs = records.stream()
+                    .map(taskRecord -> taskRecord.getTaskRecordCombinedPrimaryKey().getTaskID())
+                    .collect(Collectors.toList());
+
+            val score = taskService.getBonuses(taskIDs);
+
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SCORE_GET_SUCCESS.value)
+                    .message("学习积分获取成功")
+                    .data(score)
+                    .build();
+        } catch (Exception e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.SCORE_GET_FAIL.value)
+                    .message("内部服务器错误")
+                    .build();
+        }
+
+    }
+
 }

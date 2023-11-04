@@ -92,7 +92,15 @@ public enum ResponseCode {
     /**
      * 视频观看未完成
      */
-    VIDEO_UNCOMPLETED(115);
+    VIDEO_UNCOMPLETED(115),
+    /**
+     * 学习积分获取成功
+     */
+    SCORE_GET_SUCCESS(116),
+    /**
+     * 学习积分获取失败
+     */
+    SCORE_GET_FAIL(117);
 
 
 

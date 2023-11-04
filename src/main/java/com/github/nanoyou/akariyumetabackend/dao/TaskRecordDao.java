@@ -1,5 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.dao;
 
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import jakarta.annotation.Nonnull;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,6 @@ public interface TaskRecordDao extends JpaRepository<TaskRecord, TaskRecord._Tas
     List<TaskRecord> findByTaskRecordCombinedPrimaryKeyChildID(@Nonnull String childID);
 
     Optional<TaskRecord> findByTaskRecordCombinedPrimaryKey(@Nonnull TaskRecord._TaskRecordCombinedPrimaryKey taskRecordCombinedPrimaryKey);
+
+    List<TaskRecord> findByTaskRecordCombinedPrimaryKeyChildIDAndStatus(@Nonnull String childID, @Nonnull TaskRecordStatus status);
 }
