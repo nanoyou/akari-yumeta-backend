@@ -4,6 +4,8 @@ import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchCourseException;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskDTO;
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr.LOGIN_USER_ID;
@@ -108,9 +111,8 @@ public class TaskController {
                     .videoURL(taskCourseUploadDTO.getVideoURL())
                     .videoDuration(videoDuration)
                     .build();
+            courseService.addCourse(uploadCourse);
 
-            // TODO: 怎么处理courseDTO？（返回响应里看起来不需要course的信息）
-            var courseDTO = courseService.addCourse(uploadCourse);
 
             return Result.builder()
                     .ok(true)
@@ -346,11 +348,17 @@ public class TaskController {
 
             // 判断是否完成
             LocalDateTime time = now();
-            long betweenMinutes =  ChronoUnit.MINUTES.between(record.getStartTime(), time);
-            if(betweenMinutes > course.getVideoDuration()) {
+            long betweenSeconds = ChronoUnit.SECONDS.between(record.getStartTime(), time);
+            if(betweenSeconds >= course.getVideoDuration()) {
                 record.setEndTime(time);
                 record.setStatus(TaskRecordStatus.COMPLETED);
                 val taskRecordDTO = saveRecord(record);
+
+                // 视频观看次数加一
+                int count = course.getWatchedCount();
+                course.setWatchedCount(++count);
+                courseService.addCourse(course);
+
                 return Result.builder()
                         .ok(true)
                         .code(ResponseCode.VIDEO_COMPLETED.value)
@@ -358,7 +366,7 @@ public class TaskController {
                         .data(taskRecordDTO)
                         .build();
             }
-            else{
+            else {
                 return Result.builder()
                         .ok(false)
                         .code(ResponseCode.VIDEO_UNCOMPLETED.value)
@@ -368,9 +376,53 @@ public class TaskController {
         } catch (NullPointerException e) {
             return Result.builder()
                     .ok(false)
-                    .code(ResponseCode.VIDEO_UNCOMPLETED.value)
-                    .message("内部服务器错误")
+                    .code(ResponseCode.VIDEO_DISAPPEARED.value)
+                    .message("视频不见喽~")
                     .build();
         }
     }
+
+    private TaskRecordDTO saveRecord(TaskRecord taskRecord) {
+        return taskService.saveRecord(taskRecord).map(
+                record -> TaskRecordDTO.builder()
+                        .taskID(record.getTaskRecordCombinedPrimaryKey().getTaskID())
+                        .childID(record.getTaskRecordCombinedPrimaryKey().getChildID())
+                        .endTime(record.getEndTime())
+                        .startTime(record.getStartTime())
+                        .status(record.getStatus())
+                        .build()
+        ).orElseThrow(NullPointerException::new);
+    }
+
+    /**
+     * 获取学习积分
+     * @param userID
+     * @return score
+     */
+    @RequestMapping(path = "/user/{userID}/score", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result score(@PathVariable String userID) {
+        try {
+            val records = taskService.getRecords(userID, TaskRecordStatus.COMPLETED);
+            val taskIDs = records.stream()
+                    .map(taskRecord -> taskRecord.getTaskRecordCombinedPrimaryKey().getTaskID())
+                    .collect(Collectors.toList());
+
+            val score = taskService.getBonuses(taskIDs);
+
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SCORE_GET_SUCCESS.value)
+                    .message("学习积分获取成功")
+                    .data(score)
+                    .build();
+        } catch (Exception e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.SCORE_GET_FAIL.value)
+                    .message("内部服务器错误")
+                    .build();
+        }
+
+    }
+
 }

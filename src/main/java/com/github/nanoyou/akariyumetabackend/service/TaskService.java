@@ -1,5 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.service;
 
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDynamicDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskRecordDao;
@@ -82,6 +83,20 @@ public class TaskService {
                 .startTime(taskRecord.getStartTime())
                 .status(taskRecord.getStatus())
                 .build());
+    }
+
+    public List<TaskRecord> getRecords(@Nonnull String childID, @Nonnull TaskRecordStatus status) {
+        return taskRecordDao.findByTaskRecordCombinedPrimaryKeyChildIDAndStatus(childID, status);
+    }
+
+    public Integer getBonuses(@Nonnull List<String> taskIDs) {
+        val tasks = taskIDs.stream().map(
+                id -> taskDao.findById(id).orElseThrow(NullPointerException::new)
+        ).toList();
+
+        return tasks.stream()
+                .map(Task::getBonus)
+                .reduce(0, Integer::sum);
     }
 
 }
