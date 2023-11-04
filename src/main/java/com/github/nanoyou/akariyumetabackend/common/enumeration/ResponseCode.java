@@ -57,6 +57,10 @@ public enum ResponseCode {
      * 必须选择一名角色
      */
     EMPTY_ROLE(105),
+    /**
+     * 用户名或密码不正确
+     */
+    WRONG_USERNAME_OR_PASSWORD(106),
 
     // ********************* 学习任务
     /**
