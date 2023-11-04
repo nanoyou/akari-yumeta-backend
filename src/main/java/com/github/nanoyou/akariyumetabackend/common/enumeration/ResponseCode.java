@@ -80,7 +80,11 @@ public enum ResponseCode {
     /**
      * 评论内容不能为空
      */
-    EMPTY_COMMENT_CONTENT(300);
+    EMPTY_COMMENT_CONTENT(300),
+    /**
+     * 评论或动态不存在
+     */
+    NO_SUCH_COMMENT(301);
 
 
     public final int value;

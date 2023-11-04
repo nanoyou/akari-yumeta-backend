@@ -14,4 +14,8 @@ public interface CommentDao extends JpaRepository<Comment, String> {
     Comment saveAndFlush(Comment comment);
 
     List<Comment> findByCommenterID(@Nonnull String commenterID);
+
+    Optional<Comment> findById(@Nonnull String id);
+
+    List<Comment> findByReplyTo(@Nonnull String replyTo);
 }

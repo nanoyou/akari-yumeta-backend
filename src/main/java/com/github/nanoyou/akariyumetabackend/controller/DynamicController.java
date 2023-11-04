@@ -15,10 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -132,7 +129,28 @@ public class DynamicController {
 
     }
 
-    public List<DynamicDTO> concat(List<Comment> dynamics, List<Integer> likes) {
+    @RequestMapping(path = "/dynamic/{dynamicID}", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result dynamic(@PathVariable String dynamicID) {
+
+        val dynamicTree = dynamicService.getDynamicTree(dynamicID);
+        if (dynamicTree == null) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.NO_SUCH_COMMENT.value)
+                    .message("动态的树不存在")
+                    .data(null)
+                    .build();
+        }
+
+        return Result.builder()
+                .ok(true)
+                .code(ResponseCode.SUCCESS.value)
+                .message("评论区加载完成")
+                .data(dynamicTree)
+                .build();
+    }
+
+    private List<DynamicDTO> concat(List<Comment> dynamics, List<Integer> likes) {
         return IntStream.range(0, dynamics.size())
                 .mapToObj(i -> {
                             val dynamic = dynamics.get(i);
