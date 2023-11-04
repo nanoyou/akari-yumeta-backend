@@ -34,15 +34,6 @@ public class DynamicController {
     @RequestMapping(path = "/dynamic", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result dynamic(@RequestBody CommentDTO commentDTO, HttpSession httpSession) {
 
-        // 如果不是 UUID
-        if (!Validator.isUUID(commentDTO.getTaskID())) {
-            return Result.builder()
-                    .ok(false)
-                    .message("评论 ID 必须为 UUID")
-                    .code(ResponseCode.INVALID_UUID.value)
-                    .build();
-        }
-
         // 动态内容是否为空
         if (!StringUtils.hasText(commentDTO.getContent())) {
             return Result.builder()
