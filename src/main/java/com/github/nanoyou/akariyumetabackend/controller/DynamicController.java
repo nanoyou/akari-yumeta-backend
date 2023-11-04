@@ -7,6 +7,7 @@ import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.CommentDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
+import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
 import com.github.nanoyou.akariyumetabackend.service.DynamicService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
 import jakarta.servlet.http.HttpSession;
@@ -61,7 +62,7 @@ public class DynamicController {
         }
 
         // 获取用户信息
-        if (httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr) == null){
+        if (httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr) == null) {
             return Result.builder()
                     .ok(false)
                     .message("评论需要用户登录")
@@ -77,8 +78,18 @@ public class DynamicController {
                 .replyTo(null)
                 .build();
 
-        // 提交评论
+        // 提交动态
         val comment = dynamicService.addComment(postComment).orElseThrow(NullPointerException::new);
+
+        // 将动态与任务绑定
+        val taskDynamic = taskService.addTaskDynamic(TaskDynamic.builder()
+                .taskDynamic(TaskDynamic._TaskDynamicCombinedPrimaryKey.builder()
+                        .taskID(commentDTO.getTaskID())
+                        .dynamicID(comment.getId())
+                        .build())
+                .build());
+
+        taskDynamic.orElseThrow(NullPointerException::new);
 
         return Result.builder()
                 .ok(true)

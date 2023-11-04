@@ -4,6 +4,7 @@ import com.github.nanoyou.akariyumetabackend.dao.TaskDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDynamicDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskRecordDao;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
+import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
 import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +64,7 @@ public class TaskService {
         ).toList();
     }
 
+    public Optional<TaskDynamic> addTaskDynamic(@Nonnull TaskDynamic taskDynamic) {
+        return Optional.ofNullable(taskDynamicDao.saveAndFlush(taskDynamic));
+    }
 }

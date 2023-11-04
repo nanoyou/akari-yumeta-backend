@@ -11,5 +11,6 @@ public interface TaskDynamicDao extends JpaRepository<TaskDynamic, TaskDynamic._
     @Override
     Optional<TaskDynamic> findById(TaskDynamic._TaskDynamicCombinedPrimaryKey taskDynamicCombinedPrimaryKey);
 
-
+    @Override
+    TaskDynamic saveAndFlush(TaskDynamic taskDynamic);
 }
