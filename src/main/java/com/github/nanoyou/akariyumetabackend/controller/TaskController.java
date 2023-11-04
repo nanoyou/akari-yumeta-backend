@@ -1,6 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchCourseException;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
@@ -181,11 +182,19 @@ public class TaskController {
     @RequestMapping(path = "/my/task", method = RequestMethod.GET, headers = "Accept=application/json")
     public Result myTask(HttpSession httpSession) {
         try {
-            val loginUserID =
-                    Optional.ofNullable((String) httpSession.getAttribute(LOGIN_USER_ID.attr)).orElseThrow(NullPointerException::new);
+            if (httpSession.getAttribute(LOGIN_USER_ID.attr) == null) {
+                Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.LOGIN_REQUIRE.value)
+                        .message("您需要先登录")
+                        .data(null)
+                        .build();
+            }
+            val loginUserID = ((String) httpSession.getAttribute(LOGIN_USER_ID.attr));
             val tasks = taskService.getMyTasks(loginUserID);
+
             val courses = tasks.stream().map(
-                    task -> courseService.getCourse(task.getId()).orElseThrow(NullPointerException::new)
+                    task -> courseService.getCourse(task.getId()).orElseThrow(NoSuchCourseException::new)
             ).toList();
 
             val taskCourseDTOs = this.concat(tasks, courses);
@@ -201,6 +210,13 @@ public class TaskController {
                     .ok(false)
                     .code(ResponseCode.MY_TASK_FAILED.value)
                     .message("查询我的课程任务失败")
+                    .data(null)
+                    .build();
+        } catch (NoSuchCourseException e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.MY_TASK_FAILED.value)
+                    .message("这个任务没有绑定课程")
                     .data(null)
                     .build();
         }
