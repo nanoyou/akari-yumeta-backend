@@ -68,11 +68,12 @@ public class TaskService {
     public Optional<TaskDynamic> addTaskDynamic(@Nonnull TaskDynamic taskDynamic) {
         return Optional.ofNullable(taskDynamicDao.saveAndFlush(taskDynamic));
     }
+
     public Optional<TaskRecord> getRecord(@Nonnull TaskRecord._TaskRecordCombinedPrimaryKey taskRecordCombinedPrimaryKey) {
         return taskRecordDao.findByTaskRecordCombinedPrimaryKey(taskRecordCombinedPrimaryKey);
     }
 
-    public Optional<TaskRecord> saveRecord(@Nonnull TaskRecord taskRecord) {
+    public Optional<TaskRecord> addRecord(@Nonnull TaskRecord taskRecord) {
         taskRecordDao.save(taskRecord);
 
         return Optional.of(TaskRecord.builder()

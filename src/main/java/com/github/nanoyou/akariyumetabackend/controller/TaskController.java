@@ -1,7 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
@@ -15,13 +14,11 @@ import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import com.github.nanoyou.akariyumetabackend.service.CourseService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
 import jakarta.annotation.Nonnull;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.plaf.PanelUI;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -294,7 +291,7 @@ public class TaskController {
     }
 
     private TaskRecordDTO saveRecord(TaskRecord taskRecord) {
-        return taskService.saveRecord(taskRecord).map(
+        return taskService.addRecord(taskRecord).map(
                 record -> TaskRecordDTO.builder()
                         .taskID(record.getTaskRecordCombinedPrimaryKey().getTaskID())
                         .childID(record.getTaskRecordCombinedPrimaryKey().getChildID())
