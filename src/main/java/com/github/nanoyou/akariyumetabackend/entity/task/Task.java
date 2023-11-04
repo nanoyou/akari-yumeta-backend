@@ -1,7 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.entity.task;
 
-import com.github.nanoyou.akariyumetabackend.enumeration.TaskCategory;
-import com.github.nanoyou.akariyumetabackend.enumeration.TaskStatus;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskCategory;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

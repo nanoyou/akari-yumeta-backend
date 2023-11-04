@@ -1,7 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.dto.user;
 
-import com.github.nanoyou.akariyumetabackend.enumeration.Gender;
-import com.github.nanoyou.akariyumetabackend.enumeration.Role;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.Gender;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -37,11 +37,6 @@ public class RegisterDTO {
      */
     @NotNull(message = "用户角色不能为空")
     private Role role;
-    /**
-     * 使用时长，APP使用时长统计，单位为秒
-     */
-    @NotNull(message = "注册时长不能为空，如果第一次注册，应为0")
-    private Integer usageDuration;
     /**
      * 用户名
      */

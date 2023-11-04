@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.enumeration;
+package com.github.nanoyou.akariyumetabackend.common.enumeration;
 
 import lombok.AllArgsConstructor;
 
@@ -24,6 +24,20 @@ public enum ResponseCode {
      */
     UNAUTHORIZED(3),
     /**
+     * 密码不能为空
+     */
+    EMPTY_PASSWORD(4),
+    /**
+     * 用户名不能为空
+     */
+    EMPTY_USERNAME(5),
+    /**
+     * 非法UUID
+     */
+    INVALID_UUID(6),
+
+
+    /**
      * 不能注册管理员
      */
     ADMIN_REGISTER_REFUSED(100),
@@ -46,7 +60,32 @@ public enum ResponseCode {
     /**
      * 学习任务创建失败
      */
-    TASK_UPLOAD_FAIL(105);
+    TASK_UPLOAD_FAIL(105),
+    /**
+     * 查询我的任务失败
+     */
+    MY_TASK_FAILED(106),
+    /**
+     * 时间约束错误(结束时间不能在开始时间之前)
+     */
+    TIME_CONSTRAINT_ERR(107),
+    /**
+     * 必须选择性别
+     */
+    EMPTY_GENDER(108),
+    /**
+     * 昵称不能为空
+     */
+    EMPTY_NICKNAME(109),
+    /**
+     * 必须选择一名角色
+     */
+    EMPTY_ROLE(110),
+    /**
+     * 评论内容不能为空
+     */
+    EMPTY_COMMENT_CONTENT(111);
+
 
     public final int value;
 

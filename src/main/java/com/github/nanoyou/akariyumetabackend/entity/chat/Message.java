@@ -1,6 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.entity.chat;
 
-import com.github.nanoyou.akariyumetabackend.enumeration.MessageType;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.MessageType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
