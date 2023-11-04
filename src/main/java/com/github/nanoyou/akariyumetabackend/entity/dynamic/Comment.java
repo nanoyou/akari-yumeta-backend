@@ -1,6 +1,11 @@
 package com.github.nanoyou.akariyumetabackend.entity.dynamic;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -10,15 +15,20 @@ import java.util.UUID;
  * 支持显示Markdown的评论
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class Comment {
     /**
      * Markdown评论
      */
-    private UUID id;
+    @Id
+    private String id;
     /**
      * 发评论的人的ID
      */
-    private UUID commenterID;
+    private String commenterID;
     /**
      * 以Markdown格式存储的评论
      */
@@ -30,5 +40,5 @@ public class Comment {
     /**
      * 父评论ID，被回复评论的ID，为空则为动态节点（根节点）
      */
-    private UUID replyTo;
+    private String replyTo;
 }
