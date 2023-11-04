@@ -1,25 +1,21 @@
 package com.github.nanoyou.akariyumetabackend.common.enumeration;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public enum Role {
     /**
      * 志愿者
      */
-    VOLUNTEER("志愿者"),
+    VOLUNTEER,
     /**
      * 管理者
      */
-    ADMIN("管理者"),
+    ADMIN,
     /**
      * 儿童
      */
-    CHILD("儿童"),
+    CHILD,
     /**
      * 捐助者
      */
-    SPONSOR("捐助者");
+    SPONSOR;
 
-    public final String value;
 }
