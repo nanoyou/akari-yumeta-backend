@@ -1,6 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.entity.task;
 
-import com.github.nanoyou.akariyumetabackend.enumeration.TaskRecordStatus;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * TaskRecord 任务记录
@@ -26,7 +25,7 @@ import java.util.UUID;
 public class TaskRecord {
 
     @Id
-    private _TaskRecordCombinedPrimaryKey taskRecord;
+    private _TaskRecordCombinedPrimaryKey taskRecordCombinedPrimaryKey;
     /**
      * 任务结束时间
      * 受困儿童看完这个视频的时间
@@ -44,14 +43,17 @@ public class TaskRecord {
 
     @Embeddable
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class _TaskRecordCombinedPrimaryKey implements Serializable {
         /**
          * 关联的Task的ID
          */
-        private UUID taskID;
+        private String taskID;
         /**
          * 受困儿童的ID
          */
-        private UUID childID;
+        private String childID;
     }
 }

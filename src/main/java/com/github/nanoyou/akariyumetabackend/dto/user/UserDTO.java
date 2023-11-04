@@ -3,6 +3,8 @@ package com.github.nanoyou.akariyumetabackend.dto.user;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Builder
 @Data
 public class UserDTO {
@@ -14,4 +16,5 @@ public class UserDTO {
     private String introduction;
     private String avatarURL;
     private Integer usageDuration;
+    private List<String> tags;
 }

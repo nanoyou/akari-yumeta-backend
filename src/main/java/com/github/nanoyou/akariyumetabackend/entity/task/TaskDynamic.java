@@ -27,6 +27,9 @@ public class TaskDynamic {
 
     @Embeddable
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class _TaskDynamicCombinedPrimaryKey implements Serializable {
         /**
          * 任务ID

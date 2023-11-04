@@ -14,4 +14,7 @@ public interface TaskDao extends JpaRepository<Task, String> {
 
     @Override
     Optional<Task> findById(@Nonnull String id);
+
+    @Override
+    boolean existsById(String id);
 }
