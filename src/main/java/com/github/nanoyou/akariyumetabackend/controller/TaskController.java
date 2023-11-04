@@ -2,27 +2,35 @@ package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
+import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskDTO;
+import com.github.nanoyou.akariyumetabackend.dto.task.TaskRecordDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.task.Course;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
+import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import com.github.nanoyou.akariyumetabackend.service.CourseService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
 import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.plaf.PanelUI;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import static com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr.LOGIN_USER_ID;
 import static com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus.*;
+import static java.time.LocalDateTime.now;
 
 @RestController
 public class TaskController {
@@ -35,11 +43,16 @@ public class TaskController {
         this.courseService = courseService;
     }
 
+    /**
+     * 创建学习任务
+     * @param taskCourseUploadDTO
+     * @return Result类型的对象
+     */
     @RequestMapping(path = "/task", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result task(@RequestBody TaskCourseUploadDTO taskCourseUploadDTO) {
         try {
             // 验证时间,设置状态
-            LocalDateTime time = LocalDateTime.now();
+            LocalDateTime time = now();
 
             assert taskCourseUploadDTO.getStartTime() != null;
             assert taskCourseUploadDTO.getEndTime() != null;
@@ -172,7 +185,7 @@ public class TaskController {
     public Result myTask(HttpSession httpSession) {
         try {
             val loginUserID =
-                    Optional.ofNullable((String) httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr)).orElseThrow(NullPointerException::new);
+                    Optional.ofNullable((String) httpSession.getAttribute(LOGIN_USER_ID.attr)).orElseThrow(NullPointerException::new);
             val tasks = taskService.getMyTasks(loginUserID);
             val courses = tasks.stream().map(
                     task -> courseService.getCourse(task.getId()).orElseThrow(NullPointerException::new)
@@ -238,4 +251,113 @@ public class TaskController {
                 }).toList();
     }
 
+    /**
+     * 开启学习任务
+     * @param taskID
+     * @param httpSession
+     * @return Result
+     */
+    @RequestMapping(path = "/task/{taskID}/open", method = RequestMethod.POST, headers = "Accept=application/json")
+    public Result record(@PathVariable String taskID, HttpSession httpSession) {
+        try {
+            val loginUserID =
+                    Optional.ofNullable((String) httpSession.getAttribute(LOGIN_USER_ID.attr)).orElseThrow(NullPointerException::new);
+
+            var comID = TaskRecord._TaskRecordCombinedPrimaryKey.builder()
+                    .taskID(taskID)
+                    .childID(loginUserID)
+                    .build();
+
+            var taskRecord = TaskRecord.builder()
+                    .taskRecordCombinedPrimaryKey(comID)
+                    .endTime(null)
+                    .startTime(now())
+                    .status(TaskRecordStatus.UNCOMPLETED)
+                    .build();
+
+            val taskRecordDTO =  saveRecord(taskRecord);
+
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.TASK_RECORD_SUCCESS.value)
+                    .message("视频观看任务创建成功")
+                    .data(taskRecordDTO)
+                    .build();
+
+        } catch (NullPointerException e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.TASK_RECORD_FAIL.value)
+                    .message("内部服务器错误")
+                    .build();
+        }
+    }
+
+    private TaskRecordDTO saveRecord(TaskRecord taskRecord) {
+        return taskService.saveRecord(taskRecord).map(
+                record -> TaskRecordDTO.builder()
+                        .taskID(record.getTaskRecordCombinedPrimaryKey().getTaskID())
+                        .childID(record.getTaskRecordCombinedPrimaryKey().getChildID())
+                        .endTime(record.getEndTime())
+                        .startTime(record.getStartTime())
+                        .status(record.getStatus())
+                        .build()
+        ).orElseThrow(NullPointerException::new);
+    }
+
+
+    /**
+     * 完成学习任务（视频观看修改状态）
+     * @param taskID
+     * @return
+     */
+    @RequestMapping(path = "/task/{taskID}/finish", method = RequestMethod.POST, headers = "Accept=application/json")
+    public Result finish(@PathVariable String taskID, HttpSession httpSession) {
+        try {
+            val loginUserID =
+                    Optional.ofNullable((String) httpSession.getAttribute(LOGIN_USER_ID.attr)).orElseThrow(NullPointerException::new);
+            val course = courseService.getCourse(taskID).orElseThrow(NullPointerException::new);
+
+            var comID = TaskRecord._TaskRecordCombinedPrimaryKey.builder()
+                    .taskID(taskID)
+                    .childID(loginUserID)
+                    .build();
+            val record = taskService.getRecord(comID).map(
+                    taskRecord -> TaskRecord.builder()
+                            .taskRecordCombinedPrimaryKey(taskRecord.getTaskRecordCombinedPrimaryKey())
+                            .endTime(taskRecord.getEndTime())
+                            .startTime(taskRecord.getStartTime())
+                            .status(taskRecord.getStatus())
+                            .build()
+            ).orElseThrow(NullPointerException::new);
+
+            // 判断是否完成
+            LocalDateTime time = now();
+            long betweenMinutes =  ChronoUnit.MINUTES.between(record.getStartTime(), time);
+            if(betweenMinutes > course.getVideoDuration()) {
+                record.setEndTime(time);
+                record.setStatus(TaskRecordStatus.COMPLETED);
+                val taskRecordDTO = saveRecord(record);
+                return Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.VIDEO_COMPLETED.value)
+                        .message("视频观看完成")
+                        .data(taskRecordDTO)
+                        .build();
+            }
+            else{
+                return Result.builder()
+                        .ok(false)
+                        .code(ResponseCode.VIDEO_UNCOMPLETED.value)
+                        .message("视频观看未完成")
+                        .build();
+            }
+        } catch (NullPointerException e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.VIDEO_UNCOMPLETED.value)
+                    .message("内部服务器错误")
+                    .build();
+        }
+    }
 }

@@ -79,6 +79,22 @@ public enum ResponseCode {
      * 查询我的任务失败
      */
     MY_TASK_FAILED(203),
+    /**
+     * 视频观看任务创建成功
+     */
+    TASK_RECORD_SUCCESS(204),
+    /**
+     * 视频观看任务创建失败
+     */
+    TASK_RECORD_FAIL(205),
+    /**
+     * 视频观看完成
+     */
+    VIDEO_COMPLETED(206),
+    /**
+     * 视频观看未完成
+     */
+    VIDEO_UNCOMPLETED(207),
 
     // ***************** 动态
     /**
