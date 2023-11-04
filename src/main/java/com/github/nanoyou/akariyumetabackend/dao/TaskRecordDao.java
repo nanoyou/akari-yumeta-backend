@@ -1,6 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.dao;
 
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import jakarta.annotation.Nonnull;
 import org.springframework.data.jpa.repository.JpaRepository;

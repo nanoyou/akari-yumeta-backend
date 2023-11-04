@@ -95,6 +95,14 @@ public enum ResponseCode {
      * 视频观看未完成
      */
     VIDEO_UNCOMPLETED(207),
+    /**
+     * 无法获取成绩
+     */
+    SCORE_GET_FAIL(208),
+    /**
+     * 视频不见喽~
+     */
+    VIDEO_DISAPPEARED(209),
 
     // ***************** 动态
     /**

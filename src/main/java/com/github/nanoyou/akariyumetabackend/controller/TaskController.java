@@ -4,8 +4,6 @@ import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchCourseException;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskDTO;
@@ -46,6 +44,7 @@ public class TaskController {
 
     /**
      * 创建学习任务
+     *
      * @param taskCourseUploadDTO
      * @return Result类型的对象
      */
@@ -226,6 +225,7 @@ public class TaskController {
 
     /**
      * 查询所有学习任务列表
+     *
      * @return 包含所有课程学习任务的Result对象
      */
     @RequestMapping(path = "/task", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -268,6 +268,7 @@ public class TaskController {
 
     /**
      * 开启学习任务
+     *
      * @param taskID
      * @param httpSession
      * @return Result
@@ -290,7 +291,7 @@ public class TaskController {
                     .status(TaskRecordStatus.UNCOMPLETED)
                     .build();
 
-            val taskRecordDTO =  saveRecord(taskRecord);
+            val taskRecordDTO = saveRecord(taskRecord);
 
             return Result.builder()
                     .ok(true)
@@ -323,6 +324,7 @@ public class TaskController {
 
     /**
      * 完成学习任务（视频观看修改状态）
+     *
      * @param taskID
      * @return
      */
@@ -349,7 +351,7 @@ public class TaskController {
             // 判断是否完成
             LocalDateTime time = now();
             long betweenSeconds = ChronoUnit.SECONDS.between(record.getStartTime(), time);
-            if(betweenSeconds >= course.getVideoDuration()) {
+            if (betweenSeconds >= course.getVideoDuration()) {
                 record.setEndTime(time);
                 record.setStatus(TaskRecordStatus.COMPLETED);
                 val taskRecordDTO = saveRecord(record);
@@ -365,8 +367,7 @@ public class TaskController {
                         .message("视频观看完成")
                         .data(taskRecordDTO)
                         .build();
-            }
-            else {
+            } else {
                 return Result.builder()
                         .ok(false)
                         .code(ResponseCode.VIDEO_UNCOMPLETED.value)
@@ -382,20 +383,10 @@ public class TaskController {
         }
     }
 
-    private TaskRecordDTO saveRecord(TaskRecord taskRecord) {
-        return taskService.saveRecord(taskRecord).map(
-                record -> TaskRecordDTO.builder()
-                        .taskID(record.getTaskRecordCombinedPrimaryKey().getTaskID())
-                        .childID(record.getTaskRecordCombinedPrimaryKey().getChildID())
-                        .endTime(record.getEndTime())
-                        .startTime(record.getStartTime())
-                        .status(record.getStatus())
-                        .build()
-        ).orElseThrow(NullPointerException::new);
-    }
 
     /**
      * 获取学习积分
+     *
      * @param userID
      * @return score
      */
@@ -411,7 +402,7 @@ public class TaskController {
 
             return Result.builder()
                     .ok(true)
-                    .code(ResponseCode.SCORE_GET_SUCCESS.value)
+                    .code(ResponseCode.SUCCESS.value)
                     .message("学习积分获取成功")
                     .data(score)
                     .build();
