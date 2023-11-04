@@ -82,9 +82,13 @@ public enum ResponseCode {
      */
     EMPTY_COMMENT_CONTENT(300),
     /**
-     * 评论或动态不存在
+     * 评论不存在
      */
-    NO_SUCH_COMMENT(301);
+    NO_SUCH_COMMENT_OR_DYNAMIC(301),
+    /**
+     * 评论或动态创建失败
+     */
+    CREATE_COMMENT_OR_DYNAMIC_FAILED(302);
 
 
     public final int value;

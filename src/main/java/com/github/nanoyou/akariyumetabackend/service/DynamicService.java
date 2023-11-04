@@ -10,6 +10,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +44,7 @@ public class DynamicService {
                 .collect(Collectors.toList());
     }
 
+    @Deprecated
     public Optional<DynamicTreeDTO> getDynamicWithoutChildrenByID(@Nonnull String dynamicID) {
         val dynamic = commentDao.findById(dynamicID);
         val likeCount = likeService.getLikeCountByCommentID(dynamicID);
@@ -84,5 +86,29 @@ public class DynamicService {
         }
         return node;
     }
+
+    public Optional<DynamicDTO> reply(@Nonnull String content, @Nonnull String replyTo, @Nonnull String whoReply) {
+        val comment = this.addComment(Comment.builder()
+                .commenterID(whoReply)
+                .replyTo(replyTo)
+                .content(content)
+                .createTime(LocalDateTime.now())
+                .build());
+        return comment.map(
+                c -> DynamicDTO.builder()
+                        .id(c.getId())
+                        .commenterID(c.getCommenterID())
+                        .content(c.getContent())
+                        .replyTo(c.getReplyTo())
+                        .createTime(c.getCreateTime())
+                        .likes(0)
+                        .build()
+        );
+    }
+
+    public boolean existByID(@Nonnull String id) {
+        return commentDao.existsById(id);
+    }
+
 
 }

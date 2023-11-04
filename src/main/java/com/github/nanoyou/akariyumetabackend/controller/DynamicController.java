@@ -5,6 +5,7 @@ import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.CommentDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicDTO;
+import com.github.nanoyou.akariyumetabackend.dto.dynamic.ReplyDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @RestController
@@ -136,7 +138,7 @@ public class DynamicController {
         if (dynamicTree == null) {
             return Result.builder()
                     .ok(false)
-                    .code(ResponseCode.NO_SUCH_COMMENT.value)
+                    .code(ResponseCode.NO_SUCH_COMMENT_OR_DYNAMIC.value)
                     .message("动态的树不存在")
                     .data(null)
                     .build();
@@ -148,6 +150,56 @@ public class DynamicController {
                 .message("评论区加载完成")
                 .data(dynamicTree)
                 .build();
+    }
+
+    @RequestMapping(path = "/comment/{commentID}/reply", method = RequestMethod.POST, headers = "Accept=application/json")
+    public Result reply(@PathVariable String commentID, @RequestBody ReplyDTO replyDTO, HttpSession httpSession) {
+        if (httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr) == null) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.LOGIN_REQUIRE.value)
+                    .message("登录后才能评论")
+                    .data(null)
+                    .build();
+        }
+        val loginUserID = ((String) httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr));
+        val content = replyDTO.getContent();
+        if (!StringUtils.hasText(content)) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.EMPTY_COMMENT_CONTENT.value)
+                    .message("回复评论不能为空")
+                    .data(null)
+                    .build();
+        }
+
+        if (!dynamicService.existByID(commentID)) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.NO_SUCH_COMMENT_OR_DYNAMIC.value)
+                    .message("动态或评论不存在")
+                    .data(null)
+                    .build();
+        }
+
+        val reply = dynamicService.reply(content, commentID, loginUserID);
+
+        return reply.map(
+                r -> Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.SUCCESS.value)
+                        .message("评论回复成功")
+                        .data(r)
+                        .build()
+        ).orElse(
+                Result.builder()
+                        .ok(false)
+                        .code(ResponseCode.CREATE_COMMENT_OR_DYNAMIC_FAILED.value)
+                        .message("评论回复失败")
+                        .data(null)
+                        .build()
+        );
+
     }
 
     private List<DynamicDTO> concat(List<Comment> dynamics, List<Integer> likes) {
