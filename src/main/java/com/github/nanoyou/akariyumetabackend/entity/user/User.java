@@ -2,10 +2,7 @@ package com.github.nanoyou.akariyumetabackend.entity.user;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.Gender;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +27,7 @@ public class User {
     /**
      * 用户名
      */
+    @Column(unique = true)
     private String username;
     /**
      * 昵称
