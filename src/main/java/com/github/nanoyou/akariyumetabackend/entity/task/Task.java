@@ -1,7 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.entity.task;
 
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskCategory;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskCategory;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

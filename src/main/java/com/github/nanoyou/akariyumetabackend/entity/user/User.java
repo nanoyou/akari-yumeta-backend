@@ -1,7 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.entity.user;
 
-import com.github.nanoyou.akariyumetabackend.common.enumeration.Gender;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.Role;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Gender;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

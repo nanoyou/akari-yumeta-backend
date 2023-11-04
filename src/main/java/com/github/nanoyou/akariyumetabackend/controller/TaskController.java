@@ -1,8 +1,8 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskDTO;
@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr.LOGIN_USER_ID;
-import static com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus.*;
+import static com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus.*;
 import static java.time.LocalDateTime.now;
 
 @RestController

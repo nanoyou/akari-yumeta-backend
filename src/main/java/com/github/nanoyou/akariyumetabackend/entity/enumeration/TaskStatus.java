@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.common.enumeration;
+package com.github.nanoyou.akariyumetabackend.entity.enumeration;
 
 
 public enum TaskStatus {

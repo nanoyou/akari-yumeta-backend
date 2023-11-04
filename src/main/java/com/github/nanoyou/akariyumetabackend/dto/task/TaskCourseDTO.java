@@ -1,7 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.dto.task;
 
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskCategory;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskCategory;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
 import lombok.Builder;
 import lombok.Data;
 
