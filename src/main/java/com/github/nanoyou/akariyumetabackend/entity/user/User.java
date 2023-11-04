@@ -36,6 +36,7 @@ public class User {
     /**
      * 角色
      */
+    @Enumerated(EnumType.STRING)
     private Role role;
     /**
      * 密码
@@ -44,6 +45,7 @@ public class User {
     /**
      * 性别
      */
+    @Enumerated(EnumType.STRING)
     private Gender gender;
     /**
      * 个人介绍
