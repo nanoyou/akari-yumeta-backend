@@ -7,6 +7,7 @@ import com.github.nanoyou.akariyumetabackend.dto.user.RegisterDTO;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +27,7 @@ public class RegisterController {
     public Result register(@RequestBody RegisterDTO registerDTO) {
         try {
 
-            if (registerDTO.getUsername() == null) {
+            if (!StringUtils.hasText(registerDTO.getUsername())) {
                 return Result.builder()
                         .ok(true)
                         .code(ResponseCode.EMPTY_USERNAME.value)
@@ -34,8 +35,7 @@ public class RegisterController {
                         .data(null)
                         .build();
             }
-
-            if (registerDTO.getNickname() == null) {
+            if (!StringUtils.hasText(registerDTO.getNickname())) {
                 return Result.builder()
                         .ok(true)
                         .code(ResponseCode.EMPTY_NICKNAME.value)
@@ -45,7 +45,7 @@ public class RegisterController {
             }
 
             // 判断密码是否为空
-            if (registerDTO.getPassword() == null) {
+            if (!StringUtils.hasText(registerDTO.getPassword())) {
                 return Result.builder()
                         .ok(true)
                         .code(ResponseCode.EMPTY_PASSWORD.value)
@@ -95,6 +95,10 @@ public class RegisterController {
 
 
             var registerUserDTO = registerService.register(registerUser);
+
+            // TODO: 标签存储未真正存储到数据库
+            registerUserDTO.setTags(registerDTO.getTags());
+
             return Result.builder()
                     .ok(true)
                     .code(ResponseCode.SUCCESS.value)
