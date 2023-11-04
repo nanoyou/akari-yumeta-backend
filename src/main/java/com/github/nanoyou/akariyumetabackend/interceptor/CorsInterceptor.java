@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.middleware;
+package com.github.nanoyou.akariyumetabackend.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.middleware;
+package com.github.nanoyou.akariyumetabackend.interceptor;
 
 import com.github.nanoyou.akariyumetabackend.common.util.ResponseUtil;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.RequestAttr;
