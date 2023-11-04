@@ -31,6 +31,10 @@ public enum ResponseCode {
      * 用户名不能为空
      */
     EMPTY_USERNAME(5),
+    /**
+     * 非法UUID
+     */
+    INVALID_UUID(6),
 
 
     /**
@@ -76,7 +80,11 @@ public enum ResponseCode {
     /**
      * 必须选择一名角色
      */
-    EMPTY_ROLE(110);
+    EMPTY_ROLE(110),
+    /**
+     * 评论内容不能为空
+     */
+    EMPTY_COMMENT_CONTENT(111);
 
 
     public final int value;

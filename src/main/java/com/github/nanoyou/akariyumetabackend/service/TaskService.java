@@ -46,6 +46,10 @@ public class TaskService {
         return taskDao.findById(taskID);
     }
 
+    public boolean existTask(@Nonnull String taskID) {
+        return taskDao.existsById(taskID);
+    }
+
     public List<Task> getAllTasks() {
         return taskDao.findAll();
     }
