@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface CommentDao extends JpaRepository<Comment, String> {
 
     @Override
-    Optional<Comment> saveAndFlush(Comment comment);
+    Comment saveAndFlush(Comment comment);
 }

@@ -19,7 +19,7 @@ public class DynamicService {
     }
 
     public Optional<Comment> addComment(@Nonnull Comment comment) {
-        return commentDao.saveAndFlush(comment);
+        return Optional.ofNullable(commentDao.saveAndFlush(comment));
     }
 
 }
