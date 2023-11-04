@@ -78,7 +78,7 @@ public class DynamicController {
                 .build();
 
         // 提交评论
-        val comment = dynamicService.addComment(postComment);
+        val comment = dynamicService.addComment(postComment).orElseThrow(NullPointerException::new);
 
         return Result.builder()
                 .ok(true)
