@@ -1,7 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import cn.hutool.core.lang.Validator;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.CommentDTO;
@@ -90,5 +89,35 @@ public class DynamicController {
                 .build();
 
     }
+
+    @RequestMapping(path = "/my/dynamic", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result myDynamic(HttpSession httpSession) {
+        // 获取用户信息
+        if (httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr) == null) {
+            return Result.builder()
+                    .ok(false)
+                    .message("您需要登录后才能查看我的动态")
+                    .code(ResponseCode.LOGIN_REQUIRE.value)
+                    .build();
+        }
+
+        val userID = ((String) httpSession.getAttribute(SessionAttr.LOGIN_USER_ID.attr));
+
+        // 关注人的动态
+        val dynamics = dynamicService.getDynamicsByFollowerID(userID);
+        // 我的动态
+        val myDynamics = dynamicService.getDynamicsByCommenterID(userID);
+        // 将自己和他人的动态列表合并
+        dynamics.addAll(myDynamics);
+
+        return Result.builder()
+                .ok(true)
+                .message("查询到 " + dynamics.size() + " 条动态")
+                .code(ResponseCode.SUCCESS.value)
+                .data(dynamics)
+                .build();
+
+    }
+
 
 }
