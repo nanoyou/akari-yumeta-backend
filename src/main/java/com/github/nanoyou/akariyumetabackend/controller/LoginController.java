@@ -37,7 +37,7 @@ public class LoginController {
                         httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
                         return Result.builder()
                                 .ok(true)
-                                .code(ResponseCode.LOGIN_SUCCESS.value)
+                                .code(ResponseCode.SUCCESS.value)
                                 .message("登录成功")
                                 .data(userDTO)
                                 .build();
