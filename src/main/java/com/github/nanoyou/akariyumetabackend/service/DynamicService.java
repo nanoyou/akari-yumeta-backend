@@ -44,7 +44,6 @@ public class DynamicService {
                 .collect(Collectors.toList());
     }
 
-    @Deprecated
     public Optional<DynamicTreeDTO> getDynamicWithoutChildrenByID(@Nonnull String dynamicID) {
         val dynamic = commentDao.findById(dynamicID);
         val likeCount = likeService.getLikeCountByCommentID(dynamicID);
