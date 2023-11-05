@@ -142,7 +142,11 @@ public enum ResponseCode {
     /**
      * 个人信息修改失败
      */
-    PERSONAL_INFO_MODIFY_FAIL(504);
+    PERSONAL_INFO_MODIFY_FAIL(504),
+    /**
+     * 获取关注列表失败，没有关注任何人
+     */
+    NOT_FOLLOW_ANYONE(505);
 
     public final int value;
 
