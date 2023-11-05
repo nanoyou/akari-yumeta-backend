@@ -126,7 +126,11 @@ public enum ResponseCode {
     /**
      * 空文件类型
      */
-    EMPTY_CONTENT_TYPE(401);
+    EMPTY_CONTENT_TYPE(401),
+    /**
+     * 找不到文件
+     */
+    NO_SUCH_FILE(402);
 
     public final int value;
 

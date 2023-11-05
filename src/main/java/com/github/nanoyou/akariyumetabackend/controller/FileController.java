@@ -4,6 +4,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.github.nanoyou.akariyumetabackend.common.constant.FileConfig;
 import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.common.util.Sha256Util;
 import com.github.nanoyou.akariyumetabackend.dto.filestore.FileRecordDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.filestore.FileItem;
@@ -30,9 +31,10 @@ public class FileController {
     @ResponseBody
     @RequestMapping(path = "/file", method = RequestMethod.POST,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces= MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
 
-    public Result file(@RequestParam("file") MultipartFile file, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+    public Result file(@RequestParam("file") MultipartFile file,
+                       @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
         try {
             // 需要登录
             assert StringUtils.hasText(loginUserID);
@@ -41,7 +43,7 @@ public class FileController {
             val bytes = file.getBytes();
 
             val id = DigestUtil.sha512Hex(bytes);
-            val existedFile = fileService.getFile(id);
+            val existedFile = fileService.getFileIdAndMimeType(id);
             if (existedFile.isPresent()) {
                 return Result.builder()
                         .ok(true)
@@ -113,5 +115,34 @@ public class FileController {
 
     }
 
+    @ResponseBody
+    @RequestMapping(path = "/file/{fileHash}", method = RequestMethod.GET,
+            headers = "Accept=application/json")
+    public Result file(@PathVariable String fileHash) {
+        if (!Sha256Util.isSha256(fileHash)) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.PARAM_ERR.value)
+                    .message("获取文件失败：文件 ID 不合法，应为 SHA-256 格式")
+                    .data(null)
+                    .build();
+        }
+
+        return fileService.getFile(fileHash).map(
+                fileItem -> Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.SUCCESS.value)
+                        .message("获取文件成功")
+                        .data(fileItem)
+                        .build()
+        ).orElse(
+                Result.builder()
+                        .ok(false)
+                        .code(ResponseCode.NO_SUCH_FILE.value)
+                        .message("获取文件失败：找不到文件")
+                        .data(null)
+                        .build()
+        );
+    }
 
 }
