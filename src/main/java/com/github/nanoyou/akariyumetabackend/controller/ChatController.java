@@ -71,4 +71,16 @@ public class ChatController {
                 .build();
     }
 
+    @RequestMapping(path = "/chat/message/{userID}", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result sendMessage(@PathVariable String userID,
+                              @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+        val list = chatService.getMessageListByPair(userID, loginUserID);
+        return Result.builder()
+                .ok(true)
+                .code(ResponseCode.SUCCESS.value)
+                .message("查看消息列表成功")
+                .data(list)
+                .build();
+    }
+
 }
