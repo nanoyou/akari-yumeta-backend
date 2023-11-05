@@ -113,7 +113,7 @@ public class TaskController {
 
             return Result.builder()
                     .ok(true)
-                    .code(ResponseCode.TASK_UPLOAD_SUCCESS.value)
+                    .code(ResponseCode.SUCCESS.value)
                     .message("学习任务创建成功")
                     .data(taskDTO)
                     .build();
@@ -291,7 +291,7 @@ public class TaskController {
 
             return Result.builder()
                     .ok(true)
-                    .code(ResponseCode.TASK_RECORD_SUCCESS.value)
+                    .code(ResponseCode.SUCCESS.value)
                     .message("视频观看任务创建成功")
                     .data(taskRecordDTO)
                     .build();
@@ -358,7 +358,7 @@ public class TaskController {
 
                 return Result.builder()
                         .ok(true)
-                        .code(ResponseCode.VIDEO_COMPLETED.value)
+                        .code(ResponseCode.SUCCESS.value)
                         .message("视频观看完成")
                         .data(taskRecordDTO)
                         .build();
