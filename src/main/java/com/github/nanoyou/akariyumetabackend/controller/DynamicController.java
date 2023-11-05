@@ -175,6 +175,41 @@ public class DynamicController {
 
     }
 
+    @RequestMapping(path = "/task/{taskID}/dynamic", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result taskDynamic(@PathVariable String taskID) {
+        if (!taskService.existTask(taskID)) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.NO_SUCH_TASK_COURSE.value)
+                    .data(null)
+                    .message("课程不存在")
+                    .build();
+        }
+
+        try {
+            val taskDynamicIdList = taskService.getTaskDynamicIdList(taskID);
+
+            val dynamics = taskDynamicIdList.stream().map(
+                    id -> dynamicService.getDynamicWithoutChildrenByID(id).orElseThrow(NullPointerException::new)
+            ).toList();
+
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .message("获取任务动态列表成功")
+                    .data(dynamics)
+                    .build();
+
+        } catch (NullPointerException e) {
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .message("获取任务动态列表失败：获取动态时遇到空指针")
+                    .data(null)
+                    .build();
+        }
+    }
+
     private List<DynamicDTO> concat(List<Comment> dynamics, List<Integer> likes) {
         return IntStream.range(0, dynamics.size())
                 .mapToObj(i -> {

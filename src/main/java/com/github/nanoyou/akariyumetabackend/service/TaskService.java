@@ -70,6 +70,14 @@ public class TaskService {
         return Optional.ofNullable(taskDynamicDao.saveAndFlush(taskDynamic));
     }
 
+    public List<String> getTaskDynamicIdList(@Nonnull String taskID) {
+        return taskDynamicDao.findByTaskDynamicTaskID(taskID).stream().map(
+                taskDynamic -> {
+                    return taskDynamic.getTaskDynamic().getDynamicID();
+                }
+        ).toList();
+    }
+
     public Optional<TaskRecord> getRecord(@Nonnull TaskRecord._TaskRecordCombinedPrimaryKey taskRecordCombinedPrimaryKey) {
         return taskRecordDao.findByTaskRecordCombinedPrimaryKey(taskRecordCombinedPrimaryKey);
     }

@@ -4,7 +4,6 @@ import com.github.nanoyou.akariyumetabackend.dao.UserDao;
 import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.RegisterDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
-import com.github.nanoyou.akariyumetabackend.dto.user.UserUpdateDTO;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.dto.TagDTO;
 import jakarta.annotation.Nonnull;
@@ -31,6 +30,30 @@ public class UserService {
 
     public Optional<User> getUser(@Nonnull String userID) {
         return userDao.findById(userID);
+    }
+
+    public Optional<UserDTO> getUserDTO(@Nonnull String userID) {
+        val user = userDao.findById(userID);
+
+        val tagContentList = user.map(u -> {
+            val tags = tagService.getTags(u.getId());
+            return tags.getTagContentList();
+        }).orElse(new ArrayList<>());
+
+        return user.map(
+                u -> UserDTO.builder()
+                        .id(u.getId())
+                        .username(u.getUsername())
+                        .nickname(u.getNickname())
+                        .role(u.getRole())
+                        .gender(u.getGender())
+                        .introduction(u.getIntroduction())
+                        .avatarURL(u.getAvatarURL())
+                        .usageDuration(u.getUsageDuration())
+                        .tags(tagContentList)
+                        .build()
+        );
+
     }
 
     public List<User> getAllUsers() {
@@ -91,10 +114,12 @@ public class UserService {
         );
     }
 
-    public Optional<User> info(@Nonnull User user) {
+    public Optional<UserDTO> info(@Nonnull User user, @Nonnull List<String> tags) {
         userDao.saveAndFlush(user);
 
-        return Optional.of(User.builder()
+        //TODO: tags更新
+
+        return Optional.of(UserDTO.builder()
                         .id(user.getId())
                         .username(user.getUsername())
                         .nickname(user.getNickname())
@@ -103,7 +128,9 @@ public class UserService {
                         .introduction(user.getIntroduction())
                         .avatarURL(user.getAvatarURL())
                         .usageDuration(user.getUsageDuration())
-                        //.tags(tagDTO == null ? new ArrayList<>() : tagDTO.getTagContentList())
+                        .tags(tags)
                 .build());
     }
+
+
 }

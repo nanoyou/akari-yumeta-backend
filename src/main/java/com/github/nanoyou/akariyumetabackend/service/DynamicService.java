@@ -1,7 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.service;
 
 import com.github.nanoyou.akariyumetabackend.dao.CommentDao;
-import com.github.nanoyou.akariyumetabackend.dto.dynamic.CommentDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicTreeDTO;
 import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
@@ -44,7 +43,6 @@ public class DynamicService {
                 .collect(Collectors.toList());
     }
 
-    @Deprecated
     public Optional<DynamicTreeDTO> getDynamicWithoutChildrenByID(@Nonnull String dynamicID) {
         val dynamic = commentDao.findById(dynamicID);
         val likeCount = likeService.getLikeCountByCommentID(dynamicID);

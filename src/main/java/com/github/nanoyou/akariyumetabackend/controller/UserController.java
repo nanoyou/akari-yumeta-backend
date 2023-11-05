@@ -8,6 +8,7 @@ import com.github.nanoyou.akariyumetabackend.dto.user.UserUpdateDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.friend.Subscription;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
+import com.github.nanoyou.akariyumetabackend.service.TagService;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,13 @@ public class UserController {
 
     private final UserService userService;
     private final SubscriptionService subscriptionService;
+    private final TagService tagService;
 
     @Autowired
-    public UserController(UserService userService, SubscriptionService subscriptionService) {
+    public UserController(UserService userService, SubscriptionService subscriptionService, TagService tagService) {
         this.userService = userService;
         this.subscriptionService = subscriptionService;
+        this.tagService = tagService;
     }
 
 
@@ -55,9 +58,45 @@ public class UserController {
                 .build();
     }
 
+    @RequestMapping(path = "/my/info", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result myInfo(@ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+        val userDTO = userService.getUserDTO(loginUserID);
+        return userDTO.map(
+                u -> Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.SUCCESS.value)
+                        .message("查看登录用户个人信息成功")
+                        .data(u)
+                        .build()
+        ).orElse(Result.builder()
+                .ok(false)
+                .code(ResponseCode.NO_SUCH_USER.value)
+                .message("查看登录用户个人信息失败：用户不存在")
+                .data(null)
+                .build());
+    }
+
+    @RequestMapping(path = "/user/{userID}/info", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result userInfo(@PathVariable String userID) {
+        val userDTO = userService.getUserDTO(userID);
+        return userDTO.map(
+                u -> Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.SUCCESS.value)
+                        .message("查看他人个人信息成功")
+                        .data(u)
+                        .build()
+        ).orElse(Result.builder()
+                .ok(false)
+                .code(ResponseCode.NO_SUCH_USER.value)
+                .message("查看他人个人信息失败：用户不存在")
+                .data(null)
+                .build());
+    }
 
     /**
      * 关注
+     *
      * @param followeeID
      * @param loginUserID
      * @return
@@ -114,6 +153,7 @@ public class UserController {
 
     /**
      * 查看是否关注某人
+     *
      * @param userID
      * @param loginUserID
      * @return
@@ -158,11 +198,9 @@ public class UserController {
                     .gender(userUpdateDTO.getGender())
                     .introduction(userUpdateDTO.getIntroduction())
                     .avatarURL(userUpdateDTO.getAvatarURL())
-                    //.tags()
                     .build();
 
-
-            val userDTO = userService.info(userUpdate).map(
+            val userDTO = userService.info(userUpdate, userUpdateDTO.getTags()).map(
                     user -> UserDTO.builder()
                             .id(user.getId())
                             .username(user.getUsername())
@@ -172,7 +210,7 @@ public class UserController {
                             .introduction(user.getIntroduction())
                             .avatarURL(user.getAvatarURL())
                             .usageDuration(user.getUsageDuration())
-                            //.tags(user.getTags())
+                            .tags(tagService.getTags(user.getId()).getTagContentList())
                             .build()
             ).orElseThrow(NullPointerException::new);
 
