@@ -19,4 +19,5 @@ public class UserDTO {
     private String avatarURL;
     private Integer usageDuration;
     private List<String> tags;
+    private String token;
 }
