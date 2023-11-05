@@ -101,7 +101,7 @@ public class TaskController {
             // course同步task UUID
             //TODO：COURSE观看次数&视频时长
             Integer watchedCount = 0;
-            Integer videoDuration = 0;
+            Integer videoDuration = 1;
             var uploadCourse = Course.builder()
                     .taskID(taskDTO.getId())
                     .watchedCount(watchedCount)
