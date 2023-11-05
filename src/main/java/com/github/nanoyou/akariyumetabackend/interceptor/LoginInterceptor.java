@@ -1,7 +1,6 @@
-package com.github.nanoyou.akariyumetabackend.middleware;
+package com.github.nanoyou.akariyumetabackend.interceptor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.nanoyou.akariyumetabackend.common.ResponseUtil;
+import com.github.nanoyou.akariyumetabackend.common.util.ResponseUtil;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.RequestAttr;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
@@ -40,7 +39,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             responseUtil.sendJson(response, Result.builder()
                     .ok(false)
                     .code(ResponseCode.LOGIN_REQUIRE.value)
-                    .message("需要登录")
+                    .message("用户 ID 不存在，请重新登录")
                     .build()
             );
             return false;
