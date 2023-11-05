@@ -116,8 +116,17 @@ public enum ResponseCode {
     /**
      * 评论或动态创建失败
      */
-    CREATE_COMMENT_OR_DYNAMIC_FAILED(302);
+    CREATE_COMMENT_OR_DYNAMIC_FAILED(302),
 
+    // *********** 文件存储
+    /**
+     * 临时存储失败
+     */
+    TEMPORARY_STORE_FAILED(400),
+    /**
+     * 空文件类型
+     */
+    EMPTY_CONTENT_TYPE(401);
 
     public final int value;
 
