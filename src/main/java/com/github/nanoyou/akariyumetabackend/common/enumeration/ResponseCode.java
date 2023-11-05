@@ -121,8 +121,16 @@ public enum ResponseCode {
     /**
      * 找不到文件
      */
-    NO_SUCH_FILE(402);
+    NO_SUCH_FILE(402),
     // ***************** 用户
+    /**
+     * 关注失败
+     */
+    FOLLOW_FAIL(500),
+    /**
+     * 取消关注失败
+     */
+    UNFOLLOW_FAIL(501);
 
     public final int value;
 
