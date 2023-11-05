@@ -134,7 +134,11 @@ public enum ResponseCode {
     /**
      * 没有关注
      */
-    NOT_FOLLOW(502);
+    NOT_FOLLOW(502),
+    /**
+     * 个人信息修改失败
+     */
+    PERSONAL_INFO_MODIFY_FAIL(503);
 
     public final int value;
 

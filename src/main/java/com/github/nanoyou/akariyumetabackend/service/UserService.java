@@ -4,6 +4,7 @@ import com.github.nanoyou.akariyumetabackend.dao.UserDao;
 import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.RegisterDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
+import com.github.nanoyou.akariyumetabackend.dto.user.UserUpdateDTO;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.dto.TagDTO;
 import jakarta.annotation.Nonnull;
@@ -88,6 +89,21 @@ public class UserService {
                         .tags(tagService.getTags(user.getId()).getTagContentList())
                         .build()
         );
+    }
 
+    public Optional<User> info(@Nonnull User user) {
+        userDao.saveAndFlush(user);
+
+        return Optional.of(User.builder()
+                        .id(user.getId())
+                        .username(user.getUsername())
+                        .nickname(user.getNickname())
+                        .role(user.getRole())
+                        .gender(user.getGender())
+                        .introduction(user.getIntroduction())
+                        .avatarURL(user.getAvatarURL())
+                        .usageDuration(user.getUsageDuration())
+                        //.tags(tagDTO == null ? new ArrayList<>() : tagDTO.getTagContentList())
+                .build());
     }
 }

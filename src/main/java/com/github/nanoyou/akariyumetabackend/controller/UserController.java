@@ -4,8 +4,10 @@ import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.subscription.SubscriptionDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
+import com.github.nanoyou.akariyumetabackend.dto.user.UserUpdateDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.friend.Subscription;
+import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +141,56 @@ public class UserController {
                     .message("您未关注" + userID)
                     .build();
         }
+    }
+
+    /**
+     * 修改个人信息
+     * @param userUpdateDTO
+     * @return
+     */
+    @RequestMapping(path = "/my/info", method = RequestMethod.PATCH, headers = "Accept=application/json")
+    public Result info(@RequestBody UserUpdateDTO userUpdateDTO, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+        try {
+            userUpdateDTO.setId(loginUserID);
+            var userUpdate = User.builder()
+                    .id(loginUserID)
+                    .nickname(userUpdateDTO.getNickname())
+                    .gender(userUpdateDTO.getGender())
+                    .introduction(userUpdateDTO.getIntroduction())
+                    .avatarURL(userUpdateDTO.getAvatarURL())
+                    //.tags()
+                    .build();
+
+
+            val userDTO = userService.info(userUpdate).map(
+                    user -> UserDTO.builder()
+                            .id(user.getId())
+                            .username(user.getUsername())
+                            .nickname(user.getNickname())
+                            .role(user.getRole())
+                            .gender(user.getGender())
+                            .introduction(user.getIntroduction())
+                            .avatarURL(user.getAvatarURL())
+                            .usageDuration(user.getUsageDuration())
+                            //.tags(user.getTags())
+                            .build()
+            ).orElseThrow(NullPointerException::new);
+
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .message("个人信息修改成功")
+                    .data(userDTO)
+                    .build();
+        } catch (NullPointerException e) {
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.PERSONAL_INFO_MODIFY_FAIL.value)
+                    .message("个人信息修改失败")
+                    .build();
+        }
+
 
     }
+
 }
