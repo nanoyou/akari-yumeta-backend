@@ -18,8 +18,8 @@ public class FileService {
         this.fileItemDao = fileItemDao;
     }
 
-    public Optional<FileItem> getFile(@Nonnull String id) {
-        return fileItemDao.findById(id);
+    public Optional<FileItemDao.IdAndMimeTypeProjection> getFile(@Nonnull String id) {
+        return fileItemDao.findIdAndMimeTypeProjectionById(id);
     }
 
     public Optional<FileItem> upload(@Nonnull FileItem fileItem) {
