@@ -134,9 +134,15 @@ public enum ResponseCode {
     /**
      * 没有关注
      */
-    NOT_FOLLOW(502), NO_SUCH_USER(503),
-
-
+    NOT_FOLLOW(502),
+    /**
+     * 用户不存在
+     */
+    NO_SUCH_USER(503),
+    /**
+     * 个人信息修改失败
+     */
+    PERSONAL_INFO_MODIFY_FAIL(504),
     /**
      * 空消息
      */

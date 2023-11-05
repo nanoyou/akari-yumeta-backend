@@ -3,7 +3,6 @@ package com.github.nanoyou.akariyumetabackend.service;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDynamicDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskRecordDao;
-import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
