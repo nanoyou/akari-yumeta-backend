@@ -23,6 +23,11 @@ public class GoodsController {
         this.goodsService = goodsService;
     }
 
+    /**
+     * 根据描述查找商品
+     * @param description 描述
+     * @return 商品信息
+     */
     @GetMapping("/donate/goods")
     public Result getGoodsByDescription(String description) {
         var list = goodsService.getGoodByDescription(description);
