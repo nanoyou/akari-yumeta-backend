@@ -1,5 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.dto.task;
 
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskCategory;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,7 +24,7 @@ public class TaskCourseDTO {
     /**
      * 任务类别
      */
-    private String category;
+    private TaskCategory category;
     /**
      * 任务创建时间，课程任务一旦被确认上传的时间
      */
@@ -43,7 +45,7 @@ public class TaskCourseDTO {
     /**
      * 任务状态，详见枚举
      */
-    private String status;
+    private TaskStatus status;
     /**
      * 任务名称
      */

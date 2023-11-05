@@ -1,11 +1,8 @@
 package com.github.nanoyou.akariyumetabackend.entity.user;
 
-import com.github.nanoyou.akariyumetabackend.common.enumeration.Gender;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Gender;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +27,7 @@ public class User {
     /**
      * 用户名
      */
+    @Column(unique = true)
     private String username;
     /**
      * 昵称
@@ -38,6 +36,7 @@ public class User {
     /**
      * 角色
      */
+    @Enumerated(EnumType.STRING)
     private Role role;
     /**
      * 密码
@@ -46,6 +45,7 @@ public class User {
     /**
      * 性别
      */
+    @Enumerated(EnumType.STRING)
     private Gender gender;
     /**
      * 个人介绍

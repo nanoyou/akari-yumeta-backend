@@ -1,9 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.entity.task;
 
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskRecordStatus;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,6 +37,7 @@ public class TaskRecord {
     /**
      * 任务状态，详见枚举
      */
+    @Enumerated(EnumType.STRING)
     private TaskRecordStatus status;
 
     @Embeddable

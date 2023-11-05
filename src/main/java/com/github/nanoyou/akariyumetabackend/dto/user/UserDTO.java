@@ -1,5 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.dto.user;
 
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Gender;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,8 +13,8 @@ public class UserDTO {
     private String id;
     private String username;
     private String nickname;
-    private String role;
-    private String gender;
+    private Role role;
+    private Gender gender;
     private String introduction;
     private String avatarURL;
     private Integer usageDuration;

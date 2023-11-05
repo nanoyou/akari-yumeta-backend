@@ -4,9 +4,10 @@ import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.user.RegisterDTO;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.Role;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,10 +107,11 @@ public class RegisterController {
                     .data(registerUserDTO)
                     .build();
 
-        } catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
+
             return Result.builder()
                     .ok(false)
-                    .message("注册失败：内部服务器错误")
+                    .message("注册失败：用户已存在")
                     .code(ResponseCode.PARAM_ERR.value)
                     .data(null)
                     .build();
