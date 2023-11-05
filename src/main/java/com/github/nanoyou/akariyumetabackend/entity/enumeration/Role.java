@@ -1,6 +1,6 @@
-package com.github.nanoyou.akariyumetabackend.common.enumeration;
+package com.github.nanoyou.akariyumetabackend.entity.enumeration;
 
-public enum UserRole {
+public enum Role {
     /**
      * 志愿者
      */
@@ -16,5 +16,6 @@ public enum UserRole {
     /**
      * 捐助者
      */
-    SPONSOR
+    SPONSOR;
+
 }

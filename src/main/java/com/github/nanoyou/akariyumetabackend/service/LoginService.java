@@ -29,13 +29,12 @@ public class LoginService {
                         .nickname(user.getNickname())
                         .introduction(user.getIntroduction())
                         .usageDuration(user.getUsageDuration())
-                        .role(user.getRole().value)
-                        .gender(user.getGender().value)
+                        .role(user.getRole())
+                        .gender(user.getGender())
                         .avatarURL(user.getAvatarURL())
                         .build()
 
         );
 
     }
-
 }

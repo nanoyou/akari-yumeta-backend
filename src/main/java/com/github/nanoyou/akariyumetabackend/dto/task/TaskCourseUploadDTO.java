@@ -1,7 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.dto.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskCategory;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -3,8 +3,10 @@ package com.github.nanoyou.akariyumetabackend.service;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDynamicDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskRecordDao;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
+import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,4 +69,34 @@ public class TaskService {
     public Optional<TaskDynamic> addTaskDynamic(@Nonnull TaskDynamic taskDynamic) {
         return Optional.ofNullable(taskDynamicDao.saveAndFlush(taskDynamic));
     }
+
+    public Optional<TaskRecord> getRecord(@Nonnull TaskRecord._TaskRecordCombinedPrimaryKey taskRecordCombinedPrimaryKey) {
+        return taskRecordDao.findByTaskRecordCombinedPrimaryKey(taskRecordCombinedPrimaryKey);
+    }
+
+    public Optional<TaskRecord> addRecord(@Nonnull TaskRecord taskRecord) {
+        taskRecordDao.save(taskRecord);
+
+        return Optional.of(TaskRecord.builder()
+                .taskRecordCombinedPrimaryKey(taskRecord.getTaskRecordCombinedPrimaryKey())
+                .endTime(taskRecord.getEndTime())
+                .startTime(taskRecord.getStartTime())
+                .status(taskRecord.getStatus())
+                .build());
+    }
+
+    public List<TaskRecord> getRecords(@Nonnull String childID, @Nonnull TaskRecordStatus status) {
+        return taskRecordDao.findByTaskRecordCombinedPrimaryKeyChildIDAndStatus(childID, status);
+    }
+
+    public Integer getBonuses(@Nonnull List<String> taskIDs) {
+        val tasks = taskIDs.stream().map(
+                id -> taskDao.findById(id).orElseThrow(NullPointerException::new)
+        ).toList();
+
+        return tasks.stream()
+                .map(Task::getBonus)
+                .reduce(0, Integer::sum);
+    }
+
 }
