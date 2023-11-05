@@ -130,7 +130,11 @@ public enum ResponseCode {
     /**
      * 取消关注失败
      */
-    UNFOLLOW_FAIL(501);
+    UNFOLLOW_FAIL(501),
+    /**
+     * 没有关注
+     */
+    NOT_FOLLOW(502);
 
     public final int value;
 
