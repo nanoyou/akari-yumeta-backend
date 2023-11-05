@@ -134,7 +134,13 @@ public enum ResponseCode {
     /**
      * 没有关注
      */
-    NOT_FOLLOW(502), NO_SUCH_USER(503);
+    NOT_FOLLOW(502), NO_SUCH_USER(503),
+
+
+    /**
+     * 空消息
+     */
+    EMPTY_MESSAGE_CONTENT(600);
 
     public final int value;
 

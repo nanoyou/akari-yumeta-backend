@@ -56,6 +56,9 @@ public class UserService {
 
     }
 
+    public boolean userExists(@Nonnull String userID) {
+        return userDao.existsById(userID);
+    }
 
     public List<User> getAllUsers() {
         return userDao.findAll();
