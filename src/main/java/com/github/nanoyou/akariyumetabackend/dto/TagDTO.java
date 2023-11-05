@@ -1,4 +1,4 @@
-package com.github.nanoyou.akariyumetabackend.vo;
+package com.github.nanoyou.akariyumetabackend.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.util.List;
 
 @Builder
 @Data
-public class TagVO {
+public class TagDTO {
     String userID;
     List<String> tagContentList;
 }
