@@ -2,10 +2,12 @@ package com.github.nanoyou.akariyumetabackend.service;
 
 
 import com.github.nanoyou.akariyumetabackend.dao.SubscriptionDao;
+import com.github.nanoyou.akariyumetabackend.entity.friend.Subscription;
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SubscriptionService {
@@ -28,5 +30,20 @@ public class SubscriptionService {
                         subscription.getCombinedPrimaryKey().getFolloweeID()
 
         ).toList();
+    }
+
+    public Optional<Subscription> follow(@Nonnull Subscription subscription){
+        subscriptionDao.save(subscription);
+        return Optional.of(Subscription.builder()
+                        .combinedPrimaryKey(subscription.getCombinedPrimaryKey())
+                .build());
+    }
+
+    public Boolean validateFollow(@Nonnull Subscription._CombinedPrimaryKey combinedPrimaryKey){
+        return subscriptionDao.findByCombinedPrimaryKey(combinedPrimaryKey).isPresent();
+    }
+
+    public Boolean unfollow(@Nonnull Subscription._CombinedPrimaryKey combinedPrimaryKey){
+        return subscriptionDao.deleteByCombinedPrimaryKey(combinedPrimaryKey);
     }
 }

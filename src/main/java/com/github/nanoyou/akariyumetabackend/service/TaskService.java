@@ -85,6 +85,10 @@ public class TaskService {
                 .build());
     }
 
+    public Boolean validateMyTask(@Nonnull TaskRecord._TaskRecordCombinedPrimaryKey taskRecordCombinedPrimaryKey) {
+        return taskRecordDao.findByTaskRecordCombinedPrimaryKey(taskRecordCombinedPrimaryKey).isPresent();
+    }
+
     public List<TaskRecord> getRecords(@Nonnull String childID, @Nonnull TaskRecordStatus status) {
         return taskRecordDao.findByTaskRecordCombinedPrimaryKeyChildIDAndStatus(childID, status);
     }
