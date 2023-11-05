@@ -27,6 +27,7 @@ public class LoginController {
         try {
             return userService.login(loginDTO).map(
                     userDTO -> {
+                        userDTO.setToken(httpSession.getId());
                         // 保存 Session
                         httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
                         return Result.builder()
@@ -69,6 +70,7 @@ public class LoginController {
                                 .data(null)
                                 .build();
                     }
+                    userDTO.setToken(httpSession.getId());
                     httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
                     return Result.builder()
                             .ok(true)
