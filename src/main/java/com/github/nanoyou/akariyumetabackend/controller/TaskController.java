@@ -284,6 +284,14 @@ public class TaskController {
                     .childID(loginUserID)
                     .build();
 
+            if(taskService.validateMyTask(comID)){
+                return Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.TASK_OPEN_AGAIN.value)
+                        .message("学习任务重复开启")
+                        .build();
+            }
+
             var taskRecord = TaskRecord.builder()
                     .taskRecordCombinedPrimaryKey(comID)
                     .endTime(null)

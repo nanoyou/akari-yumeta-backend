@@ -96,14 +96,17 @@ public enum ResponseCode {
      */
     VIDEO_UNCOMPLETED(207),
     /**
-     * 无法获取成绩
+     * 无法获取积分
      */
     SCORE_GET_FAIL(208),
     /**
      * 视频不见喽~
      */
     VIDEO_DISAPPEARED(209),
-
+    /**
+     * 学习任务重复开启
+     */
+    TASK_OPEN_AGAIN(210),
     // ***************** 动态
     /**
      * 评论内容不能为空
