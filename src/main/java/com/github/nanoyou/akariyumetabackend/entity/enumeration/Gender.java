@@ -1,6 +1,6 @@
-package com.github.nanoyou.akariyumetabackend.common.enumeration;
+package com.github.nanoyou.akariyumetabackend.entity.enumeration;
 
-public enum UserGender {
+public enum Gender {
     /**
      * 男
      */
@@ -12,5 +12,5 @@ public enum UserGender {
     /**
      * 秘密
      */
-    SECRET
+    SECRET;
 }

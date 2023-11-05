@@ -1,11 +1,8 @@
 package com.github.nanoyou.akariyumetabackend.entity.task;
 
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskCategory;
-import com.github.nanoyou.akariyumetabackend.common.enumeration.TaskStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskCategory;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,6 +50,7 @@ public class Task {
     /**
      * 任务状态
      */
+    @Enumerated(EnumType.STRING)
     private TaskStatus status;
     /**
      * 任务描述
@@ -61,6 +59,7 @@ public class Task {
     /**
      * 任务类别
      */
+    @Enumerated(EnumType.STRING)
     private TaskCategory category;
     /**
      * 奖励积分
