@@ -20,6 +20,9 @@ public class CourseService {
     }
 
     public Optional<Course> addCourse(@Nonnull Course course) {
+        if(course.getWatchedCount() < 0 || course.getVideoDuration() <= 0)
+            return null;
+
         courseDao.saveAndFlush(course);
 
         return Optional.of(Course.builder()
