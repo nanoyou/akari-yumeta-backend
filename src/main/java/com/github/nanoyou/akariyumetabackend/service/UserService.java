@@ -5,7 +5,7 @@ import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.RegisterDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
-import com.github.nanoyou.akariyumetabackend.vo.TagVO;
+import com.github.nanoyou.akariyumetabackend.dto.TagDTO;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
@@ -53,9 +53,9 @@ public class UserService {
         user = userDao.saveAndFlush(user);
 
         val tagList = registerUser.getTags();
-        TagVO tagVO = null;
+        TagDTO tagDTO = null;
         if ((tagList != null) && (!(tagList.isEmpty()))) {
-            tagVO = tagService.addTags(user.getId(), registerUser.getTags());
+            tagDTO = tagService.addTags(user.getId(), registerUser.getTags());
         }
 
         return UserDTO.builder()
@@ -67,7 +67,7 @@ public class UserService {
                 .introduction(user.getIntroduction())
                 .avatarURL(user.getAvatarURL())
                 .usageDuration(user.getUsageDuration())
-                .tags(tagVO == null ? new ArrayList<>() : tagVO.getTagContentList())
+                .tags(tagDTO == null ? new ArrayList<>() : tagDTO.getTagContentList())
                 .build();
     }
 

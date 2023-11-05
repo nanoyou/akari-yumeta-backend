@@ -2,7 +2,7 @@ package com.github.nanoyou.akariyumetabackend.service;
 
 import com.github.nanoyou.akariyumetabackend.dao.TagDao;
 import com.github.nanoyou.akariyumetabackend.entity.user.Tag;
-import com.github.nanoyou.akariyumetabackend.vo.TagVO;
+import com.github.nanoyou.akariyumetabackend.dto.TagDTO;
 import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class TagService {
         this.tagDao = tagDao;
     }
 
-    public TagVO addTags(@Nonnull String userID, @Nonnull List<String> tagContentList) {
+    public TagDTO addTags(@Nonnull String userID, @Nonnull List<String> tagContentList) {
         var tagList = tagContentList.stream().map(
                 tagContent -> Tag.builder()
                         .combinedPrimaryKey(
@@ -35,19 +35,19 @@ public class TagService {
 
         tagContentList = tagList.stream().map(tag -> tag.getCombinedPrimaryKey().getTagContent()).toList();
 
-        return TagVO.builder()
+        return TagDTO.builder()
                 .userID(tagList.get(0).getCombinedPrimaryKey().getUserId())
                 .tagContentList(tagContentList)
                 .build();
 
     }
 
-    public TagVO getTags(@Nonnull String userID) {
+    public TagDTO getTags(@Nonnull String userID) {
         val tagContentList = tagDao.findTagContentProjectionByCombinedPrimaryKeyUserId(userID).stream().map(
                 TagDao.TagContentProjection::getCombinedPrimaryKeyTagContent
         ).toList();
 
-        return TagVO.builder()
+        return TagDTO.builder()
                 .userID(userID)
                 .tagContentList(tagContentList)
                 .build();
