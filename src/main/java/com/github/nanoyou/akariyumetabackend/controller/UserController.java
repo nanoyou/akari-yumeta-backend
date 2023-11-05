@@ -98,10 +98,8 @@ public class UserController {
 
     /**
      * 关注
-     *
      * @param followeeID
      * @param loginUserID
-     * @return
      */
     @RequestMapping(path = "/my/follow/{followeeID}", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result follow(@PathVariable String followeeID, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
@@ -155,10 +153,8 @@ public class UserController {
 
     /**
      * 查看是否关注某人
-     *
      * @param userID
      * @param loginUserID
-     * @return
      */
     @RequestMapping(path = "/my/follow/{userID}", method = RequestMethod.GET, headers = "Accept=application/json")
     public Result isFollowed(@PathVariable String userID, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
@@ -188,7 +184,6 @@ public class UserController {
     /**
      * 修改个人信息
      * @param userUpdateDTO
-     * @return
      */
     @RequestMapping(path = "/my/info", method = RequestMethod.PATCH, headers = "Accept=application/json")
     public Result info(@RequestBody UserUpdateDTO userUpdateDTO, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
@@ -232,8 +227,29 @@ public class UserController {
                     .message("个人信息修改失败")
                     .build();
         }
+    }
 
 
+    @RequestMapping(path = "/my/follow", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result myFollow(@ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+        try {
+            val followeeIDs = subscriptionService.getFolloweeIDs(loginUserID);
+            val followees = userService.getFollowee(followeeIDs);
+
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .message("查看关注列表成功")
+                    .data(followees)
+                    .build();
+        } catch (Exception e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.NOT_FOLLOW_ANYONE.value)
+                    .message("您还没有关注任何人")
+                    .data(null)
+                    .build();
+        }
     }
 
 }
