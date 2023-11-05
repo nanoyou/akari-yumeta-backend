@@ -2,8 +2,13 @@ package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
+import com.github.nanoyou.akariyumetabackend.entity.donate.DonateGoods;
+
+import com.github.nanoyou.akariyumetabackend.service.DonateGoodsService;
 import com.github.nanoyou.akariyumetabackend.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,10 +21,12 @@ import java.util.UUID;
  */
 public class GoodsController {
     private final GoodsService goodsService;
+    private final DonateGoodsService donateGoodsService;
 
     @Autowired
-    public GoodsController(GoodsService goodsService) {
+    public GoodsController(GoodsService goodsService, DonateGoodsService donateGoodsService) {
         this.goodsService = goodsService;
+        this.donateGoodsService = donateGoodsService;
     }
 
     /**
@@ -47,6 +54,23 @@ public class GoodsController {
 
     }
 
+    @RequestMapping(path = "/donate/goods", method = RequestMethod.POST, headers = "Accept=application/json")
+    public Result donateGoods(@RequestBody DonateGoods donateGoods) {
+        if (donateGoods.getAmount() == null || donateGoods.getAmount() <= 0) {
+            return Result.builder()
+                    .ok(false)
+                    .message("捐赠数量不合法")
+                    .code(ResponseCode.PARAM_ERR.value)
+                    .build();
+        }
+        DonateGoods result = donateGoodsService.saveDonateGoods(donateGoods);
+        return Result.builder()
+                .ok(true)
+                .message("捐赠成功")
+                .code(ResponseCode.SUCCESS.value)
+                .data(result)
+                .build();
+    }
     /**
      * 根据商品ID查找商品
      * @param goodsID 商品ID
