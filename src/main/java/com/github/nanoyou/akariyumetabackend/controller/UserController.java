@@ -71,6 +71,24 @@ public class UserController {
                 .build());
     }
 
+    @RequestMapping(path = "/user/{userID}/info", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result userInfo(@PathVariable String userID) {
+        val userDTO = userService.getUserDTO(userID);
+        return userDTO.map(
+                u -> Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.SUCCESS.value)
+                        .message("查看他人个人信息成功")
+                        .data(u)
+                        .build()
+        ).orElse(Result.builder()
+                .ok(false)
+                .code(ResponseCode.NO_SUCH_USER.value)
+                .message("查看他人个人信息失败：用户不存在")
+                .data(null)
+                .build());
+    }
+
     /**
      * 关注
      *
