@@ -57,11 +57,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
         // 在下面添加需要 捐助者 登录的路径，需要添加至上方 loginInterceptor 内
         registry.addInterceptor(sponsorInterceptor)
-                .addPathPatterns("/sponsor")
-                .addPathPatterns("/donatem/goods")
-                .addPathPatterns("/donate/money")
-                .addPathPatterns("/donate/**/info")
-                .addPathPatterns("/donate/goods/**");
+                .addPathPatterns("/sponsor");
+                // .addPathPatterns("/donatem/goods")
+                // .addPathPatterns("/donate/money")
+                // .addPathPatterns("/donate/**/info")
+                // .addPathPatterns("/donate/goods/**");
 //                添加示例
 //                .addPathPatterns("/sponsor/**")
 

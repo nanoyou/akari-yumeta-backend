@@ -27,6 +27,7 @@ public class DonateMoney {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+
     private String id;
     /**
      * 捐助金额，以分为单位

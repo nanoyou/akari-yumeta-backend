@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 /**
  * 物品相关控制器
@@ -52,7 +54,7 @@ public class GoodsController {
      */
 
     @GetMapping("/donate/goods/{goodsID}")
-    public Result findGoodsById(@PathVariable("goodsID")String goodsID){
+    public Result findGoodsById(@PathVariable("goodsID") UUID goodsID){
         var goods = goodsService.findGoodsById(goodsID);
 
         if (goods.isPresent()) {

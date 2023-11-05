@@ -26,7 +26,7 @@ public class DonateGoods {
      * 捐物关系 UUID
      */
     @Id
-    @GeneratedValue( strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     /**
      * 捐助数量

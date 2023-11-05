@@ -83,9 +83,11 @@ public class DonateController {
      * @return 捐助结果
      */
     @PostMapping("/donate/goods")
-    public Result getHistory(HttpSession session,@PathVariable("userID") String userID,@RequestBody DonateGoods donateGoods){
-        donateGoods.setDonatorID((UUID) session.getAttribute(SessionAttr.LOGIN_USER_ID.attr));
-        Optional<GoodsInfo> goods = goodsService.findGoodsById(String.valueOf(donateGoods.getGoodsID()));
+    public Result getHistory(HttpSession session,@RequestBody DonateGoods donateGoods){
+        String donatorID = (String) session.getAttribute(SessionAttr.LOGIN_USER_ID.attr);
+        donateGoods.setDonatorID(UUID.fromString(donatorID));
+        donateGoods.setCreatedTime(LocalDateTime.now());
+        Optional<GoodsInfo> goods = goodsService.findGoodsById(donateGoods.getGoodsID());
         // 物品不存在
         if (!goods.isPresent()) {
             return Result.builder()
