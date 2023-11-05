@@ -17,7 +17,7 @@ public class DonateGoodsService {
     }
 
     public DonateGoods saveDonateGoods(DonateGoods donateGoods){
-        Optional<DonateGoods> optional = donateGoodsDao.save(donateGoods);
+        Optional<DonateGoods> optional = Optional.of(donateGoodsDao.save(donateGoods));
         DonateGoods result = optional.orElse(null);
         return result;
     }

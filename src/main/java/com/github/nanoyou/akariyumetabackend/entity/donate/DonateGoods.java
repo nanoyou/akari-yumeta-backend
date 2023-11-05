@@ -1,6 +1,13 @@
 package com.github.nanoyou.akariyumetabackend.entity.donate;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -10,10 +17,16 @@ import java.util.UUID;
  * 属于: 捐助
  */
 @Data
+@Builder
+@AllArgsConstructor
+@Entity
+@NoArgsConstructor
 public class DonateGoods {
     /**
      * 捐物关系 UUID
      */
+    @Id
+    @GeneratedValue( strategy = GenerationType.UUID)
     private String id;
     /**
      * 捐助数量

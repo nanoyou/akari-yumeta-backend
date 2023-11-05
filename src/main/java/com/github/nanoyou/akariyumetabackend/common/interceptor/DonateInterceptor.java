@@ -1,7 +1,8 @@
 package com.github.nanoyou.akariyumetabackend.common.interceptor;
 
-import com.github.nanoyou.akariyumetabackend.common.enumeration.Role;
+
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

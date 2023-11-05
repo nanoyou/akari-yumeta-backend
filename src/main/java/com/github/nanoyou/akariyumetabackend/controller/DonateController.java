@@ -11,15 +11,17 @@ import com.github.nanoyou.akariyumetabackend.service.DonateMoneyService;
 import com.github.nanoyou.akariyumetabackend.service.GoodsService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-/**
- * 捐助金额控制器
- */
+
 public class DonateController {
 
     private DonateMoneyService donateMoneyService;
@@ -42,9 +44,11 @@ public class DonateController {
     @PostMapping("/donate/money")
     public Result donateMoney(@RequestBody DonateMoney donateMoney, HttpSession session) {
 
-        // TODO 这个数据库能自动获取时间吗？？？？
-
         donateMoney.setDonatorID(UUID.fromString((String) session.getAttribute(SessionAttr.LOGIN_USER_ID.attr)));
+
+
+
+        donateMoney.setCreatedTime(LocalDateTime.now());
 
         if (donateMoney.getAmount() == null || donateMoney.getAmount() <= 0) {
             return Result.builder()
@@ -78,7 +82,7 @@ public class DonateController {
      * @param donateGoods 捐助物品
      * @return 捐助结果
      */
-    @GetMapping("/donate/{userID}/info")
+    @PostMapping("/donate/goods")
     public Result getHistory(HttpSession session,@PathVariable("userID") String userID,@RequestBody DonateGoods donateGoods){
         donateGoods.setDonatorID((UUID) session.getAttribute(SessionAttr.LOGIN_USER_ID.attr));
         Optional<GoodsInfo> goods = goodsService.findGoodsById(String.valueOf(donateGoods.getGoodsID()));
