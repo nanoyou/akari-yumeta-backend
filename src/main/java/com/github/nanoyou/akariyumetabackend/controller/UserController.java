@@ -2,11 +2,13 @@ package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.dto.TagDTO;
 import com.github.nanoyou.akariyumetabackend.dto.subscription.SubscriptionDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserUpdateDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.friend.Subscription;
+import com.github.nanoyou.akariyumetabackend.entity.user.Tag;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.TagService;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
@@ -191,7 +193,6 @@ public class UserController {
     @RequestMapping(path = "/my/info", method = RequestMethod.PATCH, headers = "Accept=application/json")
     public Result info(@RequestBody UserUpdateDTO userUpdateDTO, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
         try {
-            userUpdateDTO.setId(loginUserID);
             var userUpdate = User.builder()
                     .id(loginUserID)
                     .nickname(userUpdateDTO.getNickname())
@@ -199,8 +200,12 @@ public class UserController {
                     .introduction(userUpdateDTO.getIntroduction())
                     .avatarURL(userUpdateDTO.getAvatarURL())
                     .build();
+            var tagsUpdate = TagDTO.builder()
+                    .userID(loginUserID)
+                    .tagContentList(userUpdateDTO.getTags())
+                    .build();
 
-            val userDTO = userService.info(userUpdate, userUpdateDTO.getTags()).map(
+            val userDTO = userService.info(userUpdate, tagsUpdate).map(
                     user -> UserDTO.builder()
                             .id(user.getId())
                             .username(user.getUsername())
@@ -210,7 +215,7 @@ public class UserController {
                             .introduction(user.getIntroduction())
                             .avatarURL(user.getAvatarURL())
                             .usageDuration(user.getUsageDuration())
-                            .tags(tagService.getTags(user.getId()).getTagContentList())
+                            .tags(user.getTags())
                             .build()
             ).orElseThrow(NullPointerException::new);
 

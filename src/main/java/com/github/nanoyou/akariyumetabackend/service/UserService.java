@@ -114,10 +114,15 @@ public class UserService {
         );
     }
 
-    public Optional<UserDTO> info(@Nonnull User user, @Nonnull List<String> tags) {
+    public Optional<UserDTO> info(@Nonnull User user, @Nonnull TagDTO tagDTO) {
         userDao.saveAndFlush(user);
 
-        //TODO: tags更新
+        //tags更新
+        val tagList = tagDTO.getTagContentList();
+        TagDTO tagDTO1 = null;
+        if ((tagList != null) && (!(tagList.isEmpty()))) {
+            tagDTO1 = tagService.addTags(user.getId(), tagDTO.getTagContentList());
+        }
 
         return Optional.of(UserDTO.builder()
                         .id(user.getId())
@@ -128,7 +133,7 @@ public class UserService {
                         .introduction(user.getIntroduction())
                         .avatarURL(user.getAvatarURL())
                         .usageDuration(user.getUsageDuration())
-                        .tags(tags)
+                        .tags(tagDTO1.getTagContentList())
                 .build());
     }
 
