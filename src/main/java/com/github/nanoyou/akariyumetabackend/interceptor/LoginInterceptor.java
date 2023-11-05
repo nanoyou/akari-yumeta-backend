@@ -39,7 +39,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             responseUtil.sendJson(response, Result.builder()
                     .ok(false)
                     .code(ResponseCode.LOGIN_REQUIRE.value)
-                    .message("需要登录")
+                    .message("用户 ID 不存在，请重新登录")
                     .build()
             );
             return false;
