@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,5 +84,16 @@ public class ChatService {
         );
 
         return result;
+    }
+
+    public Optional<Message> read(@Nonnull String messageID) {
+        val message = messageDao.findById(messageID);
+        return message.map(
+                m -> {
+                    m.setRead(true);
+                    messageDao.saveAndFlush(m);
+                    return m;
+                }
+        );
     }
 }
