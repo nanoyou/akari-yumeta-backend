@@ -53,9 +53,27 @@ public class UserController {
                 .build();
     }
 
+    @RequestMapping(path = "/my/info", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result myInfo(@ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+        val userDTO = userService.getUserDTO(loginUserID);
+        return userDTO.map(
+                u -> Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.SUCCESS.value)
+                        .message("查看登录用户个人信息成功")
+                        .data(u)
+                        .build()
+        ).orElse(Result.builder()
+                .ok(false)
+                .code(ResponseCode.NO_SUCH_USER.value)
+                .message("查看登录用户个人信息失败：用户不存在")
+                .data(null)
+                .build());
+    }
 
     /**
      * 关注
+     *
      * @param followeeID
      * @param loginUserID
      * @return
@@ -112,6 +130,7 @@ public class UserController {
 
     /**
      * 查看是否关注某人
+     *
      * @param userID
      * @param loginUserID
      * @return

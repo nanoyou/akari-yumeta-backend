@@ -32,6 +32,31 @@ public class UserService {
         return userDao.findById(userID);
     }
 
+    public Optional<UserDTO> getUserDTO(@Nonnull String userID) {
+        val user = userDao.findById(userID);
+
+        val tagContentList = user.map(u -> {
+            val tags = tagService.getTags(u.getId());
+            return tags.getTagContentList();
+        }).orElse(new ArrayList<>());
+
+        return user.map(
+                u -> UserDTO.builder()
+                        .id(u.getId())
+                        .username(u.getUsername())
+                        .nickname(u.getNickname())
+                        .role(u.getRole())
+                        .gender(u.getGender())
+                        .introduction(u.getIntroduction())
+                        .avatarURL(u.getAvatarURL())
+                        .usageDuration(u.getUsageDuration())
+                        .tags(tagContentList)
+                        .build()
+        );
+
+    }
+
+
     public List<User> getAllUsers() {
         return userDao.findAll();
     }

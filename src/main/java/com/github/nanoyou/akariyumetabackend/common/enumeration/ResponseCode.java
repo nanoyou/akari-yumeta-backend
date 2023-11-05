@@ -134,7 +134,7 @@ public enum ResponseCode {
     /**
      * 没有关注
      */
-    NOT_FOLLOW(502);
+    NOT_FOLLOW(502), NO_SUCH_USER(503);
 
     public final int value;
 
