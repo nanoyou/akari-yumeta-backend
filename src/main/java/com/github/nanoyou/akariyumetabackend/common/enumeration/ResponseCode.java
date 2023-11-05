@@ -150,7 +150,8 @@ public enum ResponseCode {
     /**
      * 空消息
      */
-    EMPTY_MESSAGE_CONTENT(600);
+    EMPTY_MESSAGE_CONTENT(600),
+    NO_SUCH_MESSAGE(601);
 
     public final int value;
 

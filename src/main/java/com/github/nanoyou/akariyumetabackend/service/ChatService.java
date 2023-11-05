@@ -3,7 +3,6 @@ package com.github.nanoyou.akariyumetabackend.service;
 import cn.hutool.core.collection.CollUtil;
 import com.github.nanoyou.akariyumetabackend.dao.MessageDao;
 import com.github.nanoyou.akariyumetabackend.entity.chat.Message;
-import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,8 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class ChatService {
@@ -83,5 +81,16 @@ public class ChatService {
         );
 
         return result;
+    }
+
+    public Optional<Message> read(@Nonnull String messageID) {
+        val message = messageDao.findById(messageID);
+        return message.map(
+                m -> {
+                    m.setRead(true);
+                    messageDao.saveAndFlush(m);
+                    return m;
+                }
+        );
     }
 }

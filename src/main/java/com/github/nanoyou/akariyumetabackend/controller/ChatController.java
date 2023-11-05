@@ -1,6 +1,5 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
-import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.SendMessageDTO;
 import com.github.nanoyou.akariyumetabackend.dto.chat.ChatDTO;
@@ -8,11 +7,9 @@ import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.chat.Message;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.ChatService;
-import com.github.nanoyou.akariyumetabackend.service.LikeService;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -111,6 +108,25 @@ public class ChatController {
                 .data(chatDTOList)
                 .build();
 
+    }
+
+    @RequestMapping(path = "/chat/message/{messageID}/read", method = RequestMethod.POST, headers = "Accept=application/json")
+    public Result read(@PathVariable String messageID) {
+        val message = chatService.read(messageID);
+        return message.map(
+                m -> Result.builder()
+                        .ok(true)
+                        .message("标记已读成功")
+                        .code(ResponseCode.SUCCESS.value)
+                        .data(m)
+                        .build()
+        ).orElse(Result.builder()
+                .ok(false)
+                .message("标记已读失败：消息不存在")
+                .code(ResponseCode.NO_SUCH_MESSAGE.value)
+                .data(null)
+                .build()
+        );
     }
 
 }
