@@ -18,6 +18,10 @@ public class FileService {
         this.fileItemDao = fileItemDao;
     }
 
+    public Optional<FileItem> getFile(@Nonnull String id) {
+        return fileItemDao.findById(id);
+    }
+
     public Optional<FileItem> upload(@Nonnull FileItem fileItem) {
         return Optional.of(fileItemDao.saveAndFlush(fileItem));
     }

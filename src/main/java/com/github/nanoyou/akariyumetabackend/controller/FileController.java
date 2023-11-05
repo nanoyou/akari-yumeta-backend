@@ -41,6 +41,18 @@ public class FileController {
             val bytes = file.getBytes();
 
             val id = DigestUtil.sha512Hex(bytes);
+            val existedFile = fileService.getFile(id);
+            if (existedFile.isPresent()) {
+                return Result.builder()
+                        .ok(true)
+                        .code(ResponseCode.SUCCESS.value)
+                        .message("文件上传成功：文件已经存在，无需上传")
+                        .data(FileRecordDTO.builder()
+                                .id(existedFile.get().getId())
+                                .mimeType(existedFile.get().getMimeType())
+                                .build())
+                        .build();
+            }
 
             val contentType = file.getContentType();
 
