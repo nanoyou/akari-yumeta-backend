@@ -54,6 +54,12 @@ public class UserController {
     }
 
 
+    /**
+     * 关注
+     * @param followeeID
+     * @param loginUserID
+     * @return
+     */
     @RequestMapping(path = "/my/follow/{followeeID}", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result follow(@PathVariable String followeeID, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
         try {
@@ -102,5 +108,36 @@ public class UserController {
                     .build();
         }
 
+    }
+
+    /**
+     * 查看是否关注某人
+     * @param userID
+     * @param loginUserID
+     * @return
+     */
+    @RequestMapping(path = "/my/follow/{userID}", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result isFollowed(@PathVariable String userID, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+        try {
+            val friend = Subscription._CombinedPrimaryKey.builder()
+                    .followerID(loginUserID)
+                    .followeeID(userID)
+                    .build();
+
+            var followed = subscriptionService.validateFollow(friend) ? true : false;
+
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .message("您已关注" + userID)
+                    .data(followed)
+                    .build();
+        } catch (Exception e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.NOT_FOLLOW.value)
+                    .message("您未关注" + userID)
+                    .build();
+        }
     }
 }
