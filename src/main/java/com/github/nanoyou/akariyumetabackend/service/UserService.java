@@ -137,7 +137,7 @@ public class UserService {
                         .introduction(user.getIntroduction())
                         .avatarURL(user.getAvatarURL())
                         .usageDuration(user.getUsageDuration())
-                        .tags(tagDTO1.getTagContentList())
+                        .tags(tagDTO1 == null ? new ArrayList<>() : tagDTO1.getTagContentList())
                 .build());
     }
 
