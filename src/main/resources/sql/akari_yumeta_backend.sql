@@ -11,7 +11,7 @@
  Target Server Version : 80034
  File Encoding         : 65001
 
- Date: 05/11/2023 22:22:33
+ Date: 05/11/2023 22:55:05
 */
 
 SET NAMES utf8mb4;
@@ -22,11 +22,11 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment`  (
-  `create_time` datetime(6) NULL DEFAULT NULL,
-  `commenterid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `create_time` datetime(6) NOT NULL,
+  `commenterid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `reply_to` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `reply_to` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -39,10 +39,10 @@ CREATE TABLE `comment`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `course`;
 CREATE TABLE `course`  (
-  `video_duration` int NULL DEFAULT NULL,
-  `watched_count` int NULL DEFAULT NULL,
+  `video_duration` int NOT NULL,
+  `watched_count` int NOT NULL,
   `taskid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `videourl` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `videourl` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`taskid`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -56,8 +56,8 @@ CREATE TABLE `course`  (
 DROP TABLE IF EXISTS `file_item`;
 CREATE TABLE `file_item`  (
   `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `mime_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `data` longblob NULL,
+  `mime_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `data` longblob NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -71,8 +71,8 @@ CREATE TABLE `file_item`  (
 DROP TABLE IF EXISTS `like`;
 CREATE TABLE `like`  (
   `commentid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `likedid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `likerid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `likedid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `likerid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`commentid`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -86,12 +86,12 @@ CREATE TABLE `like`  (
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message`  (
   `is_read` bit(1) NOT NULL,
-  `send_time` datetime(6) NULL DEFAULT NULL,
+  `send_time` datetime(6) NOT NULL,
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `receiverid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `senderid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `type` enum('TEXT') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `receiverid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `senderid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `type` enum('TEXT') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -126,25 +126,25 @@ CREATE TABLE `tag`  (
 -- ----------------------------
 -- Records of tag
 -- ----------------------------
-INSERT INTO `tag` VALUES ('小猫', '4e7a90b5-ef5b-4bc9-8edc-2d9e318f7157');
-INSERT INTO `tag` VALUES ('无父无母', '4e7a90b5-ef5b-4bc9-8edc-2d9e318f7157');
-INSERT INTO `tag` VALUES ('祖安', '4e7a90b5-ef5b-4bc9-8edc-2d9e318f7157');
+INSERT INTO `tag` VALUES ('小猫', 'ed43d8b9-917c-4b49-b5cb-3e90d3a0d18a');
+INSERT INTO `tag` VALUES ('无父无母', 'ed43d8b9-917c-4b49-b5cb-3e90d3a0d18a');
+INSERT INTO `tag` VALUES ('祖安', 'ed43d8b9-917c-4b49-b5cb-3e90d3a0d18a');
 
 -- ----------------------------
 -- Table structure for task
 -- ----------------------------
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task`  (
-  `bonus` int NULL DEFAULT NULL,
-  `created_time` datetime(6) NULL DEFAULT NULL,
-  `end_time` datetime(6) NULL DEFAULT NULL,
-  `start_time` datetime(6) NULL DEFAULT NULL,
+  `bonus` int NOT NULL,
+  `created_time` datetime(6) NOT NULL,
+  `end_time` datetime(6) NOT NULL,
+  `start_time` datetime(6) NOT NULL,
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `task_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `task_uploaderid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `category` enum('AGRICULTURE','ANIMAL_HUSBANDRY','LANGUAGE','SCIENCE','HYGIENE','SOCIETY','HISTORY','POLITICS') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `status` enum('IN_PROGRESS','FINISHED','NOT_STARTED') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `task_uploaderid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `category` enum('AGRICULTURE','ANIMAL_HUSBANDRY','LANGUAGE','SCIENCE','HYGIENE','SOCIETY','HISTORY','POLITICS') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `status` enum('IN_PROGRESS','FINISHED','NOT_STARTED') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -171,11 +171,11 @@ CREATE TABLE `task_dynamic`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `task_record`;
 CREATE TABLE `task_record`  (
-  `end_time` datetime(6) NULL DEFAULT NULL,
-  `start_time` datetime(6) NULL DEFAULT NULL,
+  `end_time` datetime(6) NOT NULL,
+  `start_time` datetime(6) NOT NULL,
   `childid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `taskid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `status` enum('COMPLETED','UNCOMPLETED') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `status` enum('COMPLETED','UNCOMPLETED') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`childid`, `taskid`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -204,6 +204,6 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (0, 'http://dummyimage.com/100x100', '4e7a90b5-ef5b-4bc9-8edc-2d9e318f7157', '我是一个小猫', '啊米诺斯', '12345678', 'animoas', 'FEMALE', 'VOLUNTEER');
+INSERT INTO `user` VALUES (0, 'http://dummyimage.com/100x100', 'ed43d8b9-917c-4b49-b5cb-3e90d3a0d18a', '我是一个小猫', '啊米诺斯', '12345678', 'animoas', 'FEMALE', 'VOLUNTEER');
 
 SET FOREIGN_KEY_CHECKS = 1;
