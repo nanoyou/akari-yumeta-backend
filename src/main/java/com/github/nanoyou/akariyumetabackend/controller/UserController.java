@@ -1,6 +1,5 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
-import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.TagDTO;
 import com.github.nanoyou.akariyumetabackend.dto.subscription.SubscriptionDTO;
@@ -8,14 +7,12 @@ import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserUpdateDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.friend.Subscription;
-import com.github.nanoyou.akariyumetabackend.entity.user.Tag;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
-import com.github.nanoyou.akariyumetabackend.service.TagService;
+import com.github.nanoyou.akariyumetabackend.service.SubscriptionService;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.github.nanoyou.akariyumetabackend.service.SubscriptionService;
 
 import java.util.ArrayList;
 
@@ -24,13 +21,11 @@ public class UserController {
 
     private final UserService userService;
     private final SubscriptionService subscriptionService;
-    private final TagService tagService;
 
     @Autowired
-    public UserController(UserService userService, SubscriptionService subscriptionService, TagService tagService) {
+    public UserController(UserService userService, SubscriptionService subscriptionService) {
         this.userService = userService;
         this.subscriptionService = subscriptionService;
-        this.tagService = tagService;
     }
 
 
@@ -61,8 +56,8 @@ public class UserController {
     }
 
     @RequestMapping(path = "/my/info", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Result myInfo(@ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
-        val userDTO = userService.getUserDTO(loginUserID);
+    public Result myInfo(@RequestAttribute("user") User user) {
+        val userDTO = userService.getUserDTO(user.getId());
         return userDTO.map(
                 u -> Result.builder()
                         .ok(true)
@@ -98,14 +93,15 @@ public class UserController {
 
     /**
      * 关注
+     *
      * @param followeeID
-     * @param loginUserID
+     * @param user
      */
     @RequestMapping(path = "/my/follow/{followeeID}", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result follow(@PathVariable String followeeID, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+    public Result follow(@PathVariable String followeeID, @RequestAttribute("user") User user) {
         try {
             val friend = Subscription._CombinedPrimaryKey.builder()
-                    .followerID(loginUserID)
+                    .followerID(user.getId())
                     .followeeID(followeeID)
                     .build();
 
@@ -153,18 +149,19 @@ public class UserController {
 
     /**
      * 查看是否关注某人
+     *
      * @param userID
-     * @param loginUserID
+     * @param user
      */
     @RequestMapping(path = "/my/follow/{userID}", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Result isFollowed(@PathVariable String userID, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+    public Result isFollowed(@PathVariable String userID, @RequestAttribute("user") User user) {
         try {
             val friend = Subscription._CombinedPrimaryKey.builder()
-                    .followerID(loginUserID)
+                    .followerID(user.getId())
                     .followeeID(userID)
                     .build();
 
-            var followed = subscriptionService.validateFollow(friend) ? true : false;
+            var followed = subscriptionService.validateFollow(friend);
 
             return Result.builder()
                     .ok(true)
@@ -183,11 +180,13 @@ public class UserController {
 
     /**
      * 修改个人信息
+     *
      * @param userUpdateDTO
      */
     @RequestMapping(path = "/my/info", method = RequestMethod.PATCH, headers = "Accept=application/json")
-    public Result info(@RequestBody UserUpdateDTO userUpdateDTO, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+    public Result info(@RequestBody UserUpdateDTO userUpdateDTO, @RequestAttribute("user") User user) {
         try {
+            val loginUserID = user.getId();
             var userUpdate = User.builder()
                     .id(loginUserID)
                     .nickname(userUpdateDTO.getNickname())
@@ -201,16 +200,16 @@ public class UserController {
                     .build();
 
             val userDTO = userService.info(userUpdate, tagsUpdate).map(
-                    user -> UserDTO.builder()
-                            .id(user.getId())
-                            .username(user.getUsername())
-                            .nickname(user.getNickname())
-                            .role(user.getRole())
-                            .gender(user.getGender())
-                            .introduction(user.getIntroduction())
-                            .avatarURL(user.getAvatarURL())
-                            .usageDuration(user.getUsageDuration())
-                            .tags(user.getTags())
+                    u -> UserDTO.builder()
+                            .id(u.getId())
+                            .username(u.getUsername())
+                            .nickname(u.getNickname())
+                            .role(u.getRole())
+                            .gender(u.getGender())
+                            .introduction(u.getIntroduction())
+                            .avatarURL(u.getAvatarURL())
+                            .usageDuration(u.getUsageDuration())
+                            .tags(u.getTags())
                             .build()
             ).orElseThrow(NullPointerException::new);
 
@@ -231,8 +230,9 @@ public class UserController {
 
 
     @RequestMapping(path = "/my/follow", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Result myFollow(@ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+    public Result myFollow(@RequestAttribute("user") User user) {
         try {
+            val loginUserID = user.getId();
             val followeeIDs = subscriptionService.getFolloweeIDs(loginUserID);
             val followees = userService.getFollowee(followeeIDs);
 
