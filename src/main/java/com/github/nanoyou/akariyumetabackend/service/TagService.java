@@ -4,6 +4,7 @@ import com.github.nanoyou.akariyumetabackend.dao.TagDao;
 import com.github.nanoyou.akariyumetabackend.entity.user.Tag;
 import com.github.nanoyou.akariyumetabackend.vo.TagVO;
 import jakarta.annotation.Nonnull;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,17 @@ public class TagService {
                 .tagContentList(tagContentList)
                 .build();
 
+    }
+
+    public TagVO getTags(@Nonnull String userID) {
+        val tagContentList = tagDao.findTagContentProjectionByCombinedPrimaryKeyUserId(userID).stream().map(
+                TagDao.TagContentProjection::getCombinedPrimaryKeyTagContent
+        ).toList();
+
+        return TagVO.builder()
+                .userID(userID)
+                .tagContentList(tagContentList)
+                .build();
     }
 
 }
