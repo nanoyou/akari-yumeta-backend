@@ -3,6 +3,7 @@ package com.github.nanoyou.akariyumetabackend.service;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDynamicDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskRecordDao;
+import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.entity.task.Task;
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
@@ -68,6 +69,14 @@ public class TaskService {
 
     public Optional<TaskDynamic> addTaskDynamic(@Nonnull TaskDynamic taskDynamic) {
         return Optional.ofNullable(taskDynamicDao.saveAndFlush(taskDynamic));
+    }
+
+    public List<String> getTaskDynamicIdList(@Nonnull String taskID) {
+        return taskDynamicDao.findByTaskDynamicTaskID(taskID).stream().map(
+                taskDynamic -> {
+                    return taskDynamic.getTaskDynamic().getDynamicID();
+                }
+        ).toList();
     }
 
     public Optional<TaskRecord> getRecord(@Nonnull TaskRecord._TaskRecordCombinedPrimaryKey taskRecordCombinedPrimaryKey) {
