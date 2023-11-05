@@ -1,14 +1,16 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
+import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.dto.subscription.SubscriptionDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
+import com.github.nanoyou.akariyumetabackend.entity.friend.Subscription;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import com.github.nanoyou.akariyumetabackend.service.SubscriptionService;
 
 import java.util.ArrayList;
 
@@ -16,11 +18,14 @@ import java.util.ArrayList;
 public class UserController {
 
     private final UserService userService;
+    private final SubscriptionService subscriptionService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SubscriptionService subscriptionService) {
         this.userService = userService;
+        this.subscriptionService = subscriptionService;
     }
+
 
     @RequestMapping(path = "/user", method = RequestMethod.GET, headers = "Accept=application/json")
     public Result user() {
@@ -49,18 +54,6 @@ public class UserController {
     }
 
 
-
-@RestController
-public class UserController {
-    private final UserService userService;
-    private final SubscriptionService subscriptionService;
-
-    @Autowired
-    public UserController(UserService userService, SubscriptionService subscriptionService){
-        this.userService = userService;
-        this.subscriptionService = subscriptionService;
-    }
-
     @RequestMapping(path = "/my/follow/{followeeID}", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result follow(@PathVariable String followeeID, @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
         try {
@@ -69,7 +62,7 @@ public class UserController {
                     .followeeID(followeeID)
                     .build();
 
-            if(subscriptionService.validateFollow(friend)){
+            if (subscriptionService.validateFollow(friend)) {
                 return subscriptionService.unfollow(friend) ?
                         Result.builder()
                                 .ok(true)
@@ -81,8 +74,7 @@ public class UserController {
                                 .code(ResponseCode.UNFOLLOW_FAIL.value)
                                 .message("取消关注失败")
                                 .build();
-            }
-            else{
+            } else {
                 var subscription = Subscription.builder()
                         .combinedPrimaryKey(friend)
                         .build();
@@ -111,5 +103,4 @@ public class UserController {
         }
 
     }
-
 }
