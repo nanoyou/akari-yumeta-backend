@@ -64,7 +64,7 @@ public class LoginController {
         return login.map(
                 userDTO -> {
                     if (!userDTO.getRole().equals(Role.ADMIN)) {
-                        UnauthorizedError.raise(ResponseCode.LOGIN_FAIL, "非管理员用户，无权访问");
+                        throw new UnauthorizedError(ResponseCode.LOGIN_FAIL, "非管理员用户，无权访问");
                     }
                     userDTO.setToken(httpSession.getId());
                     httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
@@ -72,11 +72,11 @@ public class LoginController {
                 }
         ).orElse(
                 Result.builder()
-                .ok(false)
-                .code(ResponseCode.WRONG_USERNAME_OR_PASSWORD.value)
-                .message("用户名或密码不正确")
-                .data(null)
-                .build());
+                        .ok(false)
+                        .code(ResponseCode.WRONG_USERNAME_OR_PASSWORD.value)
+                        .message("用户名或密码不正确")
+                        .data(null)
+                        .build());
     }
 
 }

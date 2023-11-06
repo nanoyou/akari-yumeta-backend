@@ -1,6 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchUserError;
 import com.github.nanoyou.akariyumetabackend.dto.TagDTO;
 import com.github.nanoyou.akariyumetabackend.dto.subscription.SubscriptionDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
@@ -32,27 +33,11 @@ public class UserController {
     @RequestMapping(path = "/user", method = RequestMethod.GET, headers = "Accept=application/json")
     public Result user() {
         val allUsers = userService.getAllUsers();
-
-        val userDTOBuilderStream = allUsers.stream().map(
-                user -> UserDTO.builder()
-                        .id(user.getId())
-                        .username(user.getUsername())
-                        .nickname(user.getNickname())
-                        .role(user.getRole())
-                        .gender(user.getGender())
-                        .introduction(user.getIntroduction())
-                        .avatarURL(user.getAvatarURL())
-                        .usageDuration(user.getUsageDuration())
-                        // TODO: tags 尚未实现
-                        .tags(new ArrayList<>())
-                        .build()
+        val userDTOs = allUsers.stream().map(
+                user -> userService.getUserDTO(user.getId())
+                        .orElseThrow(() -> new NoSuchUserError(ResponseCode.NO_SUCH_USER, "用户不存在"))
         ).toList();
-        return Result.builder()
-                .ok(true)
-                .code(ResponseCode.SUCCESS.value)
-                .data(userDTOBuilderStream)
-                .message("查看用户列表成功")
-                .build();
+        return Result.success("查看用户列表成功", userDTOs);
     }
 
     @RequestMapping(path = "/my/info", method = RequestMethod.GET, headers = "Accept=application/json")
