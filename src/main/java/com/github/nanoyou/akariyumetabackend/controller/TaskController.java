@@ -20,6 +20,9 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URL;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.MultimediaInfo;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -99,9 +102,8 @@ public class TaskController {
             ).orElseThrow(NullPointerException::new);
 
             // course同步task UUID
-            //TODO：COURSE观看次数&视频时长
             Integer watchedCount = 0;
-            Integer videoDuration = 1;
+            Integer videoDuration = this.getVideoDurationInSeconds(taskCourseUploadDTO.getVideoURL());
             var uploadCourse = Course.builder()
                     .taskID(taskDTO.getId())
                     .watchedCount(watchedCount)
@@ -126,6 +128,25 @@ public class TaskController {
         }
 
     }
+
+    private int getVideoDurationInSeconds(String fileUrl) {
+        try {
+            URL source = new URL(fileUrl);
+            // 构造方法接受URL对象
+            MultimediaObject instance = new MultimediaObject(source);
+            // 构造方法接受File对象
+//            MultimediaObject instance = new MultimediaObject(new File(fileUrl));
+            MultimediaInfo result = instance.getInfo();
+            long durationInMillis = result.getDuration();
+            int durationInSeconds = (int) (durationInMillis / 1000);
+
+            return durationInSeconds;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 
     /**
      * 根据任务ID获取该任务所属课程的相关信息以及任务的详细信息。
@@ -274,7 +295,7 @@ public class TaskController {
 
             if (taskService.validateMyTask(comID)) {
                 return Result.builder()
-                        .ok(true)
+                        .ok(false)
                         .code(ResponseCode.TASK_OPEN_AGAIN.value)
                         .message("学习任务重复开启")
                         .build();
@@ -287,7 +308,7 @@ public class TaskController {
                     .status(TaskRecordStatus.UNCOMPLETED)
                     .build();
 
-            val taskRecordDTO = saveRecord(taskRecord);
+            val taskRecordDTO = this.saveRecord(taskRecord);
 
             return Result.builder()
                     .ok(true)
@@ -350,7 +371,7 @@ public class TaskController {
             if (betweenSeconds >= course.getVideoDuration()) {
                 record.setEndTime(time);
                 record.setStatus(TaskRecordStatus.COMPLETED);
-                val taskRecordDTO = saveRecord(record);
+                val taskRecordDTO = this.saveRecord(record);
 
                 // 视频观看次数加一
                 int count = course.getWatchedCount();

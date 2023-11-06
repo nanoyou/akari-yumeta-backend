@@ -68,7 +68,12 @@
 			<artifactId>hutool-all</artifactId>
 			<version>5.8.22</version>
 		</dependency>
-
+		<!-- 对url进行解析获取时长 -->
+		<dependency>
+			<groupId>ws.schild</groupId>
+			<artifactId>jave-core</artifactId>
+			<version>2.5.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
