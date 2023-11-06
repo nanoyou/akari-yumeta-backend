@@ -25,7 +25,7 @@ public class GoodsService {
         return goodsDao.findAllByDescriptionLikeOrNameLike(description,description);
     }
 
-    public Optional<GoodsInfo> findGoodsById(@Nonnull UUID goodsID) {
+    public Optional<GoodsInfo> findById(@Nonnull UUID goodsID) {
         return goodsDao.findById(goodsID);
     }
 

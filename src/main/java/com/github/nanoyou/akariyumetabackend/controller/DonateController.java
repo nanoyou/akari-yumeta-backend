@@ -7,16 +7,12 @@ import com.github.nanoyou.akariyumetabackend.entity.donate.DonateGoods;
 import com.github.nanoyou.akariyumetabackend.entity.donate.DonateMoney;
 import com.github.nanoyou.akariyumetabackend.entity.donate.GoodsInfo;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
-import com.github.nanoyou.akariyumetabackend.service.DonateGoodsService;
-import com.github.nanoyou.akariyumetabackend.service.DonateMoneyService;
+import com.github.nanoyou.akariyumetabackend.service.DonateService;
 import com.github.nanoyou.akariyumetabackend.service.GoodsService;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -26,17 +22,16 @@ import java.util.UUID;
 
 public class DonateController {
 
-    private final DonateMoneyService donateMoneyService;
-    private final DonateGoodsService donateGoodsService;
+    private final DonateService donateService;
     private final GoodsService goodsService;
     private final UserService userService;
 
     @Autowired
-    public DonateController(DonateMoneyService donateMoneyService, DonateGoodsService donateGoodsService, GoodsService goodsService, UserService userService) {
-        this.donateMoneyService = donateMoneyService;
-        this.donateGoodsService = donateGoodsService;
+    public DonateController(DonateService donateService, GoodsService goodsService, UserService userService) {
+        this.donateService = donateService;
         this.goodsService = goodsService;
         this.userService = userService;
+
     }
 
     /**
@@ -68,7 +63,7 @@ public class DonateController {
                    .code(ResponseCode.PARAM_ERR.value)
                    .build();
         }
-        DonateMoney result = donateMoneyService.saveDonateMoney(donateMoney);
+        DonateMoney result = donateService.saveDonateMoney(donateMoney);
 
         if (result == null) {
             return  Result.builder()
@@ -96,11 +91,10 @@ public class DonateController {
     @PostMapping("/donate/goods")
     public Result donateGoods(HttpSession session,@RequestBody DonateGoods donateGoods){
         String donatorID = (String) session.getAttribute(SessionAttr.LOGIN_USER_ID.attr);
-        donateGoods.setDonatorID(UUID.fromString(donatorID));
         donateGoods.setCreatedTime(LocalDateTime.now());
-        Optional<GoodsInfo> goods = goodsService.findGoodsById(donateGoods.getGoodsID());
+        Optional<GoodsInfo> goods = goodsService.findById(donateGoods.getGoodsID());
         // 物品不存在
-        if (!goods.isPresent()) {
+        if (goods.isEmpty()) {
             return Result.builder()
                    .ok(false)
                    .message("物品不存在")
@@ -110,7 +104,7 @@ public class DonateController {
 
         donateGoods.setTotalMoney(donateGoods.getAmount() * goods.get().getUnitPrice());
 
-        DonateGoods result = donateGoodsService.saveDonateGoods(donateGoods);
+        DonateGoods result = donateService.saveDonateGoods(donateGoods);
         if (result == null) {
             return  Result.builder()
                     .ok(false)
@@ -127,7 +121,75 @@ public class DonateController {
                .build();
     }
 
+    /**
+     * 根据描述查找商品（查找物品列表）
+     * @param description 描述
+     * @return 商品信息
+     */
+    @GetMapping("/donate/goods")
+    public Result getGoodsByDescription(String description) {
+        String newDescription = "%" + description + "%";
+        var list = goodsService.getGoodByDescription(newDescription).orElse((GoodsInfo[]) null);
+        if (list.length == 0) {
+            String[] nullData = new String[1];
+            nullData[0] = "未找到符合描述的物品";
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.PARAM_ERR.value)
+                    .message("未找到符合描述的物品")
+                    .data(nullData)
+                    .build();
+        }
+        return Result.builder()
+                .ok(true)
+                .code(ResponseCode.SUCCESS.value)
+                .message("查找物品成功")
+                .data(list)
+                .build();
+
+    }
+
+    /**
+     * 根据商品ID查找商品(查询物品信息)
+     * @param goodsID 商品ID
+     * @return 商品信息
+     */
+    @GetMapping("/donate/goods/{goodsID}")
+    public Result findGoodsById(@PathVariable("goodsID") UUID goodsID){
+        var goods = goodsService.findById(goodsID);
+
+        if (goods.isPresent()) {
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .data(goods.orElse(null))
+                    .message("查找物品成功")
+                    .build();
+        }
+
+        return Result.builder()
+                .ok(false)
+                .code(ResponseCode.PARAM_ERR.value)
+                .message("未找到该物品")
+                .data(null)
+                .build();
+
+    }
 
 
+    /**
+     * 查询历史捐助记录
+     * @param userID
+     * @return
+     */
+    @GetMapping("/donate/{userID}/info")
+    public Result getDonateHistory(@PathVariable UUID userID) {
+        return Result.builder()
+                .ok(true)
+                .message("查询成功")
+                .code(ResponseCode.SUCCESS.value)
+                .data(donateService.getAllDonateHistory(userID))
+                .build();
+    }
 
 }
