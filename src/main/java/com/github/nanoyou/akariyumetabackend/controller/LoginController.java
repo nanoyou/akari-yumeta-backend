@@ -1,11 +1,10 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.common.exception.UnauthorizedError;
-import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.val;
@@ -50,7 +49,7 @@ public class LoginController {
         return login.map(
                 userDTO -> {
                     if (!userDTO.getRole().equals(Role.ADMIN)) {
-                        throw new UnauthorizedError(ResponseCode.LOGIN_FAIL, "非管理员用户，无权访问");
+                        return Result.success("非管理员用户，无权访问", ResponseCode.LOGIN_FAIL);
                     }
                     userDTO.setToken(httpSession.getId());
                     httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
