@@ -30,7 +30,6 @@ public class TaskRecord {
      * 任务结束时间
      * 受困儿童看完这个视频的时间
      */
-    @NotNull
     private LocalDateTime endTime;
     /**
      * 任务开启时间
