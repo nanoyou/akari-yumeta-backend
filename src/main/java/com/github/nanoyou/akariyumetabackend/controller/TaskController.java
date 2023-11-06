@@ -405,12 +405,7 @@ public class TaskController {
     @RequestMapping(path = "/user/{userID}/score", method = RequestMethod.GET, headers = "Accept=application/json")
     public Result score(@PathVariable String userID) {
         try {
-            val records = taskService.getRecords(userID, TaskRecordStatus.COMPLETED);
-            val taskIDs = records.stream()
-                    .map(taskRecord -> taskRecord.getTaskRecordCombinedPrimaryKey().getTaskID())
-                    .collect(Collectors.toList());
-
-            val score = taskService.getBonuses(taskIDs);
+            val score = taskService.getScore(userID);
 
             return Result.builder()
                     .ok(true)

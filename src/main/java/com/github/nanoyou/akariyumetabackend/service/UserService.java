@@ -23,11 +23,13 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserDao userDao;
     private final TagService tagService;
+    private final TaskService taskService;
 
     @Autowired
-    private UserService(UserDao userDao, TagService tagService) {
+    private UserService(UserDao userDao, TagService tagService, TaskService taskService) {
         this.userDao = userDao;
         this.tagService = tagService;
+        this.taskService = taskService;
     }
 
     public Optional<User> getUser(@Nonnull String userID) {
@@ -53,6 +55,9 @@ public class UserService {
                         .avatarURL(u.getAvatarURL())
                         .usageDuration(u.getUsageDuration())
                         .tags(tagContentList)
+                        .score(taskService.getScore(u.getId()))
+                        // TODO
+//                        .amount(u.getAmount())
                         .build()
         );
 
@@ -140,6 +145,9 @@ public class UserService {
                         .avatarURL(user.getAvatarURL())
                         .usageDuration(user.getUsageDuration())
                         .tags(tagDTO1 == null ? new ArrayList<>() : tagDTO1.getTagContentList())
+                        .score(taskService.getScore(user.getId()))
+                // TODO
+//                        .amount(user.getAmount())
                 .build());
     }
 
@@ -159,14 +167,17 @@ public class UserService {
         return followees.stream().map(
                 user -> {
                     UserDTO userDTO = UserDTO.builder()
-                    .id(user.getId())
-                    .username(user.getUsername())
-                    .nickname(user.getNickname())
-                    .role(user.getRole())
-                    .gender(user.getGender())
-                    .introduction(user.getIntroduction())
-                    .avatarURL(user.getAvatarURL())
-                    .usageDuration(user.getUsageDuration())
+                            .id(user.getId())
+                            .username(user.getUsername())
+                            .nickname(user.getNickname())
+                            .role(user.getRole())
+                            .gender(user.getGender())
+                            .introduction(user.getIntroduction())
+                            .avatarURL(user.getAvatarURL())
+                            .usageDuration(user.getUsageDuration())
+                            .score(taskService.getScore(user.getId()))
+                            // TODO
+//                            .amount(user.getAmount())
                     .build();
 
                     List<String> userTags = tagMap.get(user.getId());

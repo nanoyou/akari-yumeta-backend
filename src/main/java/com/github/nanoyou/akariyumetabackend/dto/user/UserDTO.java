@@ -20,4 +20,6 @@ public class UserDTO {
     private Integer usageDuration;
     private List<String> tags;
     private String token;
+    private Integer score;
+    private Integer amount;
 }

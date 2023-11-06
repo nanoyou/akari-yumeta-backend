@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -109,6 +110,15 @@ public class TaskService {
         return tasks.stream()
                 .map(Task::getBonus)
                 .reduce(0, Integer::sum);
+    }
+
+    public Integer getScore(@Nonnull String userID){
+        val records = this.getRecords(userID, TaskRecordStatus.COMPLETED);
+        val taskIDs = records.stream()
+                .map(taskRecord -> taskRecord.getTaskRecordCombinedPrimaryKey().getTaskID())
+                .collect(Collectors.toList());
+
+        return this.getBonuses(taskIDs);
     }
 
 }
