@@ -21,5 +21,5 @@ public class UserDTO {
     private List<String> tags;
     private String token;
     private Integer score;
-    private Integer amount;
+    private Long amount;
 }

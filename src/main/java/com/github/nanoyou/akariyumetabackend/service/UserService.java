@@ -24,12 +24,14 @@ public class UserService {
     private final UserDao userDao;
     private final TagService tagService;
     private final TaskService taskService;
+    private final DonateService donateService;
 
     @Autowired
-    private UserService(UserDao userDao, TagService tagService, TaskService taskService) {
+    private UserService(UserDao userDao, TagService tagService, TaskService taskService, DonateService donateService) {
         this.userDao = userDao;
         this.tagService = tagService;
         this.taskService = taskService;
+        this.donateService = donateService;
     }
 
     public Optional<User> getUser(@Nonnull String userID) {
@@ -56,8 +58,7 @@ public class UserService {
                         .usageDuration(u.getUsageDuration())
                         .tags(tagContentList)
                         .score(taskService.getScore(u.getId()))
-                        // TODO
-//                        .amount(u.getAmount())
+                        .amount(donateService.getAllDonateHistory(u.getId()).getTotalMoney())
                         .build()
         );
 
@@ -146,8 +147,7 @@ public class UserService {
                         .usageDuration(user.getUsageDuration())
                         .tags(tagDTO1 == null ? new ArrayList<>() : tagDTO1.getTagContentList())
                         .score(taskService.getScore(user.getId()))
-                // TODO
-//                        .amount(user.getAmount())
+                        .amount(donateService.getAllDonateHistory(user.getId()).getTotalMoney())
                 .build());
     }
 
@@ -176,8 +176,7 @@ public class UserService {
                             .avatarURL(user.getAvatarURL())
                             .usageDuration(user.getUsageDuration())
                             .score(taskService.getScore(user.getId()))
-                            // TODO
-//                            .amount(user.getAmount())
+                            .amount(donateService.getAllDonateHistory(user.getId()).getTotalMoney())
                     .build();
 
                     List<String> userTags = tagMap.get(user.getId());
