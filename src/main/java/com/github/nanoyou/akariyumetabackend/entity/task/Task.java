@@ -35,6 +35,7 @@ public class Task {
      * 任务名称
      */
     @NotBlank
+    @Column(unique = true)
     private String taskName;
     /**
      * 任务发布人ID
