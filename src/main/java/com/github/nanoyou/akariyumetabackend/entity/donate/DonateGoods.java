@@ -5,8 +5,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.UUID;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -15,11 +22,16 @@ import java.time.LocalDateTime;
  * 属于: 捐助
  */
 @Data
+@Builder
+@AllArgsConstructor
+@Entity
+@NoArgsConstructor
 public class DonateGoods {
     /**
      * 捐物关系 UUID
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     /**
      * 捐助数量
