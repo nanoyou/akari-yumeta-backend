@@ -27,9 +27,9 @@ class GoodsServiceTest {
     @Test
     void saveGoods() {
         var goodsInfo = GoodsInfo.builder()
-                .description("DESCRIPTION")
-                .name("笔记本")
-                .unitPrice(1000l)
+                .description("asdf")
+                .name("钢笔")
+                .unitPrice(2000l)
                 .imageURL("url")
                 .build();
         goodsService.saveGoods(goodsInfo);

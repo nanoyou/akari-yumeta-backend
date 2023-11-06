@@ -36,7 +36,7 @@ public class DonateController {
     }
 
     /**
-     * 记录捐钱
+     * 记录捐钱（捐钱）
      * @param donateMoney 捐助金额
      * @param session session
      * @return 捐助结果
@@ -77,13 +77,13 @@ public class DonateController {
     }
 
     /**
-     * 捐助物品
+     * 捐助物品（捐物）
      * @param session session
      * @param donateGoods 捐助物品
      * @return 捐助结果
      */
     @PostMapping("/donate/goods")
-    public Result getHistory(HttpSession session,@RequestBody DonateGoods donateGoods){
+    public Result donateGoods(HttpSession session,@RequestBody DonateGoods donateGoods){
         String donatorID = (String) session.getAttribute(SessionAttr.LOGIN_USER_ID.attr);
         donateGoods.setDonatorID(UUID.fromString(donatorID));
         donateGoods.setCreatedTime(LocalDateTime.now());

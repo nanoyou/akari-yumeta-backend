@@ -4,6 +4,7 @@ import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.donate.DonateGoods;
 
+import com.github.nanoyou.akariyumetabackend.entity.donate.GoodsInfo;
 import com.github.nanoyou.akariyumetabackend.service.DonateGoodsService;
 import com.github.nanoyou.akariyumetabackend.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,53 +33,36 @@ public class GoodsController {
     }
 
     /**
-     * 根据描述查找商品
+     * 根据描述查找商品（查找物品列表）
      * @param description 描述
      * @return 商品信息
      */
     @GetMapping("/donate/goods")
     public Result getGoodsByDescription(String description) {
-        var list = goodsService.getGoodByDescription(description);
-        if (list.isEmpty()) {
+        String newDescription = "%" + description + "%";
+        var list = goodsService.getGoodByDescription(newDescription).orElse((GoodsInfo[]) null);
+        if (list.length == 0) {
             return Result.builder()
                     .ok(true)
                     .code(ResponseCode.PARAM_ERR.value)
                     .message("未找到符合描述的物品")
-                    .data(null)
+                    .data("未找到符合描述的物品")
                     .build();
         }
         return Result.builder()
                 .ok(true)
                 .code(ResponseCode.SUCCESS.value)
                 .message("查找物品成功")
-                .data(list.orElse(null))
+                .data(list)
                 .build();
 
     }
 
-    @RequestMapping(path = "/donate/goods", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result donateGoods(@RequestBody DonateGoods donateGoods) {
-        if (donateGoods.getAmount() == null || donateGoods.getAmount() <= 0) {
-            return Result.builder()
-                    .ok(false)
-                    .message("捐赠数量不合法")
-                    .code(ResponseCode.PARAM_ERR.value)
-                    .build();
-        }
-        DonateGoods result = donateGoodsService.saveDonateGoods(donateGoods);
-        return Result.builder()
-                .ok(true)
-                .message("捐赠成功")
-                .code(ResponseCode.SUCCESS.value)
-                .data(result)
-                .build();
-    }
     /**
-     * 根据商品ID查找商品
+     * 根据商品ID查找商品(查询物品信息)
      * @param goodsID 商品ID
      * @return 商品信息
      */
-
     @GetMapping("/donate/goods/{goodsID}")
     public Result findGoodsById(@PathVariable("goodsID") UUID goodsID){
         var goods = goodsService.findGoodsById(goodsID);
