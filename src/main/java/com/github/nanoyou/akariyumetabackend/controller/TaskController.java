@@ -163,12 +163,7 @@ public class TaskController {
                     .data(taskCourseDTO)
                     .build();
         } catch (NullPointerException e) {
-            return Result.builder()
-                    .ok(false)
-                    .code(ResponseCode.NO_SUCH_TASK_COURSE.value)
-                    .message("课程任务不存在")
-                    .data(null)
-                    .build();
+            return Result.failed("课程任务不存在", ResponseCode.NO_SUCH_TASK_COURSE);
         }
     }
 
