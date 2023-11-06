@@ -376,9 +376,9 @@ public class TaskController {
 
 
     /**
-     * 获取学习积分
+     * 根据用户 ID 获取学习积分
      *
-     * @param userID
+     * @param userID 用户 ID
      * @return score
      */
     @RequestMapping(path = "/user/{userID}/score", method = RequestMethod.GET, headers = "Accept=application/json")

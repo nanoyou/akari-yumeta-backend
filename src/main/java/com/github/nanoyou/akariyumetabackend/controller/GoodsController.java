@@ -3,22 +3,15 @@ package com.github.nanoyou.akariyumetabackend.controller;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.donate.DonateGoods;
-
 import com.github.nanoyou.akariyumetabackend.service.DonateGoodsService;
 import com.github.nanoyou.akariyumetabackend.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
-
-@RestController
 /**
  * 物品相关控制器
  */
+@RestController
 public class GoodsController {
     private final GoodsService goodsService;
     private final DonateGoodsService donateGoodsService;
@@ -76,9 +69,8 @@ public class GoodsController {
      * @param goodsID 商品ID
      * @return 商品信息
      */
-
     @GetMapping("/donate/goods/{goodsID}")
-    public Result findGoodsById(@PathVariable("goodsID") UUID goodsID){
+    public Result findGoodsById(@PathVariable("goodsID") String goodsID){
         var goods = goodsService.findGoodsById(goodsID);
 
         if (goods.isPresent()) {
