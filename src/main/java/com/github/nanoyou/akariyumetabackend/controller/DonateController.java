@@ -6,9 +6,11 @@ import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.donate.DonateGoods;
 import com.github.nanoyou.akariyumetabackend.entity.donate.DonateMoney;
 import com.github.nanoyou.akariyumetabackend.entity.donate.GoodsInfo;
+import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.DonateGoodsService;
 import com.github.nanoyou.akariyumetabackend.service.DonateMoneyService;
 import com.github.nanoyou.akariyumetabackend.service.GoodsService;
+import com.github.nanoyou.akariyumetabackend.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,15 +26,17 @@ import java.util.UUID;
 
 public class DonateController {
 
-    private DonateMoneyService donateMoneyService;
-    private DonateGoodsService donateGoodsService;
-    private GoodsService goodsService;
+    private final DonateMoneyService donateMoneyService;
+    private final DonateGoodsService donateGoodsService;
+    private final GoodsService goodsService;
+    private final UserService userService;
 
     @Autowired
-    public DonateController(DonateMoneyService donateMoneyService, DonateGoodsService donateGoodsService, GoodsService goodsService) {
+    public DonateController(DonateMoneyService donateMoneyService, DonateGoodsService donateGoodsService, GoodsService goodsService, UserService userService) {
         this.donateMoneyService = donateMoneyService;
         this.donateGoodsService = donateGoodsService;
         this.goodsService = goodsService;
+        this.userService = userService;
     }
 
     /**
@@ -46,7 +50,14 @@ public class DonateController {
 
         donateMoney.setDonatorID(UUID.fromString((String) session.getAttribute(SessionAttr.LOGIN_USER_ID.attr)));
 
-
+        User donee = userService.getUser(String.valueOf(donateMoney.getDoneeID())).orElse(null);
+        if (donee == null) {
+            return Result.builder()
+                   .ok(false)
+                   .message("捐助对象无效")
+                   .code(ResponseCode.PARAM_ERR.value)
+                   .build();
+        }
 
         donateMoney.setCreatedTime(LocalDateTime.now());
 
