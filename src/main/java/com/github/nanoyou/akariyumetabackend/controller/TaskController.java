@@ -19,14 +19,13 @@ import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ws.schild.jave.MultimediaInfo;
+import ws.schild.jave.MultimediaObject;
 
 import java.net.URL;
-import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.MultimediaInfo;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus.*;
@@ -46,7 +45,7 @@ public class TaskController {
     /**
      * 创建学习任务
      *
-     * @param taskCourseUploadDTO
+     * @param taskCourseUploadDTO 任务课程上传DTO
      * @return Result类型的对象
      */
     @RequestMapping(path = "/task", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -129,21 +128,23 @@ public class TaskController {
 
     }
 
+    /**
+     * 根据视频 URL 获取其时长
+     * @param fileUrl 视频文件 URL 地址
+     * @return 视频时长(单位, 秒)
+     */
     private int getVideoDurationInSeconds(String fileUrl) {
         try {
             URL source = new URL(fileUrl);
             // 构造方法接受URL对象
             MultimediaObject instance = new MultimediaObject(source);
             // 构造方法接受File对象
-//            MultimediaObject instance = new MultimediaObject(new File(fileUrl));
             MultimediaInfo result = instance.getInfo();
             long durationInMillis = result.getDuration();
-            int durationInSeconds = (int) (durationInMillis / 1000);
 
-            return durationInSeconds;
+            return (int) (durationInMillis / 1000);
         } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
+            return 0;
         }
     }
 
