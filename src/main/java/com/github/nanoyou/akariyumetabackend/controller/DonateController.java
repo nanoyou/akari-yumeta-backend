@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 
@@ -56,7 +57,7 @@ public class DonateController {
                     .code(ResponseCode.PARAM_ERR.value)
                     .build();
         }
-        DonateMoney result = donateMoneyService.saveDonateMoney(donateMoney);
+        DonateMoney result = donateService.saveDonateMoney(donateMoney);
 
         if (result == null) {
             return Result.builder()
@@ -90,7 +91,7 @@ public class DonateController {
         val donatorID = loginUser.getId();
         donateGoods.setDonatorID(donatorID);
         donateGoods.setCreatedTime(LocalDateTime.now());
-        Optional<GoodsInfo> goods = goodsService.findGoodsById(donateGoods.getGoodsID());
+        Optional<GoodsInfo> goods = goodsService.findById(donateGoods.getGoodsID());
         // 物品不存在
         if (goods.isEmpty()) {
             return Result.builder()
@@ -102,7 +103,7 @@ public class DonateController {
 
         donateGoods.setTotalMoney(donateGoods.getAmount() * goods.get().getUnitPrice());
 
-        DonateGoods result = donateGoodsService.saveDonateGoods(donateGoods);
+        DonateGoods result = donateService.saveDonateGoods(donateGoods);
         if (result == null) {
             return Result.builder()
                     .ok(false)
@@ -116,6 +117,77 @@ public class DonateController {
                 .message("捐赠成功")
                 .data(result)
                 .code(ResponseCode.SUCCESS.value)
+                .build();
+    }
+
+    /**
+     * 根据描述查找商品（查找物品列表）
+     * @param description 描述
+     * @return 商品信息
+     */
+    @GetMapping("/donate/goods")
+    public Result getGoodsByDescription(String description) {
+        String newDescription = "%" + description + "%";
+        var list = goodsService.getGoodByDescription(newDescription).orElse((GoodsInfo[]) null);
+        if (list.length == 0) {
+            String[] nullData = new String[1];
+            nullData[0] = "未找到符合描述的物品";
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.PARAM_ERR.value)
+                    .message("未找到符合描述的物品")
+                    .data(nullData)
+                    .build();
+        }
+        return Result.builder()
+                .ok(true)
+                .code(ResponseCode.SUCCESS.value)
+                .message("查找物品成功")
+                .data(list)
+                .build();
+
+    }
+
+    /**
+     * 根据商品ID查找商品(查询物品信息)
+     * @param goodsID 商品ID
+     * @return 商品信息
+     */
+    @GetMapping("/donate/goods/{goodsID}")
+    public Result findGoodsById(@PathVariable("goodsID") UUID goodsID){
+        var goods = goodsService.findById(goodsID);
+
+        if (goods.isPresent()) {
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .data(goods.orElse(null))
+                    .message("查找物品成功")
+                    .build();
+        }
+
+        return Result.builder()
+                .ok(false)
+                .code(ResponseCode.PARAM_ERR.value)
+                .message("未找到该物品")
+                .data(null)
+                .build();
+
+    }
+
+
+    /**
+     * 查询历史捐助记录
+     * @param userID
+     * @return
+     */
+    @GetMapping("/donate/{userID}/info")
+    public Result getDonateHistory(@PathVariable UUID userID) {
+        return Result.builder()
+                .ok(true)
+                .message("查询成功")
+                .code(ResponseCode.SUCCESS.value)
+                .data(donateService.getAllDonateHistory(userID))
                 .build();
     }
 
