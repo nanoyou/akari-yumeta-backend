@@ -42,11 +42,13 @@ public class GoodsController {
         String newDescription = "%" + description + "%";
         var list = goodsService.getGoodByDescription(newDescription).orElse((GoodsInfo[]) null);
         if (list.length == 0) {
+            String[] nullData = new String[1];
+            nullData[0] = "未找到符合描述的物品";
             return Result.builder()
-                    .ok(true)
+                    .ok(false)
                     .code(ResponseCode.PARAM_ERR.value)
                     .message("未找到符合描述的物品")
-                    .data("未找到符合描述的物品")
+                    .data(nullData)
                     .build();
         }
         return Result.builder()
