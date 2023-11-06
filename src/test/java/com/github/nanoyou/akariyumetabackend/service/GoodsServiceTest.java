@@ -20,7 +20,7 @@ class GoodsServiceTest {
 
     @Test
     void findGoodsById() {
-        System.out.println(goodsService.findById(UUID.fromString("62346264-6661-3765-3135-353233346636"))
+        System.out.println(goodsService.findById(("62346264-6661-3765-3135-353233346636"))
                 .toString());
     }
 
@@ -32,6 +32,6 @@ class GoodsServiceTest {
                 .unitPrice(2000l)
                 .imageURL("url")
                 .build();
-        goodsService.saveGoods(goodsInfo);
+        goodsService.saveGoodsInfo(goodsInfo);
     }
 }

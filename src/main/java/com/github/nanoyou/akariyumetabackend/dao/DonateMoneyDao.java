@@ -13,5 +13,5 @@ public interface DonateMoneyDao extends JpaRepository<DonateMoney, String> {
     public DonateMoney save(@NonNull DonateMoney donateMoney);
 
 
-    List<DonateMoney> findAllByDonatorID(UUID donatorID);
+    List<DonateMoney> findAllByDonatorID(String donatorID);
 }

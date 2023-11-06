@@ -35,7 +35,7 @@ public class DonateService {
     }
 
 
-    public DonateHistoryDTO getAllDonateHistory(UUID donatorID) {
+    public DonateHistoryDTO getAllDonateHistory(String  donatorID) {
         List<DonateGoods> donateGoodsList = donateGoodsDao.findAllByDonatorID(donatorID);
         Integer totalGoodsCount = donateGoodsList.size();
         List<DonateMoney> donateMoneyList = donateMoneyDao.findAllByDonatorID(donatorID);

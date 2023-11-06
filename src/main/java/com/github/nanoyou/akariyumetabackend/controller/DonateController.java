@@ -1,20 +1,17 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.dto.donate.GoodsInfoDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.donate.DonateGoods;
 import com.github.nanoyou.akariyumetabackend.entity.donate.DonateMoney;
 import com.github.nanoyou.akariyumetabackend.entity.donate.GoodsInfo;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
-import com.github.nanoyou.akariyumetabackend.service.DonateGoodsService;
-import com.github.nanoyou.akariyumetabackend.service.DonateMoneyService;
+import com.github.nanoyou.akariyumetabackend.service.DonateService;
 import com.github.nanoyou.akariyumetabackend.service.GoodsService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -24,17 +21,15 @@ import java.util.UUID;
 
 public class DonateController {
 
-    private final DonateMoneyService donateMoneyService;
-    private final DonateGoodsService donateGoodsService;
+    private final DonateService donateService;
     private final GoodsService goodsService;
 
-
     @Autowired
-    public DonateController(DonateMoneyService donateMoneyService, DonateGoodsService donateGoodsService, GoodsService goodsService) {
-        this.donateMoneyService = donateMoneyService;
-        this.donateGoodsService = donateGoodsService;
+    public DonateController(DonateService donateService, GoodsService goodsService) {
+        this.donateService = donateService;
         this.goodsService = goodsService;
     }
+
 
     /**
      * 记录捐钱
@@ -154,7 +149,7 @@ public class DonateController {
      * @return 商品信息
      */
     @GetMapping("/donate/goods/{goodsID}")
-    public Result findGoodsById(@PathVariable("goodsID") UUID goodsID){
+    public Result findGoodsById(@PathVariable("goodsID") String goodsID){
         var goods = goodsService.findById(goodsID);
 
         if (goods.isPresent()) {
@@ -182,7 +177,7 @@ public class DonateController {
      * @return
      */
     @GetMapping("/donate/{userID}/info")
-    public Result getDonateHistory(@PathVariable UUID userID) {
+    public Result getDonateHistory(@PathVariable String userID) {
         return Result.builder()
                 .ok(true)
                 .message("查询成功")
@@ -191,5 +186,23 @@ public class DonateController {
                 .build();
     }
 
+    /**
+     * 添加一条商品信息
+     * @param goodsInfoDTO 商品信息
+     * @return 响应
+     */
+    @RequestMapping(path = "/donate/goodsInfo", method = RequestMethod.POST, headers = "Accept=application/json")
+    public Result addDonateGoodsInfo(@RequestBody GoodsInfoDTO goodsInfoDTO) {
+
+        var goodsInfo = GoodsInfo.builder()
+                .name(goodsInfoDTO.getName())
+                .unitPrice(goodsInfoDTO.getUnitPrices())
+                .imageURL(goodsInfoDTO.getImageURL())
+                .description(goodsInfoDTO.getDescription()).build();
+
+        goodsInfo = goodsService.saveGoodsInfo(goodsInfo);
+
+        return Result.success("成功添加 1 条商品信息", goodsInfo);
+    }
 
 }
