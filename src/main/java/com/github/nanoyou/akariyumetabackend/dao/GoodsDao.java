@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface GoodsDao extends JpaRepository<GoodsInfo, String> {
 
-    public Optional<GoodsInfo[]> findAllByDescriptionLikeOrNameLike(String description, String name);
+    Optional<GoodsInfo[]> findAllByDescriptionLikeOrNameLike(String description, String name);
 
-    public Optional<GoodsInfo> findById(String id);
+    Optional<GoodsInfo> findById(String id);
 }

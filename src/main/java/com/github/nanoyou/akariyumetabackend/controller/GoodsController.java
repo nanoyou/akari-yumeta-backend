@@ -1,10 +1,13 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.dto.donate.GoodsInfoDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.donate.DonateGoods;
+import com.github.nanoyou.akariyumetabackend.entity.donate.GoodsInfo;
 import com.github.nanoyou.akariyumetabackend.service.DonateGoodsService;
 import com.github.nanoyou.akariyumetabackend.service.GoodsService;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,7 @@ public class GoodsController {
 
     /**
      * 根据描述查找商品
+     *
      * @param description 描述
      * @return 商品信息
      */
@@ -64,13 +68,15 @@ public class GoodsController {
                 .data(result)
                 .build();
     }
+
     /**
      * 根据商品ID查找商品
+     *
      * @param goodsID 商品ID
      * @return 商品信息
      */
     @GetMapping("/donate/goods/{goodsID}")
-    public Result findGoodsById(@PathVariable("goodsID") String goodsID){
+    public Result findGoodsById(@PathVariable("goodsID") String goodsID) {
         var goods = goodsService.findGoodsById(goodsID);
 
         if (goods.isPresent()) {
@@ -85,10 +91,29 @@ public class GoodsController {
         return Result.builder()
                 .ok(false)
                 .code(ResponseCode.PARAM_ERR.value)
-               .message("未找到该物品")
-               .data(null)
-               .build();
+                .message("未找到该物品")
+                .data(null)
+                .build();
 
+    }
+
+    /**
+     * 添加一条商品信息
+     * @param goodsInfoDTO 商品信息
+     * @return 响应
+     */
+    @RequestMapping(path = "/donate/goodsInfo", method = RequestMethod.POST, headers = "Accept=application/json")
+    public Result addDonateGoodsInfo(@RequestBody GoodsInfoDTO goodsInfoDTO) {
+
+        var goodsInfo = GoodsInfo.builder()
+                .name(goodsInfoDTO.getName())
+                .unitPrice(goodsInfoDTO.getUnitPrices())
+                .imageURL(goodsInfoDTO.getImageURL())
+                .description(goodsInfoDTO.getDescription()).build();
+
+        goodsInfo = goodsService.saveGoodsInfo(goodsInfo);
+
+        return Result.success("成功添加 1 条商品信息", goodsInfo);
     }
 
 }

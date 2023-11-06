@@ -29,7 +29,7 @@ public class GoodsService {
 
 
     // Todo: debug 使用
-    public GoodsInfo saveGoods(GoodsInfo goodsInfo) {
+    public GoodsInfo saveGoodsInfo(GoodsInfo goodsInfo) {
         return goodsDao.save(goodsInfo);
     }
 

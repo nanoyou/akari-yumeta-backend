@@ -27,6 +27,6 @@ class GoodsServiceTest {
                 .unitPrice(1000l)
                 .imageURL("url")
                 .build();
-        goodsService.saveGoods(goodsInfo);
+        goodsService.saveGoodsInfo(goodsInfo);
     }
 }
