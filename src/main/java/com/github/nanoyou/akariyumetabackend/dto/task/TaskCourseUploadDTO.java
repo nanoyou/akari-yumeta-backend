@@ -45,10 +45,6 @@ public class TaskCourseUploadDTO {
      */
     private String taskName;
     /**
-     * 任务发布人ID
-     */
-    private String taskUploaderID;
-    /**
      * 视频地址，要给受困儿童显示的视频的地址
      */
     private String videoURL;

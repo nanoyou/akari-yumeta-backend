@@ -13,6 +13,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     private final ChildInterceptor childInterceptor;
     private final VolunteerInterceptor volunteerInterceptor;
     private final SponsorInterceptor sponsorInterceptor;
+
     @Autowired
     public InterceptorConfig(
             LoginInterceptor loginInterceptor,
@@ -27,6 +28,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         this.volunteerInterceptor = volunteerInterceptor;
         this.sponsorInterceptor = sponsorInterceptor;
     }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new CorsInterceptor()).addPathPatterns("/**");
@@ -35,7 +37,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
 //                添加示例
 //                .addPathPatterns("/admin/**");
-                .addPathPatterns("/my/**");
+                .addPathPatterns("/**")
+                .excludePathPatterns("/login")
+                .excludePathPatterns("/register");
 
         // 在下面添加需要 管理员 登录的路径，需要添加至上方 loginInterceptor 内
         registry.addInterceptor(adminInterceptor)

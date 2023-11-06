@@ -47,7 +47,7 @@ public class TaskController {
      * @return Result类型的对象
      */
     @RequestMapping(path = "/task", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Result task(@RequestBody TaskCourseUploadDTO taskCourseUploadDTO) {
+    public Result task(@RequestBody TaskCourseUploadDTO taskCourseUploadDTO, @RequestAttribute("user") User loginUser) {
         try {
             // 验证时间,设置状态
             LocalDateTime time = now();
@@ -72,7 +72,7 @@ public class TaskController {
 
             var uploadTask = Task.builder()
                     .taskName(taskCourseUploadDTO.getTaskName())
-                    .taskUploaderID(taskCourseUploadDTO.getTaskUploaderID())
+                    .taskUploaderID(loginUser.getId())
                     .createdTime(time)
                     .startTime(taskCourseUploadDTO.getStartTime())
                     .endTime(taskCourseUploadDTO.getEndTime())
