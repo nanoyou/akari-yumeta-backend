@@ -9,6 +9,7 @@ import com.github.nanoyou.akariyumetabackend.dto.dynamic.ReplyDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
+import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.DynamicService;
 import com.github.nanoyou.akariyumetabackend.service.LikeService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
@@ -36,7 +37,7 @@ public class DynamicController {
 
     @RequestMapping(path = "/dynamic", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result dynamic(@RequestBody CommentDTO commentDTO,
-                          @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+                          @RequestAttribute("user") User user) {
 
         // 动态内容是否为空
         if (!StringUtils.hasText(commentDTO.getContent())) {
@@ -57,7 +58,7 @@ public class DynamicController {
         }
 
         val postComment = Comment.builder()
-                .commenterID(loginUserID)
+                .commenterID(user.getId())
                 .content(commentDTO.getContent())
                 .createTime(LocalDateTimeUtil.now())
                 .replyTo(null)
@@ -86,8 +87,9 @@ public class DynamicController {
     }
 
     @RequestMapping(path = "/my/dynamic", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Result myDynamic(@ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+    public Result myDynamic(@RequestAttribute("user") User user) {
 
+        val loginUserID = user.getId();
         // 关注人的动态
         val dynamics = dynamicService.getDynamicsByFollowerID(loginUserID);
         // 我的动态
@@ -134,8 +136,8 @@ public class DynamicController {
     @RequestMapping(path = "/comment/{commentID}/reply", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result reply(@PathVariable String commentID,
                         @RequestBody ReplyDTO replyDTO,
-                        @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
-
+                        @RequestAttribute("user") User user) {
+        val loginUserID = user.getId();
         val content = replyDTO.getContent();
         if (!StringUtils.hasText(content)) {
             return Result.builder()
@@ -173,6 +175,41 @@ public class DynamicController {
                         .build()
         );
 
+    }
+
+    @RequestMapping(path = "/task/{taskID}/dynamic", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result taskDynamic(@PathVariable String taskID) {
+        if (!taskService.existTask(taskID)) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.NO_SUCH_TASK_COURSE.value)
+                    .data(null)
+                    .message("课程不存在")
+                    .build();
+        }
+
+        try {
+            val taskDynamicIdList = taskService.getTaskDynamicIdList(taskID);
+
+            val dynamics = taskDynamicIdList.stream().map(
+                    id -> dynamicService.getDynamicWithoutChildrenByID(id).orElseThrow(NullPointerException::new)
+            ).toList();
+
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .message("获取任务动态列表成功")
+                    .data(dynamics)
+                    .build();
+
+        } catch (NullPointerException e) {
+            return Result.builder()
+                    .ok(true)
+                    .code(ResponseCode.SUCCESS.value)
+                    .message("获取任务动态列表失败：获取动态时遇到空指针")
+                    .data(null)
+                    .build();
+        }
     }
 
     private List<DynamicDTO> concat(List<Comment> dynamics, List<Integer> likes) {

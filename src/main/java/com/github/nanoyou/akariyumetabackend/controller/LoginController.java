@@ -5,34 +5,29 @@ import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
-import com.github.nanoyou.akariyumetabackend.service.LoginService;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.github.nanoyou.akariyumetabackend.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
 @RestController
 public class LoginController {
-    private final LoginService loginService;
 
-    @Autowired
-    public LoginController(LoginService loginService) {
-        this.loginService = loginService;
+    private final UserService userService;
+
+    public LoginController(UserService userService) {
+        this.userService = userService;
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result login(@RequestBody LoginDTO loginDTO, HttpSession httpSession) {
         try {
-            return loginService.login(loginDTO).map(
+            return userService.login(loginDTO).map(
                     userDTO -> {
+                        userDTO.setToken(httpSession.getId());
                         // 保存 Session
                         httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
                         return Result.builder()
@@ -63,7 +58,7 @@ public class LoginController {
     @RequestMapping(path = "/login/admin", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result adminLogin(@RequestBody LoginDTO loginDTO,
                              HttpSession httpSession) {
-        val login = loginService.login(loginDTO);
+        val login = userService.login(loginDTO);
 
         return login.map(
                 userDTO -> {
@@ -75,6 +70,7 @@ public class LoginController {
                                 .data(null)
                                 .build();
                     }
+                    userDTO.setToken(httpSession.getId());
                     httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
                     return Result.builder()
                             .ok(true)

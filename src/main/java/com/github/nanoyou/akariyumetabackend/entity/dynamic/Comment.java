@@ -4,13 +4,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Comment 评论
@@ -32,17 +35,24 @@ public class Comment {
     /**
      * 发评论的人的ID
      */
+    @NotNull
+    @UUID
     private String commenterID;
     /**
      * 以Markdown格式存储的评论
      */
+    @NotNull
+    @NotBlank
     private String content;
     /**
      * 评论发表时间
      */
+    @NotNull
     private LocalDateTime createTime;
     /**
      * 父评论ID，被回复评论的ID，为空则为动态节点（根节点）
      */
+    @NotNull
+    @UUID
     private String replyTo;
 }

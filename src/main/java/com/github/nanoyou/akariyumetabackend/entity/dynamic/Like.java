@@ -3,12 +3,12 @@ package com.github.nanoyou.akariyumetabackend.entity.dynamic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
+import org.hibernate.validator.constraints.UUID;
 
 /**
  * Like 点赞
@@ -26,13 +26,18 @@ public class Like {
      * 被点赞的评论的ID
      */
     @Id
+    @UUID
     private String commentID;
     /**
      * 被点赞的人的ID
      */
+    @UUID
+    @NotNull
     private String likedID;
     /**
      * 发起点赞的人的ID
      */
+    @UUID
+    @NotNull
     private String likerID;
 }

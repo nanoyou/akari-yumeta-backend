@@ -68,42 +68,33 @@ public enum ResponseCode {
      */
     NO_SUCH_TASK_COURSE(200),
     /**
-     * 学习任务创建成功
-     */
-    TASK_UPLOAD_SUCCESS(201),
-    /**
      * 学习任务创建失败
      */
-    TASK_UPLOAD_FAIL(202),
+    TASK_UPLOAD_FAIL(201),
     /**
      * 查询我的任务失败
      */
-    MY_TASK_FAILED(203),
-    /**
-     * 视频观看任务创建成功
-     */
-    TASK_RECORD_SUCCESS(204),
+    MY_TASK_FAILED(202),
     /**
      * 视频观看任务创建失败
      */
-    TASK_RECORD_FAIL(205),
-    /**
-     * 视频观看完成
-     */
-    VIDEO_COMPLETED(206),
+    TASK_RECORD_FAIL(203),
     /**
      * 视频观看未完成
      */
-    VIDEO_UNCOMPLETED(207),
+    VIDEO_UNCOMPLETED(204),
     /**
-     * 无法获取成绩
+     * 无法获取积分
      */
-    SCORE_GET_FAIL(208),
+    SCORE_GET_FAIL(205),
     /**
      * 视频不见喽~
      */
-    VIDEO_DISAPPEARED(209),
-
+    VIDEO_DISAPPEARED(206),
+    /**
+     * 学习任务重复开启
+     */
+    TASK_OPEN_AGAIN(207),
     // ***************** 动态
     /**
      * 评论内容不能为空
@@ -130,7 +121,37 @@ public enum ResponseCode {
     /**
      * 找不到文件
      */
-    NO_SUCH_FILE(402);
+    NO_SUCH_FILE(402),
+    // ***************** 用户
+    /**
+     * 关注失败
+     */
+    FOLLOW_FAIL(500),
+    /**
+     * 取消关注失败
+     */
+    UNFOLLOW_FAIL(501),
+    /**
+     * 没有关注
+     */
+    NOT_FOLLOW(502),
+    /**
+     * 用户不存在
+     */
+    NO_SUCH_USER(503),
+    /**
+     * 个人信息修改失败
+     */
+    PERSONAL_INFO_MODIFY_FAIL(504),
+    /**
+     * 获取关注列表失败，没有关注任何人
+     */
+    NOT_FOLLOW_ANYONE(505),
+    /**
+     * 空消息
+     */
+    EMPTY_MESSAGE_CONTENT(600),
+    NO_SUCH_MESSAGE(601);
 
     public final int value;
 

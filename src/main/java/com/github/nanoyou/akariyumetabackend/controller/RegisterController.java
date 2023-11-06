@@ -1,11 +1,11 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
-import com.github.nanoyou.akariyumetabackend.entity.Result;
-import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.user.RegisterDTO;
+import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
-import com.github.nanoyou.akariyumetabackend.service.RegisterService;
+import com.github.nanoyou.akariyumetabackend.service.UserService;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.StringUtils;
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RegisterController {
 
-    private final RegisterService registerService;
+    private final UserService userService;
 
     @Autowired
-    private RegisterController(RegisterService registerService) {
-        this.registerService = registerService;
+    public RegisterController(UserService userService) {
+        this.userService = userService;
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -83,28 +83,13 @@ public class RegisterController {
                         build();
             }
 
-            var registerUser = User.builder()
-                    .username(registerDTO.getUsername())
-                    .nickname(registerDTO.getNickname())
-                    .role(registerDTO.getRole())
-                    .password(registerDTO.getPassword())
-                    .gender(registerDTO.getGender())
-                    .introduction(registerDTO.getIntroduction())
-                    .avatarURL(registerDTO.getAvatarURL())
-                    .usageDuration(0)
-                    .build();
-
-
-            var registerUserDTO = registerService.register(registerUser);
-
-            // TODO: 标签存储未真正存储到数据库
-            registerUserDTO.setTags(registerDTO.getTags());
+            val userDTO = userService.register(registerDTO);
 
             return Result.builder()
                     .ok(true)
                     .code(ResponseCode.SUCCESS.value)
                     .message("注册成功")
-                    .data(registerUserDTO)
+                    .data(userDTO)
                     .build();
 
         } catch (DataIntegrityViolationException e) {

@@ -1,6 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.dao;
 
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
+import jakarta.annotation.Nonnull;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface TaskDynamicDao extends JpaRepository<TaskDynamic, TaskDynamic._
 
     @Override
     TaskDynamic saveAndFlush(TaskDynamic taskDynamic);
+
+    List<TaskDynamic> findByTaskDynamicTaskID(@Nonnull String taskID);
 }

@@ -8,6 +8,7 @@ import com.github.nanoyou.akariyumetabackend.common.util.Sha256Util;
 import com.github.nanoyou.akariyumetabackend.dto.filestore.FileRecordDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.filestore.FileItem;
+import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.FileService;
 import lombok.val;
 import org.springframework.http.MediaType;
@@ -33,11 +34,8 @@ public class FileController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
 
-    public Result file(@RequestParam("file") MultipartFile file,
-                       @ModelAttribute(SessionConst.LOGIN_USER_ID) String loginUserID) {
+    public Result file(@RequestParam("file") MultipartFile file) {
         try {
-            // 需要登录
-            assert StringUtils.hasText(loginUserID);
 
             // 构造实体类
             val bytes = file.getBytes();

@@ -3,6 +3,7 @@ package com.github.nanoyou.akariyumetabackend.entity.user;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.Gender;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,29 +24,35 @@ public class User {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @NotNull
     private String id;
     /**
      * 用户名
      */
     @Column(unique = true)
+    @NotNull
     private String username;
     /**
      * 昵称
      */
+    @NotNull
     private String nickname;
     /**
      * 角色
      */
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Role role;
     /**
      * 密码
      */
+    @NotNull
     private String password;
     /**
      * 性别
      */
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Gender gender;
     /**
      * 个人介绍
@@ -58,5 +65,6 @@ public class User {
     /**
      * APP使用时长(单位: s)
      */
+    @NotNull
     private Integer usageDuration;
 }
