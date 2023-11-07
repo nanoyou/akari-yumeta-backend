@@ -1,6 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.common.config;
 
 import com.github.nanoyou.akariyumetabackend.interceptor.*;
+import com.github.nanoyou.akariyumetabackend.interceptor.custom.PostInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -47,9 +48,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(adminInterceptor)
                 .addPathPatterns("/admin")
                 .addPathPatterns("/donate/goodsInfo");
-        // TODO: 需要单独配置 POST 和 GET 的拦截
-//        registry.addInterceptor(adminInterceptor)
-//                .addPathPatterns("/task");
+        registry.addInterceptor(new PostInterceptor(adminInterceptor))
+                .addPathPatterns("/task");
 //                添加示例
 //                .addPathPatterns("/admin/**");
 
