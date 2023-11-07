@@ -7,6 +7,7 @@ import com.github.nanoyou.akariyumetabackend.dto.subscription.SubscriptionDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import com.github.nanoyou.akariyumetabackend.dto.user.UserUpdateDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.entity.friend.Subscription;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.SubscriptionService;
@@ -31,8 +32,12 @@ public class UserController {
 
 
     @RequestMapping(path = "/user", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Result user() {
-        val allUsers = userService.getAllUsers();
+    public Result user(@RequestParam Role role) {
+        var allUsers = userService.getAllUsers();
+
+        if (role != null) {
+            allUsers = allUsers.stream().filter(user -> user.getRole().equals(role)).toList();
+        }
         val userDTOs = allUsers.stream().map(
                 user -> userService.getUserDTO(user.getId())
                         .orElseThrow(() -> new NoSuchUserError(ResponseCode.NO_SUCH_USER, "用户不存在"))

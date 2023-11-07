@@ -31,6 +31,10 @@ public enum ResponseCode {
      * 用户名不能为空
      */
     EMPTY_USERNAME(5),
+    /**
+     * 其他内部服务器错误
+     */
+    INNER_SERVER_ERROR(6),
 
     // *********** 登录 / 注册
     /**
@@ -95,6 +99,10 @@ public enum ResponseCode {
      * 学习任务重复开启
      */
     TASK_OPEN_AGAIN(207),
+    /**
+     * 任务和课程没有绑定
+     */
+    NO_TASK_COURSE_BINDING(208),
     // ***************** 动态
     /**
      * 评论内容不能为空

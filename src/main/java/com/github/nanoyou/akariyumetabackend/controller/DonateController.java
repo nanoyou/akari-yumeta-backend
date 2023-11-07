@@ -124,6 +124,7 @@ public class DonateController {
     public Result getGoodsByDescription(String description) {
         String newDescription = "%" + description + "%";
         var list = goodsService.getGoodByDescription(newDescription).orElse((GoodsInfo[]) null);
+        assert list != null;
         if (list.length == 0) {
             String[] nullData = new String[1];
             nullData[0] = "未找到符合描述的物品";
@@ -173,8 +174,8 @@ public class DonateController {
 
     /**
      * 查询历史捐助记录
-     * @param userID
-     * @return
+     * @param userID 被查看人的 ID
+     * @return 请求响应
      */
     @GetMapping("/donate/{userID}/info")
     public Result getDonateHistory(@PathVariable String userID) {

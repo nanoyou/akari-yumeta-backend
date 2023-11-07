@@ -2,6 +2,7 @@ package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchCourseException;
+import com.github.nanoyou.akariyumetabackend.common.exception.TaskCourseBindingError;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskDTO;
@@ -19,14 +20,14 @@ import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ws.schild.jave.MultimediaInfo;
+import ws.schild.jave.MultimediaObject;
 
 import java.net.URL;
-import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.MultimediaInfo;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus.*;
@@ -46,7 +47,7 @@ public class TaskController {
     /**
      * 创建学习任务
      *
-     * @param taskCourseUploadDTO
+     * @param taskCourseUploadDTO 任务课程上传DTO
      * @return Result类型的对象
      */
     @RequestMapping(path = "/task", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -230,6 +231,12 @@ public class TaskController {
     }
 
     private List<TaskCourseDTO> concat(@Nonnull List<Task> tasks, @Nonnull List<Course> courses) {
+        if (tasks.size() != courses.size()) {
+            val max = Math.max(tasks.size(), courses.size());
+            val outBindingCount = max - Math.min(tasks.size(), courses.size());
+            throw new TaskCourseBindingError(ResponseCode.NO_TASK_COURSE_BINDING,
+                    "任务与课程没有绑定：期待 " + max + " 个课程任务绑定，但是存在 " + outBindingCount + " 个课程任务没有被绑定。");
+        }
         return IntStream.range(0, tasks.size())
                 .mapToObj(i -> {
                     val task = tasks.get(i);
@@ -317,8 +324,8 @@ public class TaskController {
     /**
      * 完成学习任务（视频观看修改状态）
      *
-     * @param taskID      任务 ID
-     * @param user 自动注入的登录用户
+     * @param taskID 任务 ID
+     * @param user   自动注入的登录用户
      * @return Result
      */
     @RequestMapping(path = "/task/{taskID}/finish", method = RequestMethod.POST, headers = "Accept=application/json")

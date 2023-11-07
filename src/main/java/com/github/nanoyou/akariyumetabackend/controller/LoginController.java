@@ -1,11 +1,10 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.common.exception.UnauthorizedError;
-import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.SessionAttr;
 import com.github.nanoyou.akariyumetabackend.dto.user.LoginDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.val;
@@ -31,27 +30,13 @@ public class LoginController {
                         userDTO.setToken(httpSession.getId());
                         // 保存 Session
                         httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
-                        return Result.builder()
-                                .ok(true)
-                                .code(ResponseCode.SUCCESS.value)
-                                .message("登录成功")
-                                .data(userDTO)
-                                .build();
+                        return Result.success("登录成功", userDTO);
                     }
             ).orElse(
-                    Result.builder()
-                            .ok(false)
-                            .code(ResponseCode.WRONG_USERNAME_OR_PASSWORD.value)
-                            .message("账户不存在或密码错误")
-                            .data(null)
-                            .build()
+                    Result.failed("账户不存在或密码错误", ResponseCode.WRONG_USERNAME_OR_PASSWORD)
             );
         } catch (Exception e) {
-            return Result.builder()
-                    .ok(false)
-                    .code(ResponseCode.LOGIN_FAIL.value)
-                    .message("登录失败：内部服务器错误")
-                    .build();
+            return Result.failed("登录失败：内部服务器错误", ResponseCode.LOGIN_FAIL);
         }
 
     }
@@ -64,19 +49,14 @@ public class LoginController {
         return login.map(
                 userDTO -> {
                     if (!userDTO.getRole().equals(Role.ADMIN)) {
-                        throw new UnauthorizedError(ResponseCode.LOGIN_FAIL, "非管理员用户，无权访问");
+                        return Result.success("非管理员用户，无权访问", ResponseCode.LOGIN_FAIL);
                     }
                     userDTO.setToken(httpSession.getId());
                     httpSession.setAttribute(SessionAttr.LOGIN_USER_ID.attr, userDTO.getId());
                     return Result.success("管理员登录成功", userDTO);
                 }
         ).orElse(
-                Result.builder()
-                        .ok(false)
-                        .code(ResponseCode.WRONG_USERNAME_OR_PASSWORD.value)
-                        .message("用户名或密码不正确")
-                        .data(null)
-                        .build());
+                Result.failed("用户名或密码不正确", ResponseCode.WRONG_USERNAME_OR_PASSWORD));
     }
 
 }

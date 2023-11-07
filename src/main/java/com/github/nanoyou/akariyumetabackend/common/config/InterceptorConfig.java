@@ -1,6 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.common.config;
 
 import com.github.nanoyou.akariyumetabackend.interceptor.*;
+import com.github.nanoyou.akariyumetabackend.interceptor.custom.PostInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -40,17 +41,24 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login/admin")
                 .excludePathPatterns("/login")
-                .excludePathPatterns("/register");
+                .excludePathPatterns("/register")
+                .excludePathPatterns("/file/*");
 
         // 在下面添加需要 管理员 登录的路径，需要添加至上方 loginInterceptor 内
         registry.addInterceptor(adminInterceptor)
-                .addPathPatterns("/admin");
+                .addPathPatterns("/admin")
+                .addPathPatterns("/donate/goodsInfo");
+        registry.addInterceptor(new PostInterceptor(adminInterceptor))
+                .addPathPatterns("/task");
 //                添加示例
 //                .addPathPatterns("/admin/**");
 
         // 在下面添加需要 儿童 登录的路径，需要添加至上方 loginInterceptor 内
         registry.addInterceptor(childInterceptor)
-                .addPathPatterns("/child");
+                .addPathPatterns("/child")
+                .addPathPatterns("/my/task")
+                .addPathPatterns("/task/*/finish")
+                .addPathPatterns("/task/*/open");
 //                添加示例
 //                .addPathPatterns("/child/**")
 
@@ -62,11 +70,14 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
         // 在下面添加需要 捐助者 登录的路径，需要添加至上方 loginInterceptor 内
         registry.addInterceptor(sponsorInterceptor)
-                .addPathPatterns("/sponsor");
-                // .addPathPatterns("/donatem/goods")
-                // .addPathPatterns("/donate/money")
-                // .addPathPatterns("/donate/**/info")
-                // .addPathPatterns("/donate/goods/**");
+                .addPathPatterns("/sponsor")
+                .addPathPatterns("/donate/goods")
+                .addPathPatterns("/donate/money")
+                .addPathPatterns("/donate/goods");
+        // .addPathPatterns("/donatem/goods")
+        // .addPathPatterns("/donate/money")
+        // .addPathPatterns("/donate/**/info")
+        // .addPathPatterns("/donate/goods/**");
 //                添加示例
 //                .addPathPatterns("/sponsor/**")
 
