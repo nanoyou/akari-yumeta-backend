@@ -45,8 +45,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         // 在下面添加需要 管理员 登录的路径，需要添加至上方 loginInterceptor 内
         registry.addInterceptor(adminInterceptor)
                 .addPathPatterns("/admin")
-                .addPathPatterns("/donate/goodsInfo")
-                .addPathPatterns("/user/*/info");
+                .addPathPatterns("/donate/goodsInfo");
         // TODO: 需要单独配置 POST 和 GET 的拦截
 //        registry.addInterceptor(adminInterceptor)
 //                .addPathPatterns("/task");
