@@ -102,13 +102,11 @@ public class TaskController {
             ).orElseThrow(NullPointerException::new);
 
             // course同步task UUID
-            Integer watchedCount = 0;
-            Integer videoDuration = this.getVideoDurationInSeconds(taskCourseUploadDTO.getVideoURL());
             var uploadCourse = Course.builder()
                     .taskID(taskDTO.getId())
-                    .watchedCount(watchedCount)
+                    .watchedCount(0)
                     .videoURL(taskCourseUploadDTO.getVideoURL())
-                    .videoDuration(videoDuration)
+                    .videoDuration(taskCourseUploadDTO.getVideoDuration())
                     .build();
             courseService.addCourse(uploadCourse);
 
@@ -127,24 +125,6 @@ public class TaskController {
                     .build();
         }
 
-    }
-
-    private int getVideoDurationInSeconds(String fileUrl) {
-        try {
-            URL source = new URL(fileUrl);
-            // 构造方法接受URL对象
-            MultimediaObject instance = new MultimediaObject(source);
-            // 构造方法接受File对象
-//            MultimediaObject instance = new MultimediaObject(new File(fileUrl));
-            MultimediaInfo result = instance.getInfo();
-            long durationInMillis = result.getDuration();
-            int durationInSeconds = (int) (durationInMillis / 1000);
-
-            return durationInSeconds;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
     }
 
 

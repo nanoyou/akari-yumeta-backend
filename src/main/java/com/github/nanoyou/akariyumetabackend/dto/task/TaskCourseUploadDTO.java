@@ -48,4 +48,8 @@ public class TaskCourseUploadDTO {
      * 视频地址，要给受困儿童显示的视频的地址
      */
     private String videoURL;
+    /**
+     * 视频时长
+     */
+    private Integer videoDuration;
 }
