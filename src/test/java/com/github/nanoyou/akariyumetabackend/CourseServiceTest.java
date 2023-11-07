@@ -27,4 +27,13 @@ public class CourseServiceTest {
 
         assertTrue(courseService.addCourse(course).isPresent());
     }
+    @Test
+    void getCourseTest(){
+        String courseID = "1";
+        assertTrue(courseService.getCourse(courseID).isPresent());
+    }
+    @Test
+    void getAllCoursesTest(){
+        assertTrue(!courseService.getAllCourses().isEmpty());
+    }
 }
