@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,8 +25,10 @@ public class DynamicServiceTest {
 
 
     @Test
-    void addCommenTest(){
-//
+    void addCommentTest(){
+        Comment comment = new Comment();
+        comment.setId("5899999");
+        assertTrue(dynamicService.addComment(comment).isPresent());
     }
 
     @Test
@@ -40,12 +43,17 @@ public class DynamicServiceTest {
         assertTrue(dynamicService.getDynamicsByFollowerID(CommenterId).isEmpty());
 
     }
-
+    @Test
+    void getDynamicWithoutChildrenByIDTest(){
+        String dynamicId = "588";
+        Optional<DynamicTreeDTO> dynamic = dynamicService.getDynamicWithoutChildrenByID(dynamicId);
+        assertTrue(dynamic.get().getChildren().size() == 0);
+    }
     @Test
     void getDynamicTreeTest(){
-        String commentId = "1";
+        String commentId = "588";
         DynamicTreeDTO dynamicTreeDTO = dynamicService.getDynamicTree(commentId);
-        assertTrue(dynamicTreeDTO != null);
+        assertTrue(dynamicTreeDTO.getChildren().size() == 3);
     }
 
     @Test
