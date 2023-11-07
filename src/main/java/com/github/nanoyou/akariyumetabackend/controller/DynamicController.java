@@ -48,14 +48,6 @@ public class DynamicController {
                     .build();
         }
 
-        // 任务是否存在
-        if (!taskService.existTask(commentDTO.getTaskID())) {
-            return Result.builder()
-                    .ok(false)
-                    .message("本动态要关联的课程任务不存在")
-                    .code(ResponseCode.NO_SUCH_TASK_COURSE.value)
-                    .build();
-        }
 
         val postComment = Comment.builder()
                 .commenterID(user.getId())
@@ -68,10 +60,20 @@ public class DynamicController {
         val comment = dynamicService.addComment(postComment).orElseThrow(NullPointerException::new);
 
         // 将动态与任务绑定
-        if (commentDTO.getTaskID() != null) {
+        val taskID = commentDTO.getTaskID();
+        if (StringUtils.hasText(taskID)) {
+            // 任务是否存在
+            if (!taskService.existTask(taskID)) {
+                return Result.builder()
+                        .ok(false)
+                        .message("本动态要关联的课程任务不存在")
+                        .code(ResponseCode.NO_SUCH_TASK_COURSE.value)
+                        .build();
+            }
+
             val taskDynamic = taskService.addTaskDynamic(TaskDynamic.builder()
                     .taskDynamic(TaskDynamic._TaskDynamicCombinedPrimaryKey.builder()
-                            .taskID(commentDTO.getTaskID())
+                            .taskID(taskID)
                             .dynamicID(comment.getId())
                             .build())
                     .build());
