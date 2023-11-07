@@ -37,13 +37,13 @@ public class Comment {
      */
     @NotNull
     @UUID
-    @Length(min = 1, max = 2000)
     private String commenterID;
     /**
      * 以Markdown格式存储的评论
      */
     @NotNull
     @NotBlank
+    @Length(min = 1, max = 2000)
     private String content;
     /**
      * 评论发表时间
