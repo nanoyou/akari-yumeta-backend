@@ -68,14 +68,15 @@ public class DynamicController {
         val comment = dynamicService.addComment(postComment).orElseThrow(NullPointerException::new);
 
         // 将动态与任务绑定
-        val taskDynamic = taskService.addTaskDynamic(TaskDynamic.builder()
-                .taskDynamic(TaskDynamic._TaskDynamicCombinedPrimaryKey.builder()
-                        .taskID(commentDTO.getTaskID())
-                        .dynamicID(comment.getId())
-                        .build())
-                .build());
-
-        taskDynamic.orElseThrow(NullPointerException::new);
+        if (commentDTO.getTaskID() != null) {
+            val taskDynamic = taskService.addTaskDynamic(TaskDynamic.builder()
+                    .taskDynamic(TaskDynamic._TaskDynamicCombinedPrimaryKey.builder()
+                            .taskID(commentDTO.getTaskID())
+                            .dynamicID(comment.getId())
+                            .build())
+                    .build());
+            taskDynamic.orElseThrow(NullPointerException::new);
+        }
 
         return Result.builder()
                 .ok(true)
