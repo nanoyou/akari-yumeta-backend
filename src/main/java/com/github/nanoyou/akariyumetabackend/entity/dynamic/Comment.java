@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
@@ -52,7 +51,5 @@ public class Comment {
     /**
      * 父评论ID，被回复评论的ID，为空则为动态节点（根节点）
      */
-    @NotNull
-    @UUID
     private String replyTo;
 }
