@@ -4,6 +4,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.github.nanoyou.akariyumetabackend.common.constant.FileConfig;
 import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchFileError;
 import com.github.nanoyou.akariyumetabackend.common.util.Sha256Util;
 import com.github.nanoyou.akariyumetabackend.dto.filestore.FileRecordDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
@@ -11,7 +12,12 @@ import com.github.nanoyou.akariyumetabackend.entity.filestore.FileItem;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.FileService;
 import lombok.val;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -113,34 +119,24 @@ public class FileController {
 
     }
 
-    @ResponseBody
     @RequestMapping(path = "/file/{fileHash}", method = RequestMethod.GET,
             headers = "Accept=application/json")
-    public Result file(@PathVariable String fileHash) {
-        if (!Sha256Util.isSha256(fileHash)) {
-            return Result.builder()
-                    .ok(false)
-                    .code(ResponseCode.PARAM_ERR.value)
-                    .message("获取文件失败：文件 ID 不合法，应为 SHA-256 格式")
-                    .data(null)
-                    .build();
-        }
+    public ResponseEntity<Resource> file(@PathVariable String fileHash) {
+        val fileItem = fileService.getFile(fileHash).orElseThrow(() -> new NoSuchFileError(ResponseCode.NO_SUCH_FILE, "没有这个文件"));
 
-        return fileService.getFile(fileHash).map(
-                fileItem -> Result.builder()
-                        .ok(true)
-                        .code(ResponseCode.SUCCESS.value)
-                        .message("获取文件成功")
-                        .data(fileItem)
-                        .build()
-        ).orElse(
-                Result.builder()
-                        .ok(false)
-                        .code(ResponseCode.NO_SUCH_FILE.value)
-                        .message("获取文件失败：找不到文件")
-                        .data(null)
-                        .build()
-        );
+        val resource = new ByteArrayResource(fileItem.getData());
+
+        String contentDisposition = ContentDisposition
+                .builder("inline")
+                .filename(fileItem.getId())
+                .build()
+                .toString();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .contentType(MediaType.valueOf(fileItem.getMimeType()))
+                .body(resource);
+
     }
 
 }
