@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
@@ -36,6 +37,7 @@ public class Comment {
      */
     @NotNull
     @UUID
+    @Length(min = 1, max = 2000)
     private String commenterID;
     /**
      * 以Markdown格式存储的评论
