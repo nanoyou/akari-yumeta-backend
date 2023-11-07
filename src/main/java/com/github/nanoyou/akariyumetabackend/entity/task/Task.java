@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
@@ -67,6 +68,7 @@ public class Task {
     /**
      * 任务描述
      */
+    @Length(max = 1000)
     private String description;
     /**
      * 任务类别
