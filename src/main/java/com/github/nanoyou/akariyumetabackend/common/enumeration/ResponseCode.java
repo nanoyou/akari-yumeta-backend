@@ -31,6 +31,10 @@ public enum ResponseCode {
      * 用户名不能为空
      */
     EMPTY_USERNAME(5),
+    /**
+     * 其他内部服务器错误
+     */
+    INNER_SERVER_ERROR(6),
 
     // *********** 登录 / 注册
     /**

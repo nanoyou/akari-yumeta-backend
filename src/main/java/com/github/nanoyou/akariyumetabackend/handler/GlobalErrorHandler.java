@@ -2,9 +2,7 @@ package com.github.nanoyou.akariyumetabackend.handler;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.exception.BaseError;
-import com.github.nanoyou.akariyumetabackend.common.exception.UnauthorizedError;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -22,9 +20,16 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseBody
-    public Result HttpMessageNotReadableExceptionHandler(HttpMessageNotReadableException e) {
+    public Result httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException e) {
         logReason(e);
-        return Result.failed("HTTP消息无法被读取，因为" + e.getMessage(), ResponseCode.PARAM_ERR);
+        return Result.failed("HTTP消息不可读异常：因为" + e.getMessage(), ResponseCode.PARAM_ERR);
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseBody
+    public Result nullPointerExceptionHandler(NullPointerException e) {
+        logReason(e);
+        return Result.failed("空指针异常：因为" + e.getMessage(), ResponseCode.INNER_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = BaseError.class)
