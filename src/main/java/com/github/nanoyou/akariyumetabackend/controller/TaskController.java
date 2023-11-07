@@ -2,6 +2,7 @@ package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchCourseException;
+import com.github.nanoyou.akariyumetabackend.common.exception.TaskCourseBindingError;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskDTO;
@@ -25,6 +26,7 @@ import ws.schild.jave.MultimediaObject;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -130,6 +132,7 @@ public class TaskController {
 
     /**
      * 根据视频 URL 获取其时长
+     *
      * @param fileUrl 视频文件 URL 地址
      * @return 视频时长(单位, 秒)
      */
@@ -251,6 +254,12 @@ public class TaskController {
     }
 
     private List<TaskCourseDTO> concat(@Nonnull List<Task> tasks, @Nonnull List<Course> courses) {
+        if (tasks.size() != courses.size()) {
+            val max = Math.max(tasks.size(), courses.size());
+            val outBindingCount = max - Math.min(tasks.size(), courses.size());
+            throw new TaskCourseBindingError(ResponseCode.NO_TASK_COURSE_BINDING,
+                    "任务与课程没有绑定：期待 " + max + " 个课程任务绑定，但是存在 " + outBindingCount + " 个课程任务没有被绑定。");
+        }
         return IntStream.range(0, tasks.size())
                 .mapToObj(i -> {
                     val task = tasks.get(i);
@@ -338,8 +347,8 @@ public class TaskController {
     /**
      * 完成学习任务（视频观看修改状态）
      *
-     * @param taskID      任务 ID
-     * @param user 自动注入的登录用户
+     * @param taskID 任务 ID
+     * @param user   自动注入的登录用户
      * @return Result
      */
     @RequestMapping(path = "/task/{taskID}/finish", method = RequestMethod.POST, headers = "Accept=application/json")

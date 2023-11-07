@@ -95,6 +95,10 @@ public enum ResponseCode {
      * 学习任务重复开启
      */
     TASK_OPEN_AGAIN(207),
+    /**
+     * 任务和课程没有绑定
+     */
+    NO_TASK_COURSE_BINDING(208),
     // ***************** 动态
     /**
      * 评论内容不能为空
