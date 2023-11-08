@@ -25,7 +25,9 @@ import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.MultimediaInfo;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -387,11 +389,14 @@ public class TaskController {
         try {
             val score = taskService.getScore(userID);
 
+            Map<String, Integer> data = new HashMap<>();
+            data.put("score", score);
+
             return Result.builder()
                     .ok(true)
                     .code(ResponseCode.SUCCESS.value)
                     .message("学习积分获取成功")
-                    .data(score)
+                    .data(data)
                     .build();
         } catch (Exception e) {
             return Result.builder()
