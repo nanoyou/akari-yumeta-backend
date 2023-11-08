@@ -42,7 +42,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/login/admin")
                 .excludePathPatterns("/login")
                 .excludePathPatterns("/register")
-                .excludePathPatterns("/file/*");
+                .excludePathPatterns("/file/*")
+                .excludePathPatterns("/ws/chat/hello");
 
         // 在下面添加需要 管理员 登录的路径，需要添加至上方 loginInterceptor 内
         registry.addInterceptor(adminInterceptor)

@@ -35,6 +35,7 @@ public class ChatController {
      * @param user 自动注入的登录用户, 也是消息发起人
      * @return 请求响应
      */
+    @Deprecated
     @RequestMapping(path = "/chat/message/{userID}", method = RequestMethod.POST, headers = "Accept=application/json")
     public Result sendMessage(@PathVariable String userID,
                               @RequestBody SendMessageDTO sendMessageDTO,
