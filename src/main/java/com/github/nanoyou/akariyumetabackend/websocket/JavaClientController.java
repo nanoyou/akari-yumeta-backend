@@ -39,7 +39,7 @@ public class JavaClientController {
         this.chatService = chatService;
     }
 
-    @GetMapping(value = "/hello/{receiverID}")
+    @PostMapping(value = "/hello/{receiverID}")
     public Result hello(@RequestAttribute("user") User loginUser,
                         @PathVariable String receiverID,
                         @RequestBody SendMessageDTO sendMessageDTO) {
@@ -49,8 +49,9 @@ public class JavaClientController {
         val receiverClient = onlineMap.get(receiverID);
 
         val result = addMessage(sendMessageDTO.getType(), sendMessageDTO.getContent(), loginUser.getId(), receiverID);
-
-        receiverClient.send(sendMessageDTO.getContent());
+        if (receiverClient != null) {
+            receiverClient.send(sendMessageDTO.getContent());
+        }
         return result;
 
     }
