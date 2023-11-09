@@ -112,6 +112,10 @@ public class DynamicController {
     public Result dynamic(@PathVariable String dynamicID) {
 
         val dynamicTree = dynamicService.getDynamicTree(dynamicID);
+        val dynamicDTOByID = dynamicService.getDynamicDTOByID(dynamicID);
+        if (dynamicDTOByID != null) {
+            dynamicTree.setTaskID(dynamicDTOByID.getTaskID());
+        }
         if (dynamicTree == null) {
             return Result.builder()
                     .ok(false)

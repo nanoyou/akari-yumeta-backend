@@ -14,6 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 public class DynamicTreeDTO {
     /**
+     * 关联的任务的 ID
+     */
+    private String taskID;
+    /**
      * 发评论的人的ID
      */
     private String commenterID;

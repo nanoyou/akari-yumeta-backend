@@ -1,6 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.service;
 
 import com.github.nanoyou.akariyumetabackend.dao.CommentDao;
+import com.github.nanoyou.akariyumetabackend.dao.TaskDynamicDao;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicTreeDTO;
 import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
@@ -21,12 +22,14 @@ public class DynamicService {
     private final CommentDao commentDao;
     private final SubscriptionService subscriptionService;
     private final LikeService likeService;
+    private final TaskDynamicDao taskDynamicDao;
 
     @Autowired
-    private DynamicService(CommentDao commentDao, SubscriptionService subscriptionService, LikeService likeService) {
+    private DynamicService(CommentDao commentDao, SubscriptionService subscriptionService, LikeService likeService, TaskDynamicDao taskDynamicDao) {
         this.commentDao = commentDao;
         this.subscriptionService = subscriptionService;
         this.likeService = likeService;
+        this.taskDynamicDao = taskDynamicDao;
     }
 
     public Optional<Comment> addComment(@Nonnull Comment comment) {
@@ -80,8 +83,8 @@ public class DynamicService {
                 .children(new ArrayList<>())
                 .build();
         val byReplyTo = commentDao.findByReplyTo(comment.getId());
-        for (Comment comment1 : byReplyTo) {
-            node.getChildren().add(this.getDynamicTree(comment1.getId()));
+        for (Comment c : byReplyTo) {
+            node.getChildren().add(this.getDynamicTree(c.getId()));
         }
         return node;
     }
@@ -120,6 +123,10 @@ public class DynamicService {
                 }
         ).toList();
 
+        val taskId = taskDynamicDao.findByTaskDynamicDynamicID(dynamic.getId()).map(
+                td -> td.getTaskDynamic().getTaskID()
+        ).orElse(null);
+
         val likeUsers = likeService.getLikerIdListByCommentId(dynamic.getId());
 
         return DynamicDTO.builder()
@@ -131,6 +138,7 @@ public class DynamicService {
                 .replyTo(dynamic.getReplyTo())
                 .children(children)
                 .likeUsers(likeUsers)
+                .taskID(taskId)
                 .build();
 
     }

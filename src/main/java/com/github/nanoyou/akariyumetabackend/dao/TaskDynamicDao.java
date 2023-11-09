@@ -16,4 +16,6 @@ public interface TaskDynamicDao extends JpaRepository<TaskDynamic, TaskDynamic._
     TaskDynamic saveAndFlush(TaskDynamic taskDynamic);
 
     List<TaskDynamic> findByTaskDynamicTaskID(@Nonnull String taskID);
+
+    Optional<TaskDynamic> findByTaskDynamicDynamicID(@Nonnull String dynamicID);
 }

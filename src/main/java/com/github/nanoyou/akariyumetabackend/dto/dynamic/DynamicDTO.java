@@ -45,4 +45,8 @@ public class DynamicDTO {
      * 点赞用户的 ID 列表
      */
     private List<String> likeUsers;
+    /**
+     * 关联的任务的 ID
+     */
+    private String taskID;
 }
