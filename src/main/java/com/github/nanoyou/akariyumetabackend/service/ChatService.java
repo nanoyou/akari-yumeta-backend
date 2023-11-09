@@ -63,13 +63,14 @@ public class ChatService {
         val followeeIDList = subscriptionService.getFolloweeIDList(userID);
         var friendIDList = new ArrayList<>(receiverIDList);
         friendIDList.addAll(followeeIDList);
-        friendIDList = CollUtil.distinct(followeeIDList);
+        friendIDList = CollUtil.distinct(friendIDList);
         return friendIDList;
     }
 
     public List<Pair<String, Message>> getMyChat(@Nonnull String senderID) {
 
         val friendList = getReceiverAndFolloweeIDList(senderID);
+        friendList.add(senderID);
 
         List<Pair<String, Message>> result = new ArrayList<>();
 
