@@ -1,6 +1,7 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.json.JSONObject;
 import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.CommentDTO;
@@ -8,6 +9,7 @@ import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.ReplyDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
+import com.github.nanoyou.akariyumetabackend.entity.dynamic.Like;
 import com.github.nanoyou.akariyumetabackend.entity.task.TaskDynamic;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.DynamicService;
@@ -19,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 @RestController
@@ -232,5 +235,29 @@ public class DynamicController {
                 ).toList();
     }
 
+    @RequestMapping(path = "/dynamic/{dynamicID}/like", method = RequestMethod.POST, headers = "Accept=application/json")
+    public Result dynamicLike(@PathVariable String dynamicID, @RequestAttribute("user") User loginUser) {
+
+        if (!dynamicService.existByID(dynamicID)) {
+            return Result.failed("动态或评论不存在", ResponseCode.NO_SUCH_COMMENT_OR_DYNAMIC);
+        }
+
+        val likedID = likeService.findCommenterIdByCommentID(dynamicID);
+        val likerID = loginUser.getId();
+
+        var like = Like.builder()
+                .commentID(dynamicID)
+                .likedID(likedID)
+                .likerID(likerID).
+                build();
+
+        like = likeService.addLike(like);
+
+        val jo = new JSONObject();
+        jo.putOnce("likerID", like.getLikerID());
+        jo.putOnce("commentID", like.getCommentID());
+
+        return Result.success("点赞成功", jo);
+    }
 
 }

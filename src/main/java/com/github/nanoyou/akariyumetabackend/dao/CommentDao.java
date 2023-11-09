@@ -18,4 +18,10 @@ public interface CommentDao extends JpaRepository<Comment, String> {
     Optional<Comment> findById(@Nonnull String id);
 
     List<Comment> findByReplyTo(@Nonnull String replyTo);
+
+    Optional<CommenterID> findCommenterIdProjById(@Nonnull String id);
+
+    interface CommenterID {
+        String getCommenterID();
+    }
 }
