@@ -9,6 +9,8 @@ import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LikeService {
 
@@ -33,5 +35,12 @@ public class LikeService {
 
     public Like addLike(@Nonnull Like like) {
         return likeDao.saveAndFlush(like);
+    }
+
+    public List<String> getLikerIdListByCommentId(@Nonnull String commentID) {
+        val byCommentID = likeDao.findByCommentID(commentID);
+        return byCommentID.stream().map(
+                Like::getLikerID
+        ).toList();
     }
 }

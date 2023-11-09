@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -36,4 +37,12 @@ public class DynamicDTO {
      * 父评论ID，被回复评论的ID，为空则为动态节点（根节点）
      */
     private String replyTo;
+    /**
+     * 子评论
+     */
+    private List<DynamicDTO> children;
+    /**
+     * 点赞用户的 ID 列表
+     */
+    private List<String> likeUsers;
 }

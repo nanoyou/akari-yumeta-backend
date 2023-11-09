@@ -43,6 +43,7 @@ public class DynamicService {
                 .collect(Collectors.toList());
     }
 
+    @Deprecated
     public Optional<DynamicTreeDTO> getDynamicWithoutChildrenByID(@Nonnull String dynamicID) {
         val dynamic = commentDao.findById(dynamicID);
         val likeCount = likeService.getLikeCountByCommentID(dynamicID);
@@ -92,20 +93,46 @@ public class DynamicService {
                 .content(content)
                 .createTime(LocalDateTime.now())
                 .build());
-        return comment.map(
-                c -> DynamicDTO.builder()
-                        .id(c.getId())
-                        .commenterID(c.getCommenterID())
-                        .content(c.getContent())
-                        .replyTo(c.getReplyTo())
-                        .createTime(c.getCreateTime())
-                        .likes(0)
-                        .build()
-        );
+        return comment.map(c -> getDynamicDTOByID(c.getId()));
     }
 
     public boolean existByID(@Nonnull String id) {
         return commentDao.existsById(id);
+    }
+
+    public DynamicDTO getDynamicDTOByID(@Nonnull String id) {
+        val dynamic = commentDao.findById(id).orElseThrow(NullPointerException::new);
+        int likes = likeService.getLikeCountByCommentID(dynamic.getId());
+        val commentList = commentDao.findByReplyTo(dynamic.getId());
+        val children = commentList.stream().map(
+                comment -> {
+                    int commentLikes = likeService.getLikeCountByCommentID(comment.getId());
+                    return DynamicDTO.builder()
+                            .id(comment.getId())
+                            .commenterID(comment.getCommenterID())
+                            .content(comment.getContent())
+                            .createTime(comment.getCreateTime())
+                            .likes(commentLikes)
+                            .replyTo(comment.getReplyTo())
+                            .children(null)
+                            .likeUsers(null)
+                            .build();
+                }
+        ).toList();
+
+        val likeUsers = likeService.getLikerIdListByCommentId(dynamic.getId());
+
+        return DynamicDTO.builder()
+                .id(dynamic.getId())
+                .commenterID(dynamic.getCommenterID())
+                .content(dynamic.getContent())
+                .createTime(dynamic.getCreateTime())
+                .likes(likes)
+                .replyTo(dynamic.getReplyTo())
+                .children(children)
+                .likeUsers(likeUsers)
+                .build();
+
     }
 
 

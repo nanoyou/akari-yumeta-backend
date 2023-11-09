@@ -2,7 +2,6 @@ package com.github.nanoyou.akariyumetabackend.controller;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.json.JSONObject;
-import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.CommentDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicDTO;
@@ -21,7 +20,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.IntStream;
 
 @RestController
@@ -103,19 +101,11 @@ public class DynamicController {
         // 将自己和他人的动态列表合并
         dynamics.addAll(myDynamics);
 
-        val likes = dynamics.stream().map(
-                dynamic -> likeService.getLikeCountByCommentID(dynamic.getCommenterID())
+        val dynamicDTOList = dynamics.stream().map(
+                d -> dynamicService.getDynamicDTOByID(d.getId())
         ).toList();
 
-        val dynamicDTOs = concat(dynamics, likes);
-
-        return Result.builder()
-                .ok(true)
-                .message("查询到 " + dynamics.size() + " 条动态")
-                .code(ResponseCode.SUCCESS.value)
-                .data(dynamicDTOs)
-                .build();
-
+        return Result.success("查询到 " + dynamicDTOList.size() + " 条动态", dynamicDTOList);
     }
 
     @RequestMapping(path = "/dynamic/{dynamicID}", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -198,7 +188,7 @@ public class DynamicController {
             val taskDynamicIdList = taskService.getTaskDynamicIdList(taskID);
 
             val dynamics = taskDynamicIdList.stream().map(
-                    id -> dynamicService.getDynamicWithoutChildrenByID(id).orElseThrow(NullPointerException::new)
+                    dynamicService::getDynamicDTOByID
             ).toList();
 
             return Result.builder()
@@ -216,23 +206,6 @@ public class DynamicController {
                     .data(null)
                     .build();
         }
-    }
-
-    private List<DynamicDTO> concat(List<Comment> dynamics, List<Integer> likes) {
-        return IntStream.range(0, dynamics.size())
-                .mapToObj(i -> {
-                            val dynamic = dynamics.get(i);
-                            int like = likes.get(i);
-                            return DynamicDTO.builder()
-                                    .id(dynamic.getId())
-                                    .commenterID(dynamic.getCommenterID())
-                                    .content(dynamic.getContent())
-                                    .replyTo(dynamic.getReplyTo())
-                                    .createTime(dynamic.getCreateTime())
-                                    .likes(like)
-                                    .build();
-                        }
-                ).toList();
     }
 
     @RequestMapping(path = "/dynamic/{dynamicID}/like", method = RequestMethod.POST, headers = "Accept=application/json")
