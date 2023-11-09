@@ -4,7 +4,6 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.json.JSONObject;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.CommentDTO;
-import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.ReplyDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
@@ -18,9 +17,6 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.IntStream;
 
 @RestController
 public class DynamicController {
@@ -94,6 +90,7 @@ public class DynamicController {
     public Result myDynamic(@RequestAttribute("user") User user) {
 
         val loginUserID = user.getId();
+        val adminDynamics = dynamicService.getAdminDynamics();
         // 关注人的动态
         val dynamics = dynamicService.getDynamicsByFollowerID(loginUserID);
         // 我的动态
@@ -101,9 +98,10 @@ public class DynamicController {
         // 将自己和他人的动态列表合并
         dynamics.addAll(myDynamics);
 
-        val dynamicDTOList = dynamics.stream().map(
+        val dynamicDTOList = new java.util.ArrayList<>(dynamics.stream().map(
                 d -> dynamicService.getDynamicDTOByID(d.getId())
-        ).toList();
+        ).toList());
+        dynamicDTOList.addAll(adminDynamics);
 
         return Result.success("查询到 " + dynamicDTOList.size() + " 条动态", dynamicDTOList);
     }

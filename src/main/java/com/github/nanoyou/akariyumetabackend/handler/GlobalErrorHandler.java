@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.net.SocketException;
+
 @ControllerAdvice
 public class GlobalErrorHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalErrorHandler.class);
@@ -37,6 +39,13 @@ public class GlobalErrorHandler {
     public Result unauthorizedErrorHandler(BaseError err) {
         logReason(err);
         return Result.failed(err.getMessage(), err.getCode());
+    }
+
+    @ExceptionHandler(value = SocketException.class)
+    @ResponseBody
+    public Result socketExceptionHandle(SocketException err) {
+        logReason(err);
+        return Result.failed(err.getMessage(), ResponseCode.INNER_SERVER_ERROR);
     }
 
 }

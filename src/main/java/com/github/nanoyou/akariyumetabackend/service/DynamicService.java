@@ -2,9 +2,11 @@ package com.github.nanoyou.akariyumetabackend.service;
 
 import com.github.nanoyou.akariyumetabackend.dao.CommentDao;
 import com.github.nanoyou.akariyumetabackend.dao.TaskDynamicDao;
+import com.github.nanoyou.akariyumetabackend.dao.UserDao;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicDTO;
 import com.github.nanoyou.akariyumetabackend.dto.dynamic.DynamicTreeDTO;
 import com.github.nanoyou.akariyumetabackend.entity.dynamic.Comment;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,13 +26,15 @@ public class DynamicService {
     private final SubscriptionService subscriptionService;
     private final LikeService likeService;
     private final TaskDynamicDao taskDynamicDao;
+    private final UserDao userDao;
 
     @Autowired
-    private DynamicService(CommentDao commentDao, SubscriptionService subscriptionService, LikeService likeService, TaskDynamicDao taskDynamicDao) {
+    private DynamicService(CommentDao commentDao, SubscriptionService subscriptionService, LikeService likeService, TaskDynamicDao taskDynamicDao, UserDao userDao) {
         this.commentDao = commentDao;
         this.subscriptionService = subscriptionService;
         this.likeService = likeService;
         this.taskDynamicDao = taskDynamicDao;
+        this.userDao = userDao;
     }
 
     public Optional<Comment> addComment(@Nonnull Comment comment) {
@@ -144,4 +149,18 @@ public class DynamicService {
     }
 
 
+    public List<DynamicDTO> getAdminDynamics() {
+        // 找出所有管理员ID
+        val userIds = userDao.findUserIdByRole(Role.ADMIN).stream().map(UserDao.UserId::getId);
+
+        // 找到所有管理员对应的帖子ID\
+
+        val dynamicIDs = userIds.map(
+                commenterID -> commentDao.findCommentIDByCommenterIDAndReplyTo(commenterID, null)
+        ).flatMap(Collection::stream);
+
+        // 根据ID获取帖子
+        return dynamicIDs.map(commentID -> getDynamicDTOByID(commentID.getId())).toList();
+
+    }
 }
