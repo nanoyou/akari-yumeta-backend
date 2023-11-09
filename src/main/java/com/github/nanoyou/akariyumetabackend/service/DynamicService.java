@@ -53,7 +53,7 @@ public class DynamicService {
 
     @Deprecated
     public Optional<DynamicTreeDTO> getDynamicWithoutChildrenByID(@Nonnull String dynamicID) {
-        val dynamic = commentDao.findById(dynamicID);
+        val dynamic = commentDao.findByIdOrderByCreateTimeDesc(dynamicID);
         val likeCount = likeService.getLikeCountByCommentID(dynamicID);
 
         return dynamic.map(
@@ -72,7 +72,7 @@ public class DynamicService {
     public DynamicTreeDTO getDynamicTree(@Nonnull String commentID) {
         DynamicTreeDTO node = null;
 
-        val commentOpt = commentDao.findById(commentID);
+        val commentOpt = commentDao.findByIdOrderByCreateTimeDesc(commentID);
         if (commentOpt.isEmpty()) {
             return node;
         }
@@ -109,7 +109,7 @@ public class DynamicService {
     }
 
     public DynamicDTO getDynamicDTOByID(@Nonnull String id) {
-        val dynamic = commentDao.findById(id).orElseThrow(NullPointerException::new);
+        val dynamic = commentDao.findByIdOrderByCreateTimeDesc(id).orElseThrow(NullPointerException::new);
         int likes = likeService.getLikeCountByCommentID(dynamic.getId());
         val commentList = commentDao.findByReplyTo(dynamic.getId());
         val children = commentList.stream().map(

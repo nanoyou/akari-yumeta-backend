@@ -33,7 +33,15 @@ public class ChatService {
         val l1 = messageDao.findBySenderIDAndReceiverID(loginUserID, objectiveUserID);
         val l2 = messageDao.findBySenderIDAndReceiverID(objectiveUserID, loginUserID);
         l1.addAll(l2);
-        return CollUtil.distinct(l1);
+        val result = l1.stream().sorted(
+                (message1, message2) -> {
+                    if (message1.getSendTime().isEqual(message2.getSendTime())) {
+                        return 0;
+                    }
+                    return message1.getSendTime().isAfter(message2.getSendTime()) ? 1 : -1;
+                }
+        ).toList();
+        return CollUtil.distinct(result);
     }
 
     /**
@@ -93,5 +101,7 @@ public class ChatService {
                     return m;
                 }
         );
+
+
     }
 }
