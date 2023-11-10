@@ -197,7 +197,7 @@ public class DonateController {
 
         var goodsInfo = GoodsInfo.builder()
                 .name(goodsInfoDTO.getName())
-                .unitPrice(goodsInfoDTO.getUnitPrices())
+                .unitPrice(goodsInfoDTO.getUnitPrice())
                 .imageURL(goodsInfoDTO.getImageURL())
                 .description(goodsInfoDTO.getDescription()).build();
 

@@ -23,5 +23,5 @@ public class GoodsInfoDTO {
     /**
      * 商品单价，以分为单位
      */
-    private Long unitPrices;
+    private Long unitPrice;
 }
