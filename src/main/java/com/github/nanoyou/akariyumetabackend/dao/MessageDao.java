@@ -4,6 +4,7 @@ import com.github.nanoyou.akariyumetabackend.entity.chat.Message;
 import jakarta.annotation.Nonnull;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +17,6 @@ public interface MessageDao extends JpaRepository<Message, String> {
 
     interface ReceiverIDProj {
         String getReceiverID();
+        LocalDateTime getSendTime();
     }
 }
