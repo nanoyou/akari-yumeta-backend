@@ -46,7 +46,8 @@ public class SubscriptionService {
     }
 
     public Boolean unfollow(@Nonnull Subscription._CombinedPrimaryKey combinedPrimaryKey) {
-        return subscriptionDao.deleteByCombinedPrimaryKey(combinedPrimaryKey);
+        subscriptionDao.deleteById(combinedPrimaryKey);
+        return true;
     }
 
     public List<String> getFolloweeIDList(@Nonnull String followerID) {

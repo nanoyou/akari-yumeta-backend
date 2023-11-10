@@ -117,8 +117,9 @@ public class ChatService {
             return friendIdList.stream().map(
                     userId -> userDao.findById(userId).map(
                             user -> {
-                                val message = messageDao.findFirstBySenderIDOrReceiverIDOrderBySendTimeDesc(userId);
-                                return Pair.of(user, message);
+                                val message1 = messageDao.findFirstBySenderIDOrReceiverIDOrderBySendTimeDesc(userId, loginUserID);
+                                val message2 = messageDao.findFirstBySenderIDOrReceiverIDOrderBySendTimeDesc(loginUserID, userId);
+                                return message1.getSendTime().isAfter(message2.getSendTime()) ? Pair.of(user, message1) : Pair.of(user, message2);
                             }
                     ).orElse(null)
             ).toList();

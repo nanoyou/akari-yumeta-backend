@@ -18,7 +18,7 @@ public interface MessageDao extends JpaRepository<Message, String> {
     List<ReceiverID> findDistinctBySenderID(@Nonnull String senderID);
     List<ReceiverID> findDistinctByReceiverID(@Nonnull String receiverID);
 
-    Message findFirstBySenderIDOrReceiverIDOrderBySendTimeDesc(@Nonnull String userId);
+    Message findFirstBySenderIDOrReceiverIDOrderBySendTimeDesc(@Nonnull String senderId, @Nonnull String receiverID);
 
 
     interface ReceiverID {
