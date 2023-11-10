@@ -2,7 +2,9 @@ package com.github.nanoyou.akariyumetabackend.service;
 
 import cn.hutool.core.collection.CollUtil;
 import com.github.nanoyou.akariyumetabackend.dao.MessageDao;
+import com.github.nanoyou.akariyumetabackend.dao.UserDao;
 import com.github.nanoyou.akariyumetabackend.entity.chat.Message;
+import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,13 @@ public class ChatService {
 
     private final MessageDao messageDao;
     private final SubscriptionService subscriptionService;
+    private final UserDao userDao;
 
     @Autowired
-    public ChatService(MessageDao messageDao, SubscriptionService subscriptionService) {
+    public ChatService(MessageDao messageDao, SubscriptionService subscriptionService, UserDao userDao) {
         this.messageDao = messageDao;
         this.subscriptionService = subscriptionService;
+        this.userDao = userDao;
     }
 
     public Message addMessage(@Nonnull Message message) {
@@ -66,6 +70,7 @@ public class ChatService {
      * @param userID 登录用户 ID
      * @return 聊天列表中的用户 ID 列表（去除重复 ID）
      */
+    @Deprecated
     public List<String> getReceiverAndFolloweeIDList(@Nonnull String userID) {
         val receiverIDList = getReceiverIDList(userID);
         val followeeIDList = subscriptionService.getFolloweeIDList(userID);
@@ -75,6 +80,7 @@ public class ChatService {
         return friendIDList;
     }
 
+    @Deprecated
     public List<Pair<String, Message>> getMyChat(@Nonnull String senderID) {
 
         val friendList = getReceiverAndFolloweeIDList(senderID);
@@ -99,6 +105,25 @@ public class ChatService {
         );
 
         return result;
+    }
+
+    public List<Pair<User, Message>> getMyChat2(@Nonnull String loginUserID) {
+        if (userDao.existsById(loginUserID)) {
+            List<String> friendIdList = new ArrayList<>();
+            friendIdList.addAll(messageDao.findDistinctBySenderID(loginUserID).stream().map(MessageDao.ReceiverID::getReceiverID).toList());
+            friendIdList.addAll(messageDao.findDistinctByReceiverID(loginUserID).stream().map(MessageDao.ReceiverID::getReceiverID).toList());
+            friendIdList = CollUtil.distinct(friendIdList);
+
+            return friendIdList.stream().map(
+                    userId -> userDao.findById(userId).map(
+                            user -> {
+                                val message = messageDao.findFirstBySenderIDOrReceiverIDOrderBySendTimeDesc(userId);
+                                return Pair.of(user, message);
+                            }
+                    ).orElse(null)
+            ).toList();
+        }
+        return new ArrayList<>();
     }
 
     public Optional<Message> read(@Nonnull String messageID) {

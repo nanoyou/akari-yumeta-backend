@@ -1,8 +1,10 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
+import com.github.nanoyou.akariyumetabackend.dao.UserDao;
 import com.github.nanoyou.akariyumetabackend.dto.SendMessageDTO;
 import com.github.nanoyou.akariyumetabackend.dto.chat.ChatDTO;
+import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.chat.Message;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
@@ -30,9 +32,10 @@ public class ChatController {
 
     /**
      * 发送消息
-     * @param userID 信息接收人的 ID
+     *
+     * @param userID         信息接收人的 ID
      * @param sendMessageDTO 发送消息的 DTO
-     * @param user 自动注入的登录用户, 也是消息发起人
+     * @param user           自动注入的登录用户, 也是消息发起人
      * @return 请求响应
      */
     @Deprecated
@@ -68,8 +71,9 @@ public class ChatController {
 
     /**
      * 查看指定用户的消息列表
+     *
      * @param userID 被查看消息的用户的 ID
-     * @param user 自动注入的登录用户
+     * @param user   自动注入的登录用户
      * @return 请求响应
      */
     @RequestMapping(path = "/chat/message/{userID}", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -80,29 +84,34 @@ public class ChatController {
 
     /**
      * 获取聊天列表
-     * @param user 自动注入的登录用户
+     *
+     * @param loginUser 自动注入的登录用户
      * @return 请求响应
      */
     @RequestMapping(path = "/my/chat", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Result myChat(@RequestAttribute("user") User user) {
-        val myChat = chatService.getMyChat(user.getId());
-        List<ChatDTO> chatDTOList = new ArrayList<>();
-        myChat.forEach(pair -> {
-            val userDTO = userService.getUserDTO(pair.getFirst());
-            if (userDTO.isPresent()) {
-                val chatDTO = ChatDTO.builder()
-                        .firstMessage(pair.getSecond())
-                        .user(userDTO.get())
-                        .build();
-                chatDTOList.add(chatDTO);
-            }
-        });
+    public Result myChat(@RequestAttribute("user") User loginUser) {
 
-        return Result.success("聊天列表查询成功", chatDTOList);
+        val myChat2 = chatService.getMyChat2(loginUser.getId());
+        val chat = myChat2.stream().map(
+                userMessagePair -> {
+                    val user = userMessagePair.getFirst();
+                    val message = userMessagePair.getSecond();
+                    return userService.getUserDTO(user.getId()).map(
+                            u ->
+                                    ChatDTO.builder()
+                                            .firstMessage(message)
+                                            .user(u)
+                                            .build()
+                    ).orElse(null);
+                }
+        ).toList();
+
+        return Result.success("聊天列表查询成功", chat);
     }
 
     /**
      * 标记聊天信息为已读
+     *
      * @param messageID 需要被标记已读的消息的 ID
      * @return 请求响应
      */
