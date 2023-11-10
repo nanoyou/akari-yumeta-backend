@@ -12,6 +12,7 @@ import com.github.nanoyou.akariyumetabackend.entity.friend.Subscription;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.SubscriptionService;
 import com.github.nanoyou.akariyumetabackend.service.UserService;
+import jakarta.annotation.Nullable;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class UserController {
 
 
     @RequestMapping(path = "/user", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Result user(@RequestParam Role role) {
+    public Result user(@RequestParam @Nullable Role role) {
         var allUsers = userService.getAllUsers();
 
         if (role != null) {
