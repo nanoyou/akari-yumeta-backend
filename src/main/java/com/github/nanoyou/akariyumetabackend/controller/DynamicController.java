@@ -104,7 +104,8 @@ public class DynamicController {
                 d -> {
                     var dynamicDTO = dynamicService.getDynamicDTOByID(d.getId());
                     if (dynamicDTO.getChildren() != null) {
-                        dynamicDTO.getChildren().sort(
+                        var children = new java.util.ArrayList<>(dynamicDTO.getChildren().stream().toList());
+                        children.sort(
                                 (d1, d2) -> {
                                     if (d1.getCreateTime().isEqual(d2.getCreateTime())) {
                                         return 0;
@@ -112,6 +113,7 @@ public class DynamicController {
                                     return (d1.getCreateTime().isAfter(d2.getCreateTime())) ? 1 : -1;
                                 }
                         );
+                        dynamicDTO.setChildren(children);
                     }
                     return dynamicDTO;
                 }
