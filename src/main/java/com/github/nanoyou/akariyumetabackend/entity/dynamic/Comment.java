@@ -43,7 +43,7 @@ public class Comment {
      */
     @NotNull
     @NotBlank
-    @Length(min = 1, max = 2000)
+    @Length(min = 1)
     private String content;
     /**
      * 评论发表时间

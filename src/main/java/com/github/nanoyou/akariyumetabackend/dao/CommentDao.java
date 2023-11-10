@@ -14,15 +14,15 @@ public interface CommentDao extends JpaRepository<Comment, String> {
     @Override
     Comment saveAndFlush(Comment comment);
 
-    List<Comment> findByCommenterID(@Nonnull String commenterID);
+    List<Comment> findByCommenterIDOrderByCreateTimeDesc(@Nonnull String commenterID);
 
     Optional<Comment> findByIdOrderByCreateTimeDesc(@Nonnull String id);
 
-    List<Comment> findByReplyTo(@Nonnull String replyTo);
+    List<Comment> findByReplyToOrderByCreateTimeDesc(@Nonnull String replyTo);
 
     Optional<CommenterID> findCommenterIdProjById(@Nonnull String id);
 
-    List<CommentID> findCommentIDByCommenterIDAndReplyTo(@Nonnull String commenterId, @Nullable String replyTo);
+    List<CommentID> findCommentIDByCommenterIDAndReplyToOrderByCreateTimeDesc(@Nonnull String commenterId, @Nullable String replyTo);
 
     interface CommentID {
         String getId();

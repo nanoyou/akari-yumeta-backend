@@ -42,12 +42,12 @@ public class DynamicService {
     }
 
     public List<Comment> getDynamicsByCommenterID(@Nonnull String commenterID) {
-        return commentDao.findByCommenterID(commenterID);
+        return commentDao.findByCommenterIDOrderByCreateTimeDesc(commenterID);
     }
 
     public List<Comment> getDynamicsByFollowerID(@Nonnull String commenterID) {
         return subscriptionService.getFolloweeIDs(commenterID).stream()
-                .flatMap(followeeID -> commentDao.findByCommenterID(followeeID).stream())
+                .flatMap(followeeID -> commentDao.findByCommenterIDOrderByCreateTimeDesc(followeeID).stream())
                 .collect(Collectors.toList());
     }
 
@@ -87,7 +87,7 @@ public class DynamicService {
                 .likes(likeCount)
                 .children(new ArrayList<>())
                 .build();
-        val byReplyTo = commentDao.findByReplyTo(comment.getId());
+        val byReplyTo = commentDao.findByReplyToOrderByCreateTimeDesc(comment.getId());
         for (Comment c : byReplyTo) {
             node.getChildren().add(this.getDynamicTree(c.getId()));
         }
@@ -111,7 +111,7 @@ public class DynamicService {
     public DynamicDTO getDynamicDTOByID(@Nonnull String id) {
         val dynamic = commentDao.findByIdOrderByCreateTimeDesc(id).orElseThrow(NullPointerException::new);
         int likes = likeService.getLikeCountByCommentID(dynamic.getId());
-        val commentList = commentDao.findByReplyTo(dynamic.getId());
+        val commentList = commentDao.findByReplyToOrderByCreateTimeDesc(dynamic.getId());
         val children = commentList.stream().map(
                 comment -> {
                     int commentLikes = likeService.getLikeCountByCommentID(comment.getId());
@@ -156,7 +156,7 @@ public class DynamicService {
         // 找到所有管理员对应的帖子ID\
 
         val dynamicIDs = userIds.map(
-                commenterID -> commentDao.findCommentIDByCommenterIDAndReplyTo(commenterID, null)
+                commenterID -> commentDao.findCommentIDByCommenterIDAndReplyToOrderByCreateTimeDesc(commenterID, null)
         ).flatMap(Collection::stream);
 
         // 根据ID获取帖子

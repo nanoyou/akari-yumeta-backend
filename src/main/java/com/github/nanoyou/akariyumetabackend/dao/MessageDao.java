@@ -12,7 +12,7 @@ public interface MessageDao extends JpaRepository<Message, String> {
 
     Optional<Message> findFirstBySenderIDAndReceiverID(@Nonnull String senderID, @Nonnull String receiverID);
 
-    List<ReceiverIDProj> findDistinctBySenderID(@Nonnull String senderID);
+    List<ReceiverIDProj> findDistinctBySenderIDOrderBySendTimeDesc(@Nonnull String senderID);
 
     interface ReceiverIDProj {
         String getReceiverID();

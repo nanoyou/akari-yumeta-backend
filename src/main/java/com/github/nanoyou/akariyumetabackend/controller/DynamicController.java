@@ -1,5 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.json.JSONObject;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
@@ -92,15 +93,38 @@ public class DynamicController {
         val loginUserID = user.getId();
         val adminDynamics = dynamicService.getAdminDynamics();
         // 关注人的动态
-        val dynamics = dynamicService.getDynamicsByFollowerID(loginUserID);
+        var dynamics = dynamicService.getDynamicsByFollowerID(loginUserID);
         // 我的动态
         val myDynamics = dynamicService.getDynamicsByCommenterID(loginUserID);
         // 将自己和他人的动态列表合并
         dynamics.addAll(myDynamics);
+        dynamics = CollUtil.distinct(dynamics);
 
         val dynamicDTOList = new java.util.ArrayList<>(dynamics.stream().map(
-                d -> dynamicService.getDynamicDTOByID(d.getId())
+                d -> {
+                    var dynamicDTO = dynamicService.getDynamicDTOByID(d.getId());
+                    if (dynamicDTO.getChildren() != null) {
+                        var children = new java.util.ArrayList<>(dynamicDTO.getChildren().stream().toList());
+                        children.sort(
+                                (d1, d2) -> {
+                                    if (d1.getCreateTime().isEqual(d2.getCreateTime())) {
+                                        return 0;
+                                    }
+                                    return (d1.getCreateTime().isAfter(d2.getCreateTime())) ? 1 : -1;
+                                }
+                        );
+                        dynamicDTO.setChildren(children);
+                    }
+                    return dynamicDTO;
+                }
+        ).sorted((d1, d2) -> {
+                    if (d1.getCreateTime().isEqual(d2.getCreateTime())) {
+                        return 0;
+                    }
+                    return (d1.getCreateTime().isAfter(d2.getCreateTime())) ? 1 : -1;
+                }
         ).toList());
+
         dynamicDTOList.addAll(adminDynamics);
 
         return Result.success("查询到 " + dynamicDTOList.size() + " 条动态", dynamicDTOList);
@@ -221,16 +245,23 @@ public class DynamicController {
         val likerID = loginUser.getId();
 
         var like = Like.builder()
-                .commentID(dynamicID)
+                .combinedPrimaryKey(
+                        Like.CombinedPrimaryKey.builder()
+                                .commentID(dynamicID)
+                                .likerID(likerID)
+                                .build()
+                )
                 .likedID(likedID)
-                .likerID(likerID).
-                build();
-
-        like = likeService.addLike(like);
+                .build();
+        if (!likeService.existLike(dynamicID, likerID)) {
+            like = likeService.addLike(like);
+        } else {
+            likeService.unlike(dynamicID, likerID);
+        }
 
         val jo = new JSONObject();
-        jo.putOnce("likerID", like.getLikerID());
-        jo.putOnce("commentID", like.getCommentID());
+        jo.putOnce("likerID", like.getCombinedPrimaryKey().getLikerID());
+        jo.putOnce("commentID", like.getCombinedPrimaryKey().getCommentID());
 
         return Result.success("点赞成功", jo);
     }
