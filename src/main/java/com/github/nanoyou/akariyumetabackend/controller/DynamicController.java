@@ -103,14 +103,16 @@ public class DynamicController {
         val dynamicDTOList = new java.util.ArrayList<>(dynamics.stream().map(
                 d -> {
                     var dynamicDTO = dynamicService.getDynamicDTOByID(d.getId());
-                    dynamicDTO.getChildren().sort(
-                            (d1, d2) -> {
-                                if (d1.getCreateTime().isEqual(d2.getCreateTime())) {
-                                    return 0;
+                    if (dynamicDTO.getChildren() != null) {
+                        dynamicDTO.getChildren().sort(
+                                (d1, d2) -> {
+                                    if (d1.getCreateTime().isEqual(d2.getCreateTime())) {
+                                        return 0;
+                                    }
+                                    return (d1.getCreateTime().isAfter(d2.getCreateTime())) ? 1 : -1;
                                 }
-                                return (d1.getCreateTime().isAfter(d2.getCreateTime())) ? 1 : -1;
-                            }
-                    );
+                        );
+                    }
                     return dynamicDTO;
                 }
         ).sorted((d1, d2) -> {
