@@ -51,7 +51,7 @@ public class ChatService {
      * @return 不重复的收信人 ID 列表
      */
     public List<String> getReceiverIDList(@Nonnull String senderID) {
-        val receiverIDProjBySenderID = messageDao.findDistinctBySenderID(senderID);
+        val receiverIDProjBySenderID = messageDao.findDistinctBySenderIDOrderBySendTimeDesc(senderID);
         if (receiverIDProjBySenderID.isEmpty()) {
             return new ArrayList<>();
         }

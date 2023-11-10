@@ -101,8 +101,17 @@ public class DynamicController {
         dynamics = CollUtil.distinct(dynamics);
 
         val dynamicDTOList = new java.util.ArrayList<>(dynamics.stream().map(
-                d -> dynamicService.getDynamicDTOByID(d.getId())
+                d -> {
+                    return dynamicService.getDynamicDTOByID(d.getId());
+                }
+        ).sorted((d1, d2) -> {
+                    if (d1.getCreateTime().isEqual(d2.getCreateTime())) {
+                        return 0;
+                    }
+                    return (d1.getCreateTime().isAfter(d2.getCreateTime())) ? 1 : -1;
+                }
         ).toList());
+
         dynamicDTOList.addAll(adminDynamics);
 
         return Result.success("查询到 " + dynamicDTOList.size() + " 条动态", dynamicDTOList);
