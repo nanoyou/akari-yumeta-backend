@@ -30,7 +30,7 @@ public class GoodsInfo {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
     /**
      * 商品描述
      */
