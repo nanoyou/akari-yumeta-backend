@@ -18,7 +18,7 @@ public interface CommentDao extends JpaRepository<Comment, String> {
 
     Optional<Comment> findByIdOrderByCreateTimeDesc(@Nonnull String id);
 
-    List<Comment> findByReplyTo(@Nonnull String replyTo);
+    List<Comment> findByReplyToOrderByCreateTimeDesc(@Nonnull String replyTo);
 
     Optional<CommenterID> findCommenterIdProjById(@Nonnull String id);
 

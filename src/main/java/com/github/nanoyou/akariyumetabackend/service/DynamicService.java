@@ -87,7 +87,7 @@ public class DynamicService {
                 .likes(likeCount)
                 .children(new ArrayList<>())
                 .build();
-        val byReplyTo = commentDao.findByReplyTo(comment.getId());
+        val byReplyTo = commentDao.findByReplyToOrderByCreateTimeDesc(comment.getId());
         for (Comment c : byReplyTo) {
             node.getChildren().add(this.getDynamicTree(c.getId()));
         }
@@ -111,7 +111,7 @@ public class DynamicService {
     public DynamicDTO getDynamicDTOByID(@Nonnull String id) {
         val dynamic = commentDao.findByIdOrderByCreateTimeDesc(id).orElseThrow(NullPointerException::new);
         int likes = likeService.getLikeCountByCommentID(dynamic.getId());
-        val commentList = commentDao.findByReplyTo(dynamic.getId());
+        val commentList = commentDao.findByReplyToOrderByCreateTimeDesc(dynamic.getId());
         val children = commentList.stream().map(
                 comment -> {
                     int commentLikes = likeService.getLikeCountByCommentID(comment.getId());

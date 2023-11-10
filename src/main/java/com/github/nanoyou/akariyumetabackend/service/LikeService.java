@@ -24,7 +24,7 @@ public class LikeService {
     }
 
     public int getLikeCountByCommentID(@Nonnull String commentID) {
-        return likeDao.findByCommentID(commentID).size();
+        return likeDao.findByCombinedPrimaryKeyCommentID(commentID).size();
     }
 
     public String findCommenterIdByCommentID(@Nonnull String commentID) {
@@ -38,9 +38,25 @@ public class LikeService {
     }
 
     public List<String> getLikerIdListByCommentId(@Nonnull String commentID) {
-        val byCommentID = likeDao.findByCommentID(commentID);
+        val byCommentID = likeDao.findByCombinedPrimaryKeyCommentID(commentID);
         return byCommentID.stream().map(
-                Like::getLikerID
+                l -> l.getCombinedPrimaryKey().getLikerID()
         ).toList();
+    }
+
+    public boolean existLike(@Nonnull String commentID, @Nonnull String likerID) {
+        val key = Like.CombinedPrimaryKey.builder()
+                .commentID(commentID)
+                .likerID(likerID)
+                .build();
+        return likeDao.existsById(key);
+    }
+
+    public void unlike(@Nonnull String commentID, @Nonnull String likerID) {
+        val key = Like.CombinedPrimaryKey.builder()
+                .commentID(commentID)
+                .likerID(likerID)
+                .build();
+        likeDao.deleteById(key);
     }
 }

@@ -1,5 +1,6 @@
 package com.github.nanoyou.akariyumetabackend.entity.dynamic;
 
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -9,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UUID;
+
+import java.io.Serializable;
 
 /**
  * Like 点赞
@@ -22,22 +25,34 @@ import org.hibernate.validator.constraints.UUID;
 @Entity
 @Table(name = "`like`")
 public class Like {
-    /**
-     * 被点赞的评论的ID
-     */
+
     @Id
-    @UUID
-    private String commentID;
+    private CombinedPrimaryKey combinedPrimaryKey;
+
     /**
      * 被点赞的人的ID
      */
     @UUID
     @NotNull
     private String likedID;
-    /**
-     * 发起点赞的人的ID
-     */
-    @UUID
-    @NotNull
-    private String likerID;
+
+    @Embeddable
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CombinedPrimaryKey implements Serializable {
+        /**
+         * 被点赞的评论的ID
+         */
+        @UUID
+        private String commentID;
+        /**
+         * 发起点赞的人的ID
+         */
+        @UUID
+        @NotNull
+        private String likerID;
+    }
+
 }
