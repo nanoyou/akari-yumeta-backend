@@ -16,13 +16,17 @@ public interface MessageDao extends JpaRepository<Message, String> {
     List<ReceiverIDProj> findDistinctBySenderIDOrderBySendTimeDesc(@Nonnull String senderID);
 
     List<ReceiverID> findDistinctBySenderID(@Nonnull String senderID);
-    List<ReceiverID> findDistinctByReceiverID(@Nonnull String receiverID);
+    List<SenderID> findDistinctByReceiverID(@Nonnull String receiverID);
 
     Message findFirstBySenderIDOrReceiverIDOrderBySendTimeDesc(@Nonnull String senderId, @Nonnull String receiverID);
 
 
     interface ReceiverID {
         String getReceiverID();
+    }
+
+    interface SenderID {
+        String getSenderID();
     }
 
 

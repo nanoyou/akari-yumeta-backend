@@ -1,10 +1,8 @@
 package com.github.nanoyou.akariyumetabackend.controller;
 
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
-import com.github.nanoyou.akariyumetabackend.dao.UserDao;
 import com.github.nanoyou.akariyumetabackend.dto.SendMessageDTO;
 import com.github.nanoyou.akariyumetabackend.dto.chat.ChatDTO;
-import com.github.nanoyou.akariyumetabackend.dto.user.UserDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.chat.Message;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
@@ -16,8 +14,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class ChatController {
@@ -91,7 +87,7 @@ public class ChatController {
     @RequestMapping(path = "/my/chat", method = RequestMethod.GET, headers = "Accept=application/json")
     public Result myChat(@RequestAttribute("user") User loginUser) {
 
-        val myChat2 = chatService.getMyChat2(loginUser.getId());
+        val myChat2 = chatService.getMyChat(loginUser.getId());
         val chat = myChat2.stream().map(
                 userMessagePair -> {
                     val user = userMessagePair.getFirst();
