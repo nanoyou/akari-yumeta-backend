@@ -84,8 +84,17 @@ public class ChatService {
 
         friendList.forEach(
                 id -> {
-                    val message = messageDao.findFirstBySenderIDAndReceiverIDOrderBySendTimeDesc(senderID, id);
+                    val message = messageDao.findFirstBySenderIDAndReceiverID(senderID, id);
                     message.ifPresent(value -> result.add(Pair.of(id, value)));
+                }
+        );
+
+        result.sort(
+                (m1, m2) -> {
+                    if (m1.getSecond().getSendTime().isEqual(m2.getSecond().getSendTime())) {
+                        return 0;
+                    }
+                    return m1.getSecond().getSendTime().isAfter(m2.getSecond().getSendTime()) ? 1 : -1;
                 }
         );
 
