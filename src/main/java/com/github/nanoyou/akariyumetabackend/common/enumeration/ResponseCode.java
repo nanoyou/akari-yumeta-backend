@@ -65,6 +65,10 @@ public enum ResponseCode {
      * 用户名或密码不正确
      */
     WRONG_USERNAME_OR_PASSWORD(106),
+    /**
+     * 只允许儿童用户使用
+     */
+    CHILD_ONLY(107),
 
     // ********************* 学习任务
     /**
