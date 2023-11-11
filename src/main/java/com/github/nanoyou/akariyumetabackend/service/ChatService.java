@@ -54,21 +54,14 @@ public class ChatService {
             friendIdList = CollUtil.distinct(friendIdList);
 
             return friendIdList.stream().map(
-                    userId -> userDao.findById(userId).map(
-                            user -> {
-                                val message1 = messageDao.findFirstBySenderIDOrReceiverIDOrderBySendTimeDesc(userId, loginUserID);
-                                val message2 = messageDao.findFirstBySenderIDOrReceiverIDOrderBySendTimeDesc(loginUserID, userId);
-                                if (message1 == null && message2 != null) {
-                                    return Pair.of(user, message2);
-                                }
-                                if (message1 != null && message2 == null) {
-                                    return Pair.of(user, message1);
-                                }
-                                assert message1 != null;
-                                assert message1.getSendTime() != null;
-                                return message1.getSendTime().isAfter(message2.getSendTime()) ? Pair.of(user, message1) : Pair.of(user, message2);
-                            }
-                    ).orElse(null)
+                    friendId -> {
+                        val friend = userDao.findById(friendId).orElse(null);
+                        val list = getMessageListByPair(loginUserID, friendId);
+                        if ((friend!=null) && (!list.isEmpty())) {
+                            return Pair.of(friend, CollUtil.getLast(list));
+                        }
+                        return null;
+                    }
             ).toList();
         }
         return new ArrayList<>();
@@ -83,7 +76,5 @@ public class ChatService {
                     return m;
                 }
         );
-
-
     }
 }
