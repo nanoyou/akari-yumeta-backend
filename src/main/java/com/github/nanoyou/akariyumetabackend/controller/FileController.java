@@ -2,14 +2,11 @@ package com.github.nanoyou.akariyumetabackend.controller;
 
 import cn.hutool.crypto.digest.DigestUtil;
 import com.github.nanoyou.akariyumetabackend.common.constant.FileConfig;
-import com.github.nanoyou.akariyumetabackend.common.constant.SessionConst;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchFileError;
-import com.github.nanoyou.akariyumetabackend.common.util.Sha256Util;
 import com.github.nanoyou.akariyumetabackend.dto.filestore.FileRecordDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
 import com.github.nanoyou.akariyumetabackend.entity.filestore.FileItem;
-import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.FileService;
 import lombok.val;
 import org.springframework.core.io.ByteArrayResource;
