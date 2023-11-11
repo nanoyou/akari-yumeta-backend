@@ -3,11 +3,13 @@ package com.github.nanoyou.akariyumetabackend.controller;
 import com.github.nanoyou.akariyumetabackend.common.enumeration.ResponseCode;
 import com.github.nanoyou.akariyumetabackend.common.exception.NoSuchCourseException;
 import com.github.nanoyou.akariyumetabackend.common.exception.TaskCourseBindingError;
+import com.github.nanoyou.akariyumetabackend.common.exception.UnauthorizedError;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskCourseUploadDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskDTO;
 import com.github.nanoyou.akariyumetabackend.dto.task.TaskRecordDTO;
 import com.github.nanoyou.akariyumetabackend.entity.Result;
+import com.github.nanoyou.akariyumetabackend.entity.enumeration.Role;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskRecordStatus;
 import com.github.nanoyou.akariyumetabackend.entity.enumeration.TaskStatus;
 import com.github.nanoyou.akariyumetabackend.entity.task.Course;
@@ -16,9 +18,11 @@ import com.github.nanoyou.akariyumetabackend.entity.task.TaskRecord;
 import com.github.nanoyou.akariyumetabackend.entity.user.User;
 import com.github.nanoyou.akariyumetabackend.service.CourseService;
 import com.github.nanoyou.akariyumetabackend.service.TaskService;
+import com.github.nanoyou.akariyumetabackend.service.UserService;
 import jakarta.annotation.Nonnull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -35,11 +39,13 @@ import static java.time.LocalDateTime.now;
 public class TaskController {
     private final TaskService taskService;
     private final CourseService courseService;
+    private final UserService userService;
 
     @Autowired
-    private TaskController(TaskService taskService, CourseService courseService) {
+    private TaskController(TaskService taskService, CourseService courseService, UserService userService) {
         this.taskService = taskService;
         this.courseService = courseService;
+        this.userService = userService;
     }
 
     /**
@@ -177,20 +183,7 @@ public class TaskController {
     public Result myTask(@RequestAttribute("user") User user) {
         try {
             val loginUserID = user.getId();
-            val tasks = taskService.getMyTasks(loginUserID);
-
-            val courses = tasks.stream().map(
-                    task -> courseService.getCourse(task.getId()).orElseThrow(NoSuchCourseException::new)
-            ).toList();
-
-            val taskCourseDTOs = this.concat(tasks, courses);
-
-            return Result.builder()
-                    .ok(true)
-                    .code(ResponseCode.SUCCESS.value)
-                    .message("查询我的课程任务成功")
-                    .data(taskCourseDTOs)
-                    .build();
+            return getTaskCourseDTOList(loginUserID);
         } catch (NullPointerException e) {
             return Result.builder()
                     .ok(false)
@@ -206,6 +199,55 @@ public class TaskController {
                     .data(null)
                     .build();
         }
+    }
+
+    @RequestMapping(path = "/user/{userID}/task", method = RequestMethod.GET, headers = "Accept=application/json")
+    public Result myTask(@PathVariable String userID) {
+        try {
+            if (!StringUtils.hasText(userID)) {
+                return Result.failed("非法的用户 ID", ResponseCode.PARAM_ERR);
+            }
+            // 判断用户是否为儿童
+            userService.getUser(userID).ifPresent(
+                    user -> {
+                        if (!user.getRole().equals(Role.CHILD)) {
+                            throw new UnauthorizedError(ResponseCode.CHILD_ONLY, "只允许儿童用户使用");
+                        }
+                    }
+            );
+            return getTaskCourseDTOList(userID);
+        } catch (NullPointerException e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.MY_TASK_FAILED.value)
+                    .message("查询我的课程任务失败")
+                    .data(null)
+                    .build();
+        } catch (NoSuchCourseException e) {
+            return Result.builder()
+                    .ok(false)
+                    .code(ResponseCode.MY_TASK_FAILED.value)
+                    .message("这个任务没有绑定课程")
+                    .data(null)
+                    .build();
+        }
+    }
+
+    private Result getTaskCourseDTOList(@PathVariable String userID) {
+        val tasks = taskService.getMyTasks(userID);
+
+        val courses = tasks.stream().map(
+                task -> courseService.getCourse(task.getId()).orElseThrow(NoSuchCourseException::new)
+        ).toList();
+
+        val taskCourseDTOs = this.concat(tasks, courses);
+
+        return Result.builder()
+                .ok(true)
+                .code(ResponseCode.SUCCESS.value)
+                .message("查询我的课程任务成功")
+                .data(taskCourseDTOs)
+                .build();
     }
 
     /**
