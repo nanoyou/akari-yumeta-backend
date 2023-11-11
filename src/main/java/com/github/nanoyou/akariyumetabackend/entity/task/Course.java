@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
 
@@ -43,6 +44,7 @@ public class Course {
      */
     @NotNull
     @URL
+    @Length(min = 1, max = 4000)
     private String videoURL;
     /**
      * 视频时长

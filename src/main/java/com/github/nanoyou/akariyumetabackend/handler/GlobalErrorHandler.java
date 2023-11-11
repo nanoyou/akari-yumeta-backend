@@ -17,7 +17,7 @@ public class GlobalErrorHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalErrorHandler.class);
 
     private void logReason(Exception err) {
-        logger.error("全局错误处理器捕获到了一个" + err.getClass() + "异常：\n" + err.getMessage());
+        logger.error("全局错误处理器捕获到了一个" + err.getClass() + "异常：", err);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
